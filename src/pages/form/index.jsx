@@ -328,7 +328,7 @@ export default function Form() {
                     </div>
                 </div>
 
-                <div className="flex flex-col border-t border-primary-light bg-white items-center justify-end md:flex-row h-14 md:h-16 gap-y-2 z-50">
+                <div className="flex flex-col border-t border-primary-light bg-white items-center justify-end md:flex-row h-14 md:h-16 gap-y-2">
                     <div className="flex pr-0 md:pr-6">
                         {isSaved ? (
                             <>
