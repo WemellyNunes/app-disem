@@ -5,7 +5,7 @@ import { CiCircleAlert } from "react-icons/ci";
 
 const ConfirmationModal = ({ title, message, onConfirm, onCancel }) => {
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center text-center bg-gray-500 bg-opacity-30 z-50">
             <div className="flex flex-col justify-center bg-white p-6 rounded-lg shadow-lg w-full md:w-1/4 mx-1 md:mx-0">
                 <div className="flex justify-center text-orange-300 mb-4">
                     <CiCircleAlert size={70} />

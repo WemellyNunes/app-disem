@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { MdOutlineDashboard } from "react-icons/md";
 import { FaFilePen } from "react-icons/fa6";
-import { FaRegListAlt, FaBars, FaSignOutAlt } from "react-icons/fa"; // Ícones adicionais
+import { FaRegListAlt, FaBars, FaSignOutAlt } from "react-icons/fa"; 
 
 const Sidebar = ({ isCollapsed, toggleSidebar }) => {
 

@@ -23,14 +23,14 @@ const FinalizeSection = () => {
     const handleSave = () => {
         if (!validateFields()) {
             setIsError(true); 
-            setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
+            setMessageContent({ type: 'error', title: 'Erro.', message: 'Este campo é obrigatório.' });
             setShowMessageBox(true);
             setTimeout(() => setShowMessageBox(false), 1500);
             return;
         }
 
         setIsSaved(true);
-        setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Ordem de serviço salva com sucesso!' });
+        setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Finalizado com sucesso!' });
         setShowMessageBox(true);
         setTimeout(() => setShowMessageBox(false), 1500);
     };

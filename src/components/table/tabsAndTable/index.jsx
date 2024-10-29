@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Tabs from '../tabs';
-import Table from '../table';
 import SearchInput from '../../inputs/searchInput';
 import FilterModal from '../../modal/filter';
 import Tag from '../../tag';
@@ -9,13 +8,13 @@ import { FaSlidersH } from "react-icons/fa";
 import List from '../list';
 
 const data = [
-    { id: 1, requisicao: '90000', criacao: '27/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'HIDROSANITARIO', unidade: 'IGE', solicitante: 'JOAO DA SILVA COSTA', status: 'A atender', programacao: false, prioridade: 'Execução em até 7 dias' },
-    { id: 2, requisicao: '15230', criacao: '30/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'HIDROSANITARIO', unidade: 'ICH', solicitante: 'ANA DA SILVA COSTA', status: 'A atender', programacao: false, prioridade: 'Execução em até 15 dias' },
-    { id: 3, requisicao: '00000', criacao: '24/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'CIVIL', unidade: 'ICE', solicitante: 'ANA DA SILVA COSTA', status: 'Em atendimento', programacao: true, prioridade: 'Execução em até 2 dias' },
-    { id: 4, requisicao: '00000', criacao: '30/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'CIVIL', unidade: 'ICE', solicitante: 'FULANO DA SILVA COSTA', status: 'Resolvido', programacao: true, prioridade: 'Execução em até 7 dias' },
-    { id: 5, requisicao: '00000', criacao: '01/10/2024', origem: 'SIPAC', tipo: 'CORRETIVA', sistema: 'CIVIL', unidade: 'CTIC', solicitante: 'FULANO DA SILVA COSTA', status: 'A atender', programacao: false, prioridade: 'Execução em até 2 dias' },
-    { id: 6, requisicao: '90000', criacao: '27/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'HIDROSANITARIO', unidade: 'IGE', solicitante: 'JOAO DA SILVA COSTA', status: 'A atender', programacao: false, prioridade: 'Execução Imediata' },
-    { id: 7, requisicao: '90000', criacao: '01/10/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'ELETRICO', unidade: 'IGE', solicitante: 'JOAO DA SILVA COSTA', status: 'A atender', programacao: false, prioridade: 'Execução Imediata' }
+    { id: 1, requisicao: '90000', criacao: '27/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'HIDROSANITARIO', unidade: 'IGE', solicitante: 'JOAO DA SILVA COSTA', descricao:'texto descritivo da os', status: 'A atender', programacao: false, prioridade: 'Execução em até 7 dias' },
+    { id: 2, requisicao: '15230', criacao: '30/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'HIDROSANITARIO', unidade: 'ICH', solicitante: 'ANA DA SILVA COSTA', descricao:'texto descritivo da os', status: 'A atender', programacao: false, prioridade: 'Execução em até 15 dias' },
+    { id: 3, requisicao: '00000', criacao: '24/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'CIVIL', unidade: 'ICE', solicitante: 'ANA DA SILVA COSTA', descricao:'texto descritivo da os', status: 'Em atendimento', programacao: true, prioridade: 'Execução em até 2 dias' },
+    { id: 4, requisicao: '00000', criacao: '30/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'CIVIL', unidade: 'ICE', solicitante: 'FULANO DA SILVA COSTA', descricao:'texto descritivo da os', status: 'Resolvido', programacao: true, prioridade: 'Execução em até 7 dias' },
+    { id: 5, requisicao: '00000', criacao: '01/10/2024', origem: 'SIPAC', tipo: 'CORRETIVA', sistema: 'CIVIL', unidade: 'CTIC', solicitante: 'FULANO DA SILVA COSTA', descricao:'texto descritivo da os', status: 'A atender', programacao: false, prioridade: 'Execução em até 2 dias' },
+    { id: 6, requisicao: '90000', criacao: '27/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'HIDROSANITARIO', unidade: 'IGE', solicitante: 'JOAO DA SILVA COSTA', descricao:'texto descritivo da os', status: 'A atender', programacao: false, prioridade: 'Execução Imediata' },
+    { id: 7, requisicao: '90000', criacao: '01/10/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'ELETRICO', unidade: 'IGE', solicitante: 'JOAO DA SILVA COSTA', descricao:'lampada queimada na sala do bloco x', status: 'A atender', programacao: false, prioridade: 'Execução Imediata' }
 ];
 
 const TabsAndTable = () => {
@@ -68,18 +67,10 @@ const TabsAndTable = () => {
             } else {
                 delete updatedFilters[filterKey];
             }
-
             localStorage.setItem('appliedFilters', JSON.stringify(updatedFilters));
 
             return updatedFilters;
         });
-    };
-
-    const prioridadesPesos = {
-        'Execução Imediata': 1,
-        'Execução em até 2 dias': 2,
-        'Execução em até 7 dias': 3,
-        'Execução em até 15 dias': 4
     };
 
     const filterData = () => {
@@ -90,9 +81,9 @@ const TabsAndTable = () => {
             'Finalizadas': 'Finalizada',
             'Negadas': 'Negada'
         };
-
+        
         let filtered = osData.filter(item => item.status === statusMap[activeTab]);
-
+        
         if (searchTerm) {
             filtered = filtered.filter(item =>
                 item.requisicao.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -139,7 +130,6 @@ const TabsAndTable = () => {
             }
         }
 
-        // Ordenar pela prioridade com base na criticidade
         filtered = filtered.sort((a, b) => {
             return prioridadesPesos[a.prioridade] - prioridadesPesos[b.prioridade];
         });
@@ -147,7 +137,13 @@ const TabsAndTable = () => {
         return filtered;
     };
 
-
+    const prioridadesPesos = {
+        'Execução Imediata': 1,
+        'Execução em até 2 dias': 2,
+        'Execução em até 7 dias': 3,
+        'Execução em até 15 dias': 4
+    };
+    
     const memoizedFilteredData = useMemo(filterData, [appliedFilters, searchTerm, osData, activeTab]);
 
     useEffect(() => {
@@ -167,8 +163,8 @@ const TabsAndTable = () => {
     };
 
     return (
-        <div className="flex w-full flex-col mt-1"> {/* w-full para ocupar 100% da largura */}
-            <div className='flex flex-row gap-x-2 '>
+        <div className="flex w-full flex-col mt-1"> 
+            <div className='flex flex-row gap-x-2'>
                 <SearchInput placeholder="Buscar..." onSearch={handleSearch} />
                 <button
                     onClick={() => setIsFilterModalOpen(true)}
@@ -184,12 +180,11 @@ const TabsAndTable = () => {
                 {Object.keys(appliedFilters).map((filterKey) => {
                     const filterValue = appliedFilters[filterKey];
 
-                    // Verificar se o filtro é uma array (como os multiselects) ou um valor único
                     if (Array.isArray(filterValue)) {
                         return filterValue.map((item) => (
                             <Tag
-                                key={`${filterKey}-${item.value}`} // Usar chave única
-                                label={`${item.label}`} // Mostrar o nome do filtro e o valor selecionado
+                                key={`${filterKey}-${item.value}`} 
+                                label={`${item.label}`}
                                 onRemove={() => removeFilter(filterKey, item)}
                             />
                         ));
@@ -205,12 +200,9 @@ const TabsAndTable = () => {
                 })}
             </div>
 
-            {/* Evitar que as tabs causem overflow horizontal */}
             <div className="w-full overflow-auto">
                 <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
-
-            {/* Ajuste de tabela */}
             <div className="w-full">
                 <List filteredData={currentItems} onProgramClick={handleProgramClick} />
             </div>
@@ -232,7 +224,6 @@ const TabsAndTable = () => {
                     <button onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>Última</button>
                 </div>
             </div>
-
             <FilterModal
                 isOpen={isFilterModalOpen}
                 onClose={() => setIsFilterModalOpen(false)}

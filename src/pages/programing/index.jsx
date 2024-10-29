@@ -126,7 +126,7 @@ export default function Programing() {
 
         setIsSaved(true);
         setIsEditing(false);
-        setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Ordem de serviço salva com sucesso!' });
+        setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Programação salva com sucesso!' });
         setShowMessageBox(true);
         setTimeout(() => setShowMessageBox(false), 1500);
     };
@@ -353,18 +353,16 @@ export default function Programing() {
             </div>
             {showAddReport && (
                 <AddReport
-                    onAdd={handleAddReport} // Função chamada ao adicionar um relato
-                    onCancel={() => setShowAddReport(false)} // Fecha o modal de adicionar
+                    onAdd={handleAddReport} 
+                    onCancel={() => setShowAddReport(false)}
                 />
             )}
-
             {showViewReports && (
                 <ViewReports
-                    reports={reports} // Passa os relatos para visualização
-                    onClose={() => setShowViewReports(false)} // Fecha o modal de ver relatos
+                    reports={reports} 
+                    onClose={() => setShowViewReports(false)} 
                 />
             )}
-
             {showHistory && <HistoryCard history={history} onClose={() => setShowHistory(false)} />}
         </>
     );

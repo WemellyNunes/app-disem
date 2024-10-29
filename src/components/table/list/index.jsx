@@ -4,6 +4,7 @@ import { MdHistory } from "react-icons/md";
 import { useState } from "react";
 import HistoryCard from "../../cards/historyCard";
 import ActionsMenu from "../../verticalMenu/actionMenu";
+import ConfirmationModal from "../../modal/confirmation";
 
 
 const List = ({ filteredData, onProgramClick }) => {
@@ -23,7 +24,6 @@ const List = ({ filteredData, onProgramClick }) => {
         <div className="flex flex-col w-full space-y-4">
             {filteredData.length > 0 ? (
                 filteredData.map((item, index) => {
-                    // Verifique se o item está corretamente definido antes de acessá-lo
                     if (!item) {
                         return null;
                     }
@@ -37,38 +37,32 @@ const List = ({ filteredData, onProgramClick }) => {
                     const handleView = () => {
                         console.log(`Visualizar OS ${item.id}`);
                     };
-
                     const handleEdit = () => {
                         setActionType('edit');
                         setShowConfirmation(true);
                     };
-
                     const handleDelete = () => {
                         setActionType('delete');
                         setShowConfirmation(true);
                     };
-
                     const handleConfirmAction = () => {
                         setShowConfirmation(false);
                         if (actionType === 'edit') {
                             console.log(`Confirmar Edição da OS ${item.id}`);
-                            // Adicione a lógica para editar a OS aqui
+                            
                         } else if (actionType === 'delete') {
                             console.log(`Confirmar Exclusão da OS ${item.id}`);
-                            // Adicione a lógica para excluir a OS aqui
                         }
-                    };
+                    }
+
 
                     return (
                         <div
                             key={item.id}
-                            className={`flex flex-col mt-2 md:flex-row   p-4 rounded shadow-sm hover:border-b hover:border-primary-light space-y-2 md:space-y-0 ${
-                                index % 2 === 0 ? 'bg-white' : 'bg-blue-50'
-                            }`}
+                            className={`flex flex-col mt-2 md:flex-row p-4 rounded shadow-sm hover:border-b hover:border-primary-light space-y-2 md:space-y-0 ${index % 2 === 0 ? 'bg-white' : 'bg-blue-50'
+                                }`}
                         >
-                            {/* Container principal para manter o layout organizado */}
                             <div className="flex flex-col md:flex-row w-full justify-between">
-                                {/* Esquerda - Informações principais */}
                                 <div className="flex flex-col md:w-1/2 space-y-2 pb-2 md:pb-0 text-primary-dark text-xs md:text-sm">
                                     <span className="flex">
                                         <strong className="mr-1 ">Requisição:</strong> {item.requisicao}
@@ -84,7 +78,6 @@ const List = ({ filteredData, onProgramClick }) => {
                                     </span>
                                 </div>
 
-                                {/* Meio - Informações complementares */}
                                 <div className="flex flex-col md:w-1/3 space-y-2 text-primary-dark text-xs md:text-sm">
                                     <span className="flex">
                                         <strong className="mr-1">Sistema:</strong> {item.sistema}
@@ -94,6 +87,9 @@ const List = ({ filteredData, onProgramClick }) => {
                                     </span>
                                     <span className="flex">
                                         <strong className="mr-0 md:mr-1">Solicitante:</strong> {item.solicitante}
+                                    </span>
+                                    <span className="hidden md:flex">
+                                        <strong className="mr-0 md:mr-1">Descrição:</strong> {item.descricao}
                                     </span>
                                 </div>
 
@@ -116,7 +112,7 @@ const List = ({ filteredData, onProgramClick }) => {
                                             </>
                                         )}
                                     </button>
-                                
+
                                 </div>
 
                                 <div className="flex flex-col md:w-1/3 space-y-2 md:items-end text-primary-dark text-xs md:text-sm">
@@ -125,6 +121,16 @@ const List = ({ filteredData, onProgramClick }) => {
                                     </span>
                                     <span className="hidden md:flex">
                                         <ActionsMenu onView={handleView} onEdit={handleEdit} onDelete={handleDelete} />
+
+                                        {showConfirmation && (
+                                            <ConfirmationModal
+                                                title={actionType === 'delete' ? "Confirmar Exclusão" : "Confirmar Edição"}
+                                                message={`Tem certeza que deseja ${actionType === 'delete' ? "excluir" : "editar"} a OS ${item.id}?`}
+                                                onConfirm={handleConfirmAction}
+                                                onCancel={() => setShowConfirmation(false)}
+                                            />
+                                        )}
+
                                     </span>
 
                                     <div className="hidden md:flex items-center">
@@ -148,6 +154,7 @@ const List = ({ filteredData, onProgramClick }) => {
                     Nenhum registro encontrado
                 </div>
             )}
+
         </div>
     );
 };

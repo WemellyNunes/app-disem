@@ -1,44 +1,86 @@
+import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BarGraphic = ({ data }) => {
-    const chartData = {
+const BarGraphic = () => {
+    const [graphData, setGraphData] = useState({
         labels: ['Classe A', 'Classe B', 'Classe C'],
         datasets: [
             {
-                label: 'Número de OS',
-                data: [26, 35, 30], 
-                backgroundColor: ['#667eea', '#4bc0c0', '#36a2eb'],
-                borderWidth: 0, 
+                label: 'Meu Conjunto de Dados',
+                data: [20, 50, 70], 
+                backgroundColor: [
+                    'rgba(0, 168, 232, 0.9)', 
+                    'rgba(0, 168, 232, 0.9)',
+                    'rgba(0, 168, 232, 0.9)',  
+                ],
+                
+                borderWidth: 0,
             },
         ],
-    };
+    });
+
+    const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+
+    useEffect(() => {
+        // Função assíncrona para buscar dados da API
+        const fetchData = async () => {
+            try {
+                const response = await fetch('URL_DO_ENDPOINT'); // Substitua pela URL da sua API
+                const data = await response.json();
+                // Atualiza os dados do gráfico com os valores retornados pela API
+                setGraphData((prevState) => ({
+                    ...prevState,
+                    datasets: [
+                        {
+                            ...prevState.datasets[0],
+                            data: [data.classeA, data.classeB, data.classeC], // Ajuste os campos conforme o retorno da API
+                        },
+                    ],
+                }));
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+            }
+        };
+
+        fetchData(); 
+    }, []);
 
     const options = {
-        indexAxis: 'y', 
+        indexAxis: 'y', // Transforma o gráfico em barra horizontal
+        scales: {
+            x: {
+                beginAtZero: true,
+                max: 90, // Define o máximo do eixo X como 90
+            },
+        },
         responsive: true,
         plugins: {
             legend: {
-                display: false, 
+                position: 'top',
             },
             title: {
                 display: true,
-                text: 'Classificação das OS para atender em (mês)',
+                text: `Classes das OS cadastradas de ${currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)}`,
+                font: {
+                    size: 18, // Aumenta o tamanho do título
+                 } // Torna o título em negrito (opcional)
             },
-        },
-        scales: { 
-            x: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 10, 
+            datalabels: {
+                anchor: 'end',
+                align: 'end',
+                color: 'black',
+                font: {
+                    weight: 'bold',
                 },
+                formatter: (value) => value, // Exibe o valor numérico do quantitativo
             },
         },
     };
 
-    return <Bar data={chartData} options={options} />;
+    return <Bar data={graphData} options={options} />;
 };
 
 export default BarGraphic;
