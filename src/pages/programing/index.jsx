@@ -46,8 +46,12 @@ export default function Programing() {
     const [showAddReport, setShowAddReport] = useState(false);
     const [showViewReports, setShowViewReports] = useState(false);
     const [reports, setReports] = useState([])
+    const [status, setStatus] = useState("A atender");
+    const [finalObservation, setFinalObservation] = useState(''); // Status inicial
 
-    const handleFinalization = (finalObservation) => {
+
+    const handleFinalization = (observation) => {
+        setFinalObservation(observation); // Armazena a observação final
         setIsFinalized(true); // Marca a OS como finalizada
         // Aqui, a seção de finalização deve permanecer visível
     };
@@ -85,7 +89,7 @@ export default function Programing() {
 
     const handleAddReport = (newReport) => {
         const reportWithUser = {
-            usuario: "Fulano da Silva", 
+            usuario: "Fulano da Silva",
             texto: newReport,
             data: new Date().toLocaleString('pt-BR'),
         };
@@ -126,6 +130,7 @@ export default function Programing() {
 
         setIsSaved(true);
         setIsEditing(false);
+        setStatus("Em atendimento");
         setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Programação salva com sucesso!' });
         setShowMessageBox(true);
         setTimeout(() => setShowMessageBox(false), 1500);
@@ -163,7 +168,7 @@ export default function Programing() {
                     <StatusBar
                         requisitionNumber={orderServiceData.requisicao}
                         origin={orderServiceData.origem}
-                        situation="A atender"
+                        situation={status}
                         reopening="nenhuma"
                         onHistoryClick={handleHistoryClick}
                         onAddReportClick={() => setShowAddReport(true)}
@@ -244,14 +249,29 @@ export default function Programing() {
                     <div className="flex-1 mb-4">
 
                         {isMaintenanceClosed && !isFinalized && (
-                            <FinalizeSection onFinalize={handleFinalization} />
+                            <FinalizeSection
+                                initialObservation={finalObservation} // Passa a observação atual
+                                onFinalize={handleFinalization}
+                            />
                         )}
 
-                        {isFinalized && <FinalizeSection onFinalize={handleFinalization} />}
+                        {isFinalized && (
+                            <FinalizeSection
+                                initialObservation={finalObservation} // Passa a observação finalizada
+                                onFinalize={() => {
+                                    setStatus("Finalizado");
+                                    handleFinalization();
+                                }}
+                            />
+                        )}
 
                         {isSaved && <MaintenanceSection
                             orderServiceData={orderServiceData}
-                            onMaintenanceClose={setIsMaintenanceClosed} onMaintenanceSave={handleMaintenanceSave}
+                            onMaintenanceClose={setIsMaintenanceClosed}
+                            onMaintenanceSave={() => {
+                                setStatus("Resolvido");
+                                handleMaintenanceSave();
+                            }}
                         />}
 
                         <SectionCard title="Programação">
@@ -353,14 +373,14 @@ export default function Programing() {
             </div>
             {showAddReport && (
                 <AddReport
-                    onAdd={handleAddReport} 
+                    onAdd={handleAddReport}
                     onCancel={() => setShowAddReport(false)}
                 />
             )}
             {showViewReports && (
                 <ViewReports
-                    reports={reports} 
-                    onClose={() => setShowViewReports(false)} 
+                    reports={reports}
+                    onClose={() => setShowViewReports(false)}
                 />
             )}
             {showHistory && <HistoryCard history={history} onClose={() => setShowHistory(false)} />}

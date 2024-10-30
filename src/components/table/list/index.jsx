@@ -55,7 +55,6 @@ const List = ({ filteredData, onProgramClick }) => {
                         }
                     }
 
-
                     return (
                         <div
                             key={item.id}
@@ -64,37 +63,45 @@ const List = ({ filteredData, onProgramClick }) => {
                         >
                             <div className="flex flex-col md:flex-row w-full justify-between">
                                 <div className="flex flex-col md:w-1/2 space-y-2 pb-2 md:pb-0 text-primary-dark text-xs md:text-sm">
-                                    <span className="flex">
-                                        <strong className="mr-1 ">Requisição:</strong> {item.requisicao}
+                                    <span className="flex flex-row flex-wrap">
+                                        <p className="font-semibold mr-1 ">Requisição:</p> 
+                                        <p>{item.requisicao}</p>
                                     </span>
-                                    <span className="hidden md:flex">
-                                        <strong className=" mr-1">Criação:</strong> {item.criacao}
+                                    <span className="hidden md:flex flex-row flex-wrap">
+                                        <p className="font-semibold mr-1">Criação:</p> 
+                                        <p>{item.criacao}</p>
                                     </span>
-                                    <span className="hidden md:flex">
-                                        <strong className="mr-1">Origem:</strong> {item.origem}
+                                    <span className="hidden md:flex flex-row flex-wrap">
+                                        <p className="font-semibold mr-1">Origem:</p> 
+                                        <p>{item.origem}</p>
                                     </span>
-                                    <span className="hidden md:flex">
-                                        <strong className="mr-1">Tipo de Manutenção:</strong> {item.tipo}
+                                    <span className="hidden md:flex flex-row flex-wrap">
+                                        <p className="font-semibold mr-1">Manutenção:</p> 
+                                        <p>{item.tipo}</p>
                                     </span>
                                 </div>
 
                                 <div className="flex flex-col md:w-1/3 space-y-2 text-primary-dark text-xs md:text-sm">
-                                    <span className="flex">
-                                        <strong className="mr-1">Sistema:</strong> {item.sistema}
+                                    <span className="flex flex-row flex-wrap">
+                                        <p className="font-semibold mr-1">Sistema:</p> 
+                                        <p>{item.sistema}</p>
                                     </span>
-                                    <span className="flex">
-                                        <strong className="mr-1">Unidade:</strong> {item.unidade}
+                                    <span className="flex flex-row flex-wrap">
+                                        <p className="font-semibold mr-1">Unidade:</p> 
+                                        <p>{item.unidade}</p>
                                     </span>
-                                    <span className="flex">
-                                        <strong className="mr-0 md:mr-1">Solicitante:</strong> {item.solicitante}
+                                    <span className="flex flex-row flex-wrap">
+                                        <p className="font-semibold mr-0 md:mr-1">Solicitante:</p> 
+                                        <p>{item.solicitante}</p>
                                     </span>
-                                    <span className="hidden md:flex">
-                                        <strong className="mr-0 md:mr-1">Descrição:</strong> {item.descricao}
+                                    <span className="hidden md:flex flex-row flex-wrap">
+                                        <p className="font-semibold mr-0 md:mr-1">Descrição:</p> 
+                                        <p>{item.descricao}</p>
                                     </span>
                                 </div>
 
                                 {/* Direita - Programação, Histórico e Status */}
-                                <div className="flex flex-col py-3 md:py-0  md:w-1/3 md:items-end text-sm">
+                                <div className="flex flex-col items-center justify-center py-3 md:py-0  md:w-1/3 md:items-end text-sm">
                                     <button onClick={() => onProgramClick(item.id)} className="flex flex-col text-blue-600 items-center justify-center hover:underline">
                                         {item.programacao ? (
                                             <>

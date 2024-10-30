@@ -37,6 +37,7 @@ export default function Form() {
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
     const [isEditing, setIsEditing] = useState(true);
     const [isSaved, setIsSaved] = useState(false);
+    const [status, setStatus] = useState("A atender");
 
     const options = [
         { label: 'Comum', value: 'comum' },
@@ -148,6 +149,7 @@ export default function Form() {
 
         const ordemDeServico = {
             ...formData,
+            status,
             valorRisco: valor,
             prioridade: prioridadeCalculada,
             tratamento: formData.selectedOption,

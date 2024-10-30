@@ -1,23 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InputUpload from "../../inputs/inputUpload";
 import InputPrimary from "../../inputs/inputPrimary";
 import ButtonPrimary from "../../buttons/buttonPrimary";
 import ButtonSecondary from "../../buttons/buttonSecondary";
 import Checklist from "../../checklist";
 import MessageBox from "../../box/message";
+import { IoIosRemoveCircleOutline, IoIosAddCircleOutline } from "react-icons/io";
 
-const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanceSave  }) => {
+const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanceSave }) => {
     const [emptyFields, setEmptyFields] = useState({});
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
-    const [isMaintenanceClosed, setIsMaintenanceClosed] = useState(false);  
+    const [isMaintenanceClosed, setIsMaintenanceClosed] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const [isEditing, setIsEditing] = useState(true); 
+    const [isEditing, setIsEditing] = useState(true);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 768) {
+                setIsOpen(true);
+            }
+        };
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     const handleClose = () => {
         setIsEditing(false);
         setIsMaintenanceClosed(true);
-        onMaintenanceClose(true); 
+        onMaintenanceClose(true);
     };
 
     const [formData, setFormData] = useState({
@@ -70,7 +82,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
             return;
         }
 
-        setIsEditing(false); // Desabilita os campos
+        setIsEditing(false);
         setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Dados da manutenção salvos com sucesso!' });
         setShowMessageBox(true);
         onMaintenanceSave();
@@ -87,7 +99,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
         <div className="flex flex-col bg-white rounded mb-2 mt-2 shadow">
             <div className="flex justify-between rounded items-center px-4 md:px-6 py-4 cursor-pointer bg-white" onClick={toggleSection}>
                 <h3 className="text-sm md:text-base font-normal text-primary-light">Manutenção</h3>
-                <span>{isOpen ? '−' : '+'}</span>
+                <span className="text-primary-light">{isOpen ? <IoIosRemoveCircleOutline size={25}/> : <IoIosAddCircleOutline size={25}/>}</span>
             </div>
             {isOpen && (
                 <div className="px-4 md:px-6">

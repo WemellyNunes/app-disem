@@ -3,26 +3,25 @@ import ButtonPrimary from '../../buttons/buttonPrimary';
 import MessageBox from '../../box/message';
 import InputPrimary from '../../inputs/inputPrimary';
 
-const FinalizeSection = () => {
-    const [finalObservation, setFinalObservation] = useState('');
+const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
+    const [finalObservation, setFinalObservation] = useState(initialObservation);
     const [isSaved, setIsSaved] = useState(false);
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
     const [isError, setIsError] = useState(false);
 
     const handleFieldChange = (value) => {
-        setFinalObservation(value); 
-        if (isError) setIsError(false); 
+        setFinalObservation(value);
+        if (isError) setIsError(false);
     };
 
-    
     const validateFields = () => {
         return finalObservation.trim() !== '';
     };
 
     const handleSave = () => {
         if (!validateFields()) {
-            setIsError(true); 
+            setIsError(true);
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Este campo é obrigatório.' });
             setShowMessageBox(true);
             setTimeout(() => setShowMessageBox(false), 1500);
@@ -32,9 +31,10 @@ const FinalizeSection = () => {
         setIsSaved(true);
         setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Finalizado com sucesso!' });
         setShowMessageBox(true);
+        onFinalize(finalObservation); // Passa a observação final
         setTimeout(() => setShowMessageBox(false), 1500);
     };
-    
+
     let colorBorder = isError ? 'border-primary-red' : '';
 
     return (
@@ -75,5 +75,6 @@ const FinalizeSection = () => {
         </div>
     );
 };
+
 
 export default FinalizeSection;

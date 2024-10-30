@@ -39,7 +39,7 @@ const TabsAndTable = () => {
         navigate(`/programing/${id}`);
 
         const updatedData = osData.map((item) =>
-            item.id === id ? { ...item, status: 'Em atendimento', programacao: true } : item
+            item.id === id ? { ...item, status: "Em atendimento", programacao: true } : item
         );
         setOsData(updatedData);
     };
@@ -207,7 +207,7 @@ const TabsAndTable = () => {
                 <List filteredData={currentItems} onProgramClick={handleProgramClick} />
             </div>
 
-            <div className="flex justify-between bg-white items-center mt-2 px-4 py-2 text-xs text-primary-dark">
+            <div className="flex justify-between bg-white shadow items-center mt-2 px-4 py-2 text-xs text-primary-dark">
                 <div>{filteredData.length} itens de {filteredData.length}</div>
                 <div>
                     <select value={itemsPerPage} onChange={handleItemsPerPageChange}>

@@ -11,7 +11,6 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
     navigate("/"); 
   };
 
-
   return (
     <div className={`flex flex-col h-1/2 md:h-full bg-white md:shadow  md:fixed ${isCollapsed ? 'w-12 md:w-14 ' : 'w-64'}  transform`} // Mantém altura completa da tela
     >
