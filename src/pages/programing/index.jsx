@@ -19,8 +19,11 @@ import MaintenanceSection from "../../components/section/sectionMaintenance";
 import FinalizeSection from "../../components/section/FinalizeSection";
 import AddReport from "../../components/modal/report";
 import ViewReports from "../../components/modal/viewReports";
+import { useUser } from "../../contexts/user";
 
 export default function Programing() {
+    const { user, setUser } = useUser();
+
     const navigate = useNavigate();
 
     const { id } = useParams();
@@ -49,11 +52,9 @@ export default function Programing() {
     const [status, setStatus] = useState("A atender");
     const [finalObservation, setFinalObservation] = useState(''); // Status inicial
 
-
     const handleFinalization = (observation) => {
-        setFinalObservation(observation); // Armazena a observação final
-        setIsFinalized(true); // Marca a OS como finalizada
-        // Aqui, a seção de finalização deve permanecer visível
+        setFinalObservation(observation); 
+        setIsFinalized(true); 
     };
 
     const handleMaintenanceSave = () => {
@@ -129,6 +130,7 @@ export default function Programing() {
         }
 
         setIsSaved(true);
+        setUser({ name: "Fulano da Silva", id: "123" });
         setIsEditing(false);
         setStatus("Em atendimento");
         setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Programação salva com sucesso!' });
@@ -243,6 +245,7 @@ export default function Programing() {
                             <div className="mt-2">
                                 <InputUpload label="Anexar documento(s)" disabled />
                             </div>
+                            <p className="mt-2 text-sm text-gray-400">Cadastrado por: {user.name}</p>
                         </SectionCard>
                     </div>
 
@@ -323,6 +326,7 @@ export default function Programing() {
                                     onChange={handleFieldChange('observacao')}
                                     disabled={!isEditing}
                                 />
+                                {isSaved && <p className="mt-2 text-sm text-gray-400">Programado por: {user.name}</p>}
                             </div>
                             <div className="flex flex-col md:flex-row justify-end">
                                 <div className="flex flex-col md:flex-row gap-y-1.5 ">

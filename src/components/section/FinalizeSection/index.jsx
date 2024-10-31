@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ButtonPrimary from '../../buttons/buttonPrimary';
 import MessageBox from '../../box/message';
 import InputPrimary from '../../inputs/inputPrimary';
+import { useUser } from '../../../contexts/user';
 
 const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
     const [finalObservation, setFinalObservation] = useState(initialObservation);
@@ -9,6 +10,7 @@ const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
     const [isError, setIsError] = useState(false);
+    const { user, setUser } = useUser();
 
     const handleFieldChange = (value) => {
         setFinalObservation(value);
@@ -29,6 +31,7 @@ const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
         }
 
         setIsSaved(true);
+        setUser({ name: "Fulano da Silva", id: "123" });
         setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Finalizado com sucesso!' });
         setShowMessageBox(true);
         onFinalize(finalObservation); // Passa a observação final
@@ -51,6 +54,7 @@ const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
                         className={`${colorBorder} border rounded`} 
                     />
                 </div>
+                {isSaved && <p className="mt-2 text-sm text-gray-400">Finalizado por: {user.name}</p>}
                 <div className="flex justify-end mt-4">
                     {!isSaved ? ( 
                         <ButtonPrimary onClick={handleSave}>

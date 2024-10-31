@@ -6,6 +6,8 @@ import ButtonSecondary from "../../buttons/buttonSecondary";
 import Checklist from "../../checklist";
 import MessageBox from "../../box/message";
 import { IoIosRemoveCircleOutline, IoIosAddCircleOutline } from "react-icons/io";
+import { useUser } from "../../../contexts/user";
+
 
 const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanceSave }) => {
     const [emptyFields, setEmptyFields] = useState({});
@@ -14,6 +16,8 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     const [isMaintenanceClosed, setIsMaintenanceClosed] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(true);
+    const [isSaved, setIsSaved] = useState(false);
+    const { user, setUser } = useUser();
 
     useEffect(() => {
         const handleResize = () => {
@@ -83,9 +87,11 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
         }
 
         setIsEditing(false);
+        setIsSaved(true);
         setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Dados da manutenção salvos com sucesso!' });
         setShowMessageBox(true);
         onMaintenanceSave();
+        setUser({ name: "Fulano da Silva", id: "123" });
         setTimeout(() => setShowMessageBox(false), 1200);
     };
 
@@ -147,6 +153,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                             onChange={handleFieldChange('observation')}
                             disabled={!isEditing}
                         />
+                        {isSaved && <p className="mt-2 text-sm mb-3 text-gray-400">Enviado por: {user.name}</p>}
                     </div>
                     <div className="flex flex-col md:flex-row justify-end">
                         <div className="flex flex-col pb-4 md:flex-row gap-y-1.5 ">

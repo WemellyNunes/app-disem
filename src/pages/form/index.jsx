@@ -11,8 +11,11 @@ import MessageBox from "../../components/box/message";
 import { calcularValorRisco, calcularPrioridade } from "../../utils/matriz";
 import PageTitle from "../../components/title";
 import { FaFilePen } from "react-icons/fa6";
+import { useUser } from "../../contexts/user";
 
 export default function Form() {
+    const { user } = useUser();
+
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({

@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { MdOutlineDashboard } from "react-icons/md";
 import { FaFilePen } from "react-icons/fa6";
-import { FaRegListAlt, FaBars, FaSignOutAlt } from "react-icons/fa"; 
+import { FaRegListAlt, FaBars, FaSignOutAlt, FaUsers } from "react-icons/fa"; 
 
 const Sidebar = ({ isCollapsed, toggleSidebar }) => {
 
@@ -58,6 +58,14 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             }>
             <FaRegListAlt className='h-4 md:h-5 w-4 md:w-5' />
             <span className={`${isCollapsed ? 'hidden' : ''}`}>Lista</span>
+          </NavLink>
+          <NavLink
+            to="/users"
+            className={({ isActive }) =>
+              `flex items-center text-primary-light gap-x-4 border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-blue-700 text-white hover:text-primary-light' : ''}`
+            }>
+            <FaUsers className='h-4 md:h-5 w-4 md:w-5' />
+            <span className={`${isCollapsed ? 'hidden' : ''}`}>Usuários do sistema</span>
           </NavLink>
         </div>
       </div>

@@ -1,12 +1,14 @@
-import Header from "./components/header";
 import React from 'react';
 import AppRoutes from "./routers";
+import { UserProvider } from './contexts/user';
 
 
 function App() {
   return (
     <>
-      <AppRoutes />
+    <UserProvider>
+       <AppRoutes />
+    </UserProvider>
 
       
     </>

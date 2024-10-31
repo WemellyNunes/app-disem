@@ -6,7 +6,7 @@ import { FaRegListAlt } from "react-icons/fa";
 export default function Listing() {
     return (
         <>
-            <div className="flex flex-col w-full px-2">
+            <div className="flex flex-col w-full">
                  {/* w-full garante que ocupe 100% da largura disponível */}
                  <div className="flex justify-center pb-2">
                     <PageTitle
