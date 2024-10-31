@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaUpload, FaTrash } from 'react-icons/fa';
+import { FaUpload, FaTrash, FaEdit, FaEye } from 'react-icons/fa';
 import UploadModal from '../../modal/upload';
 import PreviewFile from '../../modal/preview';
 
@@ -8,25 +8,33 @@ const InputUpload = ({ label, disabled, className, onFilesUpload }) => {
     const [showPreview, setShowPreview] = useState(false);
     const [previewFile, setPreviewFile] = useState(null);
     const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [fileToEdit, setFileToEdit] = useState(null);
 
-    const handleUpload = (files, description) => {
+    const handleUpload = (files, description, editIndex = null) => {
         const newFiles = files.map(file => ({ file, description }));
-        // Atualiza o estado e chama onFilesUpload com os novos arquivos
+        
         setUploadedFiles(prev => {
-            const updatedFiles = [...prev, ...newFiles];
-            onFilesUpload(updatedFiles); // Chama aqui com o novo estado
+            const updatedFiles = editIndex !== null
+                ? prev.map((item, index) => (index === editIndex ? newFiles[0] : item))
+                : [...prev, ...newFiles];
+            
+            // Executa a atualização após o estado ser alterado
+            setTimeout(() => onFilesUpload(updatedFiles), 0);
+    
             return updatedFiles;
         });
-        setShowModal(false); // Fecha o modal aqui
+        setShowModal(false);
+        setFileToEdit(null);
     };
-    
+
     const handleRemoveFile = (fileToRemove) => {
-        if (disabled) return; // Se estiver desabilitado, não remove o arquivo
+        if (disabled) return;
         setUploadedFiles(prevFiles => {
             const updatedFiles = prevFiles.filter(item => item.file.name !== fileToRemove.name);
-            onFilesUpload(updatedFiles); // Chama aqui após a remoção
+            onFilesUpload(updatedFiles);
             return updatedFiles;
         });
+        setFileToEdit(null); // Limpa o arquivo de edição ao remover um arquivo
     };
 
     const handlePreviewFile = (file) => {
@@ -34,12 +42,22 @@ const InputUpload = ({ label, disabled, className, onFilesUpload }) => {
         setShowPreview(true); 
     };
 
+    const handleEditFile = (file, description, index) => {
+        setFileToEdit({ file, description, index });
+        setShowModal(true);
+    };
+
     return (
         <div className={`flex flex-col mb-4`}>
             <label 
                 className={`flex items-center border border-dashed rounded-md p-4 cursor-pointer w-full md:w-2/4 
                 h-9 md:h-10 transition-colors duration-200 ${disabled ? 'bg-gray-100 border-gray-300 text-gray-400' : 'border-primary-light hover:bg-blue-50'} ${className}`}
-                onClick={() => !disabled && setShowModal(true)}
+                onClick={() => {
+                    if (!disabled) {
+                        setFileToEdit(null); // Limpa o arquivo de edição ao abrir para novos uploads
+                        setShowModal(true);
+                    }
+                }}
             >
                 <FaUpload className={`h-4 w-4 mr-3 ${disabled ? 'text-gray-400' : 'text-primary-light'}`} />
                 <span className={`text-xs md:text-sm italic font-normal ${disabled ? 'text-gray-400' : 'text-primary-light'}`}>
@@ -60,16 +78,23 @@ const InputUpload = ({ label, disabled, className, onFilesUpload }) => {
                                 <button 
                                     onClick={() => handlePreviewFile(item.file)} 
                                     className={`text-blue-500 text-xs md:text-sm mr-2 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    disabled={disabled} // Desabilita o botão se o upload estiver desabilitado
+                                    disabled={disabled}
                                 >
-                                    Visualizar
+                                    <FaEye size={18}/>
+                                </button>
+                                <button 
+                                    onClick={() => handleEditFile(item.file, item.description, index)}
+                                    className={`text-green-500 text-xs md:text-sm mr-2 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    disabled={disabled}
+                                >
+                                    <FaEdit size={16}/>
                                 </button>
                                 <button 
                                     onClick={() => handleRemoveFile(item.file)} 
                                     className={`text-red-500 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    disabled={disabled} // Desabilita o botão de remoção
+                                    disabled={disabled}
                                 >
-                                    <FaTrash />
+                                    <FaTrash size={14}/>
                                 </button>
                             </div>
                         </div>
@@ -79,8 +104,14 @@ const InputUpload = ({ label, disabled, className, onFilesUpload }) => {
 
             <UploadModal 
                 isOpen={showModal} 
-                onClose={() => setShowModal(false)} 
+                onClose={() => {
+                    setShowModal(false);
+                    setFileToEdit(null); // Limpa o arquivo de edição ao fechar o modal
+                }} 
                 onUpload={handleUpload}
+                initialFiles={fileToEdit ? [fileToEdit.file] : []}
+                initialDescription={fileToEdit ? fileToEdit.description : ""}
+                editIndex={fileToEdit ? fileToEdit.index : null}
             />
 
             {showPreview && (

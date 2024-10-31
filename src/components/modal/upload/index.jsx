@@ -1,11 +1,17 @@
-// src/components/FileUploadModal.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ButtonPrimary from '../../buttons/buttonPrimary';
 import ButtonSecondary from '../../buttons/buttonSecondary';
 
-const UploadModal = ({ isOpen, onClose, onUpload }) => {
+const UploadModal = ({ isOpen, onClose, onUpload, initialFiles = [], initialDescription = "", editIndex = null }) => {
     const [files, setFiles] = useState([]);
     const [description, setDescription] = useState("");
+
+    useEffect(() => {
+        if (isOpen) {
+            setFiles(initialFiles);
+            setDescription(initialDescription);
+        }
+    }, [isOpen, initialFiles, initialDescription]);
 
     const handleFileChange = (event) => {
         const selectedFiles = Array.from(event.target.files).filter(file =>
@@ -13,16 +19,15 @@ const UploadModal = ({ isOpen, onClose, onUpload }) => {
             file.type === 'image/png' ||
             file.type === 'image/jpeg'
         );
-
         setFiles(selectedFiles);
     };
 
     const handleUpload = () => {
         if (files.length > 0) {
-            onUpload(files, description);
+            onUpload(files, description, editIndex);
             setFiles([]);
             setDescription("");
-            onClose(); // Fecha o modal
+            onClose();
         }
     };
 
@@ -51,7 +56,7 @@ const UploadModal = ({ isOpen, onClose, onUpload }) => {
                     <ButtonSecondary onClick={onClose}>
                         Cancelar
                     </ButtonSecondary>
-                    <ButtonPrimary onClick={handleUpload} >
+                    <ButtonPrimary onClick={handleUpload}>
                         Salvar
                     </ButtonPrimary>
                 </div>

@@ -32,7 +32,7 @@ const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
         setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Finalizado com sucesso!' });
         setShowMessageBox(true);
         onFinalize(finalObservation); // Passa a observação final
-        setTimeout(() => setShowMessageBox(false), 1500);
+        setTimeout(() => setShowMessageBox(false), 1200);
     };
 
     let colorBorder = isError ? 'border-primary-red' : '';

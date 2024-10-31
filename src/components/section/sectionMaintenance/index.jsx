@@ -86,7 +86,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
         setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Dados da manutenção salvos com sucesso!' });
         setShowMessageBox(true);
         onMaintenanceSave();
-        setTimeout(() => setShowMessageBox(false), 1500);
+        setTimeout(() => setShowMessageBox(false), 1200);
     };
 
     const toggleSection = () => {

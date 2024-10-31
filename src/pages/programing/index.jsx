@@ -133,7 +133,7 @@ export default function Programing() {
         setStatus("Em atendimento");
         setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Programação salva com sucesso!' });
         setShowMessageBox(true);
-        setTimeout(() => setShowMessageBox(false), 1500);
+        setTimeout(() => setShowMessageBox(false), 1200);
     };
 
     const handleEdit = () => {
