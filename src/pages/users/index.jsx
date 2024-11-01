@@ -1,5 +1,5 @@
 import PageTitle from "../../components/title";
-import { FaUsers, FaArrowRight, FaEye } from "react-icons/fa";
+import { FaUsers, FaArrowRight, FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import InputSecondary from "../../components/inputs/inputSecondary";
 import InputSelect from "../../components/inputs/inputSelect";
 import ButtonPrimary from "../../components/buttons/buttonPrimary";
@@ -7,12 +7,23 @@ import ButtonSecondary from "../../components/buttons/buttonSecondary";
 import MessageBox from "../../components/box/message";
 import { IoMdMail } from "react-icons/io";
 import { useState } from "react";
+import ConfirmationModal from "../../components/modal/confirmation";
+
 
 export default function UserPage() {
+    const [emptyFields, setEmptyFields] = useState({});
+    const [showMessageBox, setShowMessageBox] = useState(false);
+    const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [userToEdit, setUserToEdit] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+
+
     const [users, setUsers] = useState([
         { id: 1, name: 'Fulano Silva', email: 'fulano@gmail.com', role: 'ADM', active: true },
         { id: 2, name: 'Ciclano Pereira', email: 'ciclano@gmail.com', role: 'COLAB.', active: false },
-    ]); 
+    ]);
+
     const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: '' });
 
     const options = [
@@ -21,13 +32,70 @@ export default function UserPage() {
         { label: 'Colaborador II', value: 'colabII' },
     ];
 
+    const handleFieldChange = (field) => (value) => {
+        setNewUser((prevData) => ({ ...prevData, [field]: value }));
+    };
+
+    const validateFields = () => {
+        const newEmptyFields = {};
+        const requiredFields = ['name', 'email', 'password', 'role'];
+
+        requiredFields.forEach((field) => {
+            const value = newUser[field];
+            if (!value.trim()) {
+                newEmptyFields[field] = true;
+            }
+        });
+
+        setEmptyFields(newEmptyFields);
+        return Object.keys(newEmptyFields).length === 0;
+    };
+
     const handleSave = () => {
-        setUsers([...users, { ...newUser, id: users.length + 1, active: true }]); 
-        setNewUser({ name: '', email: '', password: '', role: '' }); 
+        if (!validateFields()) {
+            setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
+            setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 1500);
+            return;
+        }
+    
+        if (isEditing) {
+            // Atualiza o usuário existente
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user.id === userToEdit.id ? { ...userToEdit, ...newUser } : user
+                )
+            );
+            setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Usuário atualizado com sucesso!' });
+            setIsEditing(false);
+            setUserToEdit(null);
+        } else {
+            // Adiciona um novo usuário
+            setUsers([...users, { ...newUser, id: users.length + 1, active: true }]);
+            setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Usuário cadastrado com sucesso!' });
+        }
+    
+        setNewUser({ name: '', email: '', password: '', role: '' }); // Limpa os campos após o salvamento
+        setShowMessageBox(true);
+        setTimeout(() => setShowMessageBox(false), 1500);
+    };
+    
+
+    const handleEdit = (user) => {
+        setUserToEdit(user);
+        setShowConfirmation(true);
     };
 
     return (
         <>
+            {showMessageBox && (
+                <MessageBox
+                    type={messageContent.type}
+                    title={messageContent.title}
+                    message={messageContent.message}
+                    onClose={() => setShowMessageBox(false)}
+                />
+            )}
             <div className="flex flex-col">
                 <div>
                     <PageTitle
@@ -38,39 +106,51 @@ export default function UserPage() {
                     />
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 mt-3">
-                    
+                    {/* Seção de Cadastro */}
                     <div className="flex flex-col p-8 w-full h-full md:w-1/3 gap-y-4 rounded-md bg-white shadow">
-                        <p className="text-lg font-normal text-primary-light mb-2">Cadastrar novo usuário</p>
+                    <p className="text-lg font-normal text-primary-light mb-2">{isEditing ? "Editar Usuário" : "Cadastrar novo usuário"}</p>
+
                         <InputSecondary
-                            label="Usuário"
+                            label="Usuário *"
                             placeholder="Nome do usuário"
                             type="text"
                             value={newUser.name}
-                            onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                            onChange={handleFieldChange('name')}
                             buttonIcon={<FaArrowRight />}
+                            errorMessage={emptyFields.name ? "Este campo é obrigatório" : ""}
+                            className={emptyFields.name ? 'border-red-600' : ''}
                         />
                         <InputSecondary
-                            label="Email"
+                            label="Email *"
                             placeholder="Email do usuário"
                             type="text"
                             value={newUser.email}
-                            onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                            onChange={handleFieldChange('email')}
                             buttonIcon={<IoMdMail />}
+                            errorMessage={emptyFields.email ? "Este campo é obrigatório" : ""}
+                            className={emptyFields.email ? 'border-red-600' : ''}
                         />
+
                         <InputSecondary
-                            label="Senha"
+                            label="Senha *"
                             placeholder="Defina a senha"
                             type="password"
                             value={newUser.password}
-                            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                            onChange={handleFieldChange('password')}
                             buttonIcon={<FaEye />}
+                            errorMessage={emptyFields.password ? "Este campo é obrigatório" : ""}
+                            className={emptyFields.password ? 'border-red-600' : ''}
                         />
+
                         <InputSelect
-                            label="Papel*"
+                            label="Papel *"
                             options={options}
-                            onChange={(value) => setNewUser({ ...newUser, role: value })}
+                            onChange={handleFieldChange('role')}
+                            value={newUser.role}
+                            className={emptyFields.role ? 'border-red-600' : ''}
                         />
-                        <div className="flex w-full mt-4 justify-end">
+
+                        <div className="flex flex-col md:flex-row w-full mt-4 justify-end">
                             <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
                             <ButtonSecondary>Cancelar</ButtonSecondary>
                         </div>
@@ -85,22 +165,24 @@ export default function UserPage() {
                             {users.map((user) => (
                                 <div
                                     key={user.id}
-                                    className={`flex flex-col md:flex-row px-4 py-2 rounded shadow-sm text-primary-dark text-sm ${user.active ? 'bg-green-50' : 'bg-red-50'} hover:border hover:border-primary-light`}
+                                    className={`flex flex-col md:flex-row px-4 py-2 rounded shadow-sm text-primary-dark text-sm bg-white border border-primary-light hover:border hover:bg-blue-50`}
                                 >
                                     <div className="flex flex-col md:w-1/2 space-y-1">
                                         <span>{user.name}</span>
                                         <span>{user.email}</span>
                                     </div>
-                                    <div className="flex flex-col md:w-1/3 space-y-1">
+                                    <div className="flex flex-col justify-center md:w-1/3 space-y-1">
                                         <span>{user.role}</span>
                                     </div>
-                                    <div className="flex flex-col md:w-1/3 items-end space-y-1">
-                                        <span className={`font-medium ${user.active ? 'text-green-600' : 'text-red-600'}`}>
-                                            {user.active ? 'Ativo' : 'Inativo'}
-                                        </span>
+                                    <div className="flex flex-col md:w-1/3 items-end justify-center">
+                                        
                                         <div className="flex space-x-2">
-                                            <button className="text-blue-600">Editar</button>
-                                            <button className="text-red-600">Excluir</button>
+                                            <button className="text-primary-light" onClick={() => handleEdit(user)}>
+                                                <FaEdit className="h-4 w-4"/>
+                                            </button>
+                                            <button className="text-red-600">
+                                                <FaTrash className="h-4 w-4"/>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -109,6 +191,18 @@ export default function UserPage() {
                     </div>
                 </div>
             </div>
+            {showConfirmation && (
+                <ConfirmationModal
+                    title="Confirmar Edição"
+                    message={`Tem certeza que deseja editar as informações de ${userToEdit?.name}?`}
+                    onConfirm={() => {
+                        setIsEditing(true);
+                        setShowConfirmation(false);
+                        setNewUser(userToEdit); // Preenche os campos com os dados do usuário
+                    }}
+                    onCancel={() => setShowConfirmation(false)}
+                />
+            )}
         </>
     );
 }
