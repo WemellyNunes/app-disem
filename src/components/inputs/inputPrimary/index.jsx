@@ -1,6 +1,6 @@
 import { forwardRef } from "react"; 
 
-const InputPrimary = forwardRef(({ label, placeholder, value, onChange, className, disabled }, ref) => {
+const InputPrimary = forwardRef(({ label, placeholder, value, onChange, className, disabled, errorMessage }, ref) => {
   return (
     <div className="w-full flex flex-col mb-4">
       <label className="block text-xs md:text-sm text-primary-dark font-normal mb-1" htmlFor="inputField">
@@ -18,7 +18,9 @@ const InputPrimary = forwardRef(({ label, placeholder, value, onChange, classNam
         ref={ref}
         disabled={disabled}
       />
+      {errorMessage && <span className="text-red-600 text-xs">{errorMessage}</span>}
     </div>
+    
   );
 });
 

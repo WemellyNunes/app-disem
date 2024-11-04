@@ -45,6 +45,7 @@ const List = ({ filteredData, onProgramClick }) => {
                         setActionType('delete');
                         setShowConfirmation(true);
                     };
+                    
                     const handleConfirmAction = () => {
                         setShowConfirmation(false);
                         if (actionType === 'edit') {

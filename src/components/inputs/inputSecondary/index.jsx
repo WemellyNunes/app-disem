@@ -1,8 +1,24 @@
-import { forwardRef } from "react"; 
+import { forwardRef, useState } from "react"; 
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Ícones para o botão de visualização de senha
 
 const InputSecondary = forwardRef(({ label, placeholder, buttonIcon, onButtonClick, type = 'text', onChange, className, disabled, value, errorMessage }, ref) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleInputChange = (e) => {
+        // Limite de 6 caracteres apenas se o tipo for password
+        const inputValue = e.target.value;
+        if (type === "password" && inputValue.length > 6) {
+            return; // Ignora entradas adicionais após 6 caracteres
+        }
+        onChange(inputValue);
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     return (
-        <div className="w-full ">
+        <div className="w-full">
             <label className="block text-primary-dark text-xs md:text-sm font-normal mb-1" htmlFor="inputWithButton">
                 {label}
             </label>
@@ -11,18 +27,19 @@ const InputSecondary = forwardRef(({ label, placeholder, buttonIcon, onButtonCli
                     className={`appearance-none block w-full text-gray-700 border border-gray-300 rounded h-9 md:h-10 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500
                     focus:border-blue-500 my-1 text-xs md:text-sm italic ${disabled ? 'bg-gray-100 border-none text-gray-400' : 'bg-white'} ${className}`}
                     id="inputWithButton"
-                    type={type}
+                    type={showPassword ? 'text' : type}
                     placeholder={placeholder}
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    ref={ref} // Aqui é onde a referência é passada
+                    onChange={handleInputChange}
+                    ref={ref}
                     disabled={disabled}
+                    maxLength={type === "password" ? 6 : undefined} // Limite de 6 caracteres
                 />
                 <button
-                    onClick={onButtonClick}
+                    onClick={type === "password" ? togglePasswordVisibility : onButtonClick}
                     className={`absolute inset-y-0 right-0 flex items-center pr-3 text-primary-light focus:outline-none ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                    {buttonIcon}
+                    {type === "password" ? (showPassword ? <FaEyeSlash /> : <FaEye />) : buttonIcon}
                 </button>
             </div>
             {/* Exibir mensagem de erro se houver */}

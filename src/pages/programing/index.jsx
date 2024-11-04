@@ -284,6 +284,7 @@ export default function Programing() {
                                     placeholder="exemplo: 00/00/0000"
                                     onDateChange={handleDateChange}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.data ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.data ? colorBorder : ''}
                                 />
                                 <InputSelect
@@ -292,6 +293,7 @@ export default function Programing() {
                                     onChange={handleFieldChange('turno')}
                                     value={formData.turno}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.turno ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.turno ? colorBorder : ''}
                                 />
                                 <InputSelect
@@ -300,6 +302,7 @@ export default function Programing() {
                                     onChange={handleFieldChange('encarregado')}
                                     value={formData.encarregado}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.encarregado ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.encarregado ? colorBorder : ''}
                                 />
                             </div>
@@ -308,8 +311,9 @@ export default function Programing() {
                                     label="Profissional(is) *"
                                     options={professionals}
                                     onChange={handleMultiSelectChange}
-                                    selectedValues={formData.profissionais} // Passa as opções selecionadas corretamente
+                                    selectedValues={formData.profissionais} 
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.profissionais ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.profissionais ? colorBorder : ''}
                                 />
                                 <InputPrimary

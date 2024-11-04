@@ -8,7 +8,7 @@ import './index.css';
 
 registerLocale('pt-BR', ptBR);
 
-const DateTimePicker = ({ label, placeholder, onDateChange, className, disabled, value }) => {
+const DateTimePicker = ({ label, placeholder, onDateChange, className, disabled, value, errorMessage }) => {
   const [inputValue, setInputValue] = useState(value || ""); 
   const [startDate, setStartDate] = useState(value ? parse(value, "dd/MM/yyyy", new Date()) : null); 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -54,7 +54,7 @@ const DateTimePicker = ({ label, placeholder, onDateChange, className, disabled,
           value={inputValue}
           onChange={handleInputChange}
           maxLength={10} 
-          className={`w-full border-none focus:outline-none placeholder-gray-400 text-xs md:text-sm italic text-primary-dark`}
+          className={`w-full border-none focus:outline-none placeholder-gray-400 text-xs md:text-sm italic ${disabled ? 'text-gray-400' : 'text-primary-dark'}`}
           disabled={disabled} 
         />
         <FaCalendarAlt
@@ -73,7 +73,9 @@ const DateTimePicker = ({ label, placeholder, onDateChange, className, disabled,
           calendarClassName="custom-calendar"
         />
       )}
+      {errorMessage && <span className="text-red-600 text-xs">{errorMessage}</span>}
     </div>
+    
   );
 };
 

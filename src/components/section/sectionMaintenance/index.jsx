@@ -132,6 +132,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                         <InputUpload
                             label="Anexar arquivo(s)"
                             onFilesUpload={(files) => handleFieldChange('filesBefore')(files)}
+                            errorMessage={emptyFields.filesBefore ? "Este campo é obrigatório" : ""}
                             className={emptyFields.filesBefore ? colorBorder : ''}
                             disabled={!isEditing}
                         />
@@ -141,6 +142,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                         <InputUpload
                             label="Anexar arquivo(s)"
                             onFilesUpload={(files) => handleFieldChange('filesAfter')(files)}
+                            errorMessage={emptyFields.filesAfter ? "Este campo é obrigatório" : ""}
                             className={emptyFields.filesAfter ? colorBorder : ''}
                             disabled={!isEditing}
                         />

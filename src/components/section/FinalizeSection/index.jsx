@@ -51,6 +51,7 @@ const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
                         value={finalObservation}
                         onChange={handleFieldChange}
                         disabled={isSaved} 
+                        errorMessage={isError ? "Este campo é obrigatório" : ""}
                         className={`${colorBorder} border rounded`} 
                     />
                 </div>

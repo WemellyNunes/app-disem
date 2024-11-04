@@ -3,7 +3,7 @@ import { FaUpload, FaTrash, FaEdit, FaEye } from 'react-icons/fa';
 import UploadModal from '../../modal/upload';
 import PreviewFile from '../../modal/preview';
 
-const InputUpload = ({ label, disabled, className, onFilesUpload }) => {
+const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage }) => {
     const [showModal, setShowModal] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [previewFile, setPreviewFile] = useState(null);
@@ -120,6 +120,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload }) => {
                     onClose={() => setShowPreview(false)} 
                 />
             )}
+            {errorMessage && <span className="text-red-600 text-xs">{errorMessage}</span>}
         </div>
     );
 };

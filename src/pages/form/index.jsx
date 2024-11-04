@@ -209,6 +209,7 @@ export default function Form() {
                                     onChange={handleFieldChange('origem')}
                                     value={formData.origem}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.origem ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.origem ? colorBorder : ''}
                                 />
                                 <InputPrimary
@@ -217,6 +218,7 @@ export default function Form() {
                                     value={formData.requisicao}
                                     onChange={handleFieldChange('requisicao')}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.requisicao ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.requisicao ? colorBorder : ''}
                                 />
                                 <InputSelect
@@ -225,6 +227,7 @@ export default function Form() {
                                     onChange={handleFieldChange('classe')}
                                     value={formData.classe}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.classe ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.classe ? colorBorder : ''}
                                 />
                             </div>
@@ -240,6 +243,7 @@ export default function Form() {
                                     value={formData.solicitante}
                                     onChange={handleFieldChange('solicitante')}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.solicitante ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.solicitante ? colorBorder : ''}
                                 />
                                 <InputSelect
@@ -248,6 +252,7 @@ export default function Form() {
                                     onChange={handleFieldChange('unidade')}
                                     value={formData.unidade}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.unidade ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.unidade ? colorBorder : ''}
                                 />
                             </div>
@@ -263,6 +268,7 @@ export default function Form() {
                                     onChange={handleFieldChange('objetoPreparo')}
                                     value={formData.objetoPreparo}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.objetoPreparo ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.objetoPreparo ? colorBorder : ''}
                                 />
                             </div>
@@ -274,6 +280,7 @@ export default function Form() {
                                     onChange={handleFieldChange('manutencao')}
                                     value={formData.manutencao}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.manutencao ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.manutencao ? colorBorder : ''}
                                 />
                                 <InputSelect
@@ -282,6 +289,7 @@ export default function Form() {
                                     onChange={handleFieldChange('sistema')}
                                     value={formData.sistema}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.sistema ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.sistema ? colorBorder : ''}
                                 />
                             </div>
@@ -292,6 +300,7 @@ export default function Form() {
                                     onChange={handleFieldChange('indiceRisco')}
                                     value={formData.indiceRisco}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.indiceRisco ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.indiceRisco ? colorBorder : ''}
                                 />
                             </div>
@@ -302,6 +311,7 @@ export default function Form() {
                                     onChange={handleFieldChange('unidadeManutencao')}
                                     value={formData.unidadeManutencao}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.unidadeManutencao ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.unidadeManutencao ? colorBorder : ''}
                                 />
 
@@ -311,6 +321,7 @@ export default function Form() {
                                     value={formData.campus}
                                     onChange={handleFieldChange('campus')}
                                     disabled={!isEditing}
+                                    errorMessage={emptyFields.campus ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.campus ? colorBorder : ''}
                                 />
                             </div>

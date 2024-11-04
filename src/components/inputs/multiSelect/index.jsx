@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
-const MultiSelect = ({ label, options, onChange, disabled, selectedValues = [], className }) => {
+const MultiSelect = ({ label, options, onChange, disabled, selectedValues = [], className, errorMessage }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleToggle = () => {
@@ -39,7 +39,7 @@ const MultiSelect = ({ label, options, onChange, disabled, selectedValues = [], 
                     {selectedValues.length > 0
                         ? selectedValues.map((option) => option.label).join(', ')
                         : 'Selecione'}
-                    {isOpen ? <FaChevronUp className="h-4 w-4 text-primary-light" /> : <FaChevronDown className="h-4 w-4 text-primary-light" />}
+                    {isOpen ? <FaChevronUp className={`h-4 w-4 text-primary-light ${disabled ? 'opacity-50 cursor-not-allowed' : ''} `} /> : <FaChevronDown className={`h-4 w-4 text-primary-light ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} />}
                 </button>
                 {isOpen && (
                     <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-y-auto">
@@ -58,6 +58,7 @@ const MultiSelect = ({ label, options, onChange, disabled, selectedValues = [], 
                     </div>
                 )}
             </div>
+            {errorMessage && <span className="text-red-600 text-xs">{errorMessage}</span>}
         </div>
     );
 };
