@@ -1,14 +1,13 @@
 import { forwardRef, useState } from "react"; 
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Ícones para o botão de visualização de senha
+import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 
 const InputSecondary = forwardRef(({ label, placeholder, buttonIcon, onButtonClick, type = 'text', onChange, className, disabled, value, errorMessage }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleInputChange = (e) => {
-        // Limite de 6 caracteres apenas se o tipo for password
         const inputValue = e.target.value;
         if (type === "password" && inputValue.length > 6) {
-            return; // Ignora entradas adicionais após 6 caracteres
+            return; 
         }
         onChange(inputValue);
     };

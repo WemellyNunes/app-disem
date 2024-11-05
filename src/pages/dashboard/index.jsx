@@ -44,6 +44,7 @@ export default function Dashboard() {
                         approved={13}
                         finalized={6}
                         backgroundColor="bg-tertiary-light"
+                        hover="hover:bg-primary-hover"
                     />
 
                     <StatCard
@@ -51,13 +52,15 @@ export default function Dashboard() {
                         approved={13}
                         finalized={6}
                         backgroundColor="bg-secondary-light"
+                        hover="hover:bg-primary-hover"
                     />
 
                     <StatCard
-                        title="Hoje"
+                        title="Anual"
                         approved={13}
                         finalized={6}
                         backgroundColor="bg-primary-light"
+                        hover="hover:bg-primary-hover"
                     />
                 </div>
                 <div className="flex flex-col  mb-2">

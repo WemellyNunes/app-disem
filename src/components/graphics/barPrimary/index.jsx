@@ -49,11 +49,11 @@ const BarGraphic = () => {
     }, []);
 
     const options = {
-        indexAxis: 'y', // Transforma o gráfico em barra horizontal
+        indexAxis: 'y', 
         scales: {
             x: {
                 beginAtZero: true,
-                max: 90, // Define o máximo do eixo X como 90
+                max: 90, 
             },
         },
         responsive: true,

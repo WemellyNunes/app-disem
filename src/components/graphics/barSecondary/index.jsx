@@ -16,7 +16,7 @@ const LocationBarChart = ({ data }) => {
             {
                 label: 'OS Abertas',
                 data: [50, 30, 20, 40, 25], // Substitua esses valores pelos dados da API futuramente
-                backgroundColor: ['#2F4858', '#33658A', '#86BBD8', '#F6AE2D', '#F26419'],
+                backgroundColor: ['#13BFD7', '#2783ED', '#59A5D8', '#386FA4', '#133C55'],
                 borderWidth: 0,
             },
         ],
