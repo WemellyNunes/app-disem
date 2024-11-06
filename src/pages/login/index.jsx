@@ -13,8 +13,8 @@ export default function Login() {
 
 
                 <div className="flex flex-col justify-center items-center content-center w-full">
-                    <div className="flex flex-col mb-10 h-3 w-44">
-                        <img src="./public/images/E.M System (300 x 60 px).png" alt="" />
+                    <div className="flex flex-col mb-10 md:mb-16 h-3 w-44">
+                        <img src="./public/images/disemLogo.png" alt="" />
                     </div>
                     <div className="flex flex-col items-center mb-10">
                         <h2 className="text-3xl font-semibold text-primary-light">Acesse sua conta</h2>

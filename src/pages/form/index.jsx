@@ -12,6 +12,7 @@ import { calcularValorRisco, calcularPrioridade } from "../../utils/matriz";
 import PageTitle from "../../components/title";
 import { FaFilePen } from "react-icons/fa6";
 import { useUser } from "../../contexts/user";
+import Loading from "../../components/modal/loading";
 
 export default function Form() {
     const { user } = useUser();
@@ -41,6 +42,8 @@ export default function Form() {
     const [isEditing, setIsEditing] = useState(true);
     const [isSaved, setIsSaved] = useState(false);
     const [status, setStatus] = useState("A atender");
+    const [isLoading, setIsLoading] = useState(false);
+
 
     const options = [
         { label: 'Comum', value: 'comum' },
@@ -144,27 +147,37 @@ export default function Form() {
             return;
         }
 
-        const valor = calcularValorRisco(formData.classe, formData.indiceRisco);
-        setFormData((prevData) => ({ ...prevData, valorRisco: valor }));
+        setIsLoading(true);
+        console.log("Loading iniciado");
 
-        const prioridadeCalculada = calcularPrioridade(valor);
-        setFormData((prevData) => ({ ...prevData, prioridade: prioridadeCalculada }));
+        setTimeout(() => {
+            const valor = calcularValorRisco(formData.classe, formData.indiceRisco);
+            setFormData((prevData) => ({ ...prevData, valorRisco: valor }));
 
-        const ordemDeServico = {
-            ...formData,
-            status,
-            valorRisco: valor,
-            prioridade: prioridadeCalculada,
-            tratamento: formData.selectedOption,
-            documento: "caminho_do_arquivo",
-        };
+            const prioridadeCalculada = calcularPrioridade(valor);
+            setFormData((prevData) => ({ ...prevData, prioridade: prioridadeCalculada }));
 
-        console.log('Dados da ordem de serviço:', ordemDeServico);
-        setIsSaved(true);
-        setIsEditing(false);
-        setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço salva com prioridade: ${prioridadeCalculada}` });
-        setShowMessageBox(true);
-        setTimeout(() => setShowMessageBox(false), 2500);
+            const ordemDeServico = {
+                ...formData,
+                status,
+                valorRisco: valor,
+                prioridade: prioridadeCalculada,
+                tratamento: formData.selectedOption,
+                documento: "caminho_do_arquivo",
+            };
+
+            console.log('Dados da ordem de serviço:', ordemDeServico);
+
+            // Finalizar o loading
+            setIsLoading(false);
+            setIsSaved(true);
+            setIsEditing(false);
+
+            // Exibir mensagem de sucesso
+            setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço salva com prioridade: ${prioridadeCalculada}` });
+            setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 2500);
+        }, 1000); // 3 segundos de simulação de carregamento
     };
 
 
@@ -179,6 +192,8 @@ export default function Form() {
 
     return (
         <>
+            {isLoading && <Loading />}
+
             {showMessageBox && (
                 <MessageBox
                     type={messageContent.type}
@@ -188,7 +203,8 @@ export default function Form() {
                 />
             )}
 
-            <div className="flex flex-col px-0 md:px-36 ">
+            <div className={` flex flex-col px-0 md:px-36 ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
+                {/* Seu código de formulário aqui */}
                 <div className="flex justify-center">
                     <PageTitle
                         icon={FaFilePen}
@@ -197,7 +213,7 @@ export default function Form() {
                         textColor="text-primary-light"
                     />
                 </div>
-    
+
 
                 <div className="flex flex-col">
                     <div className="flex-1 ">
@@ -360,6 +376,7 @@ export default function Form() {
                     </div>
                 </div>
             </div>
+
         </>
     );
 }

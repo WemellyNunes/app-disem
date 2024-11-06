@@ -19,7 +19,7 @@ export default function UserPage() {
     const [isEditing, setIsEditing] = useState(false);
     const [users, setUsers] = useState([]);
     const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: '' });
-    const [password, setPassword] = useState("");
+    
 
     const options = [
         { label: 'Administrador', value: 'adm' },
@@ -28,7 +28,8 @@ export default function UserPage() {
     ];
 
     const handleFieldChange = (field) => (value) => {
-        setNewUser((prevData) => ({ ...prevData, [field]: value }));
+        const formattedValue = field === 'name' ? value.toUpperCase() : value;
+        setNewUser((prevData) => ({ ...prevData, [field]: formattedValue  }));
     };
 
     const validateFields = () => {
