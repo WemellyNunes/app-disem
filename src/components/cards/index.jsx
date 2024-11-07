@@ -4,7 +4,7 @@ const StatCard = ({ title, approved, finalized, backgroundColor, percentage, hov
         <div className="flex justify-between items-center mb-4">
           {percentage && (
             <div className="hidden md:flex bg-white text-blue-600 rounded-full h-11 w-11 flex items-center justify-center">
-              <span className="text-xl font-medium ">{percentage}%</span>
+              <span className="text-base font-medium ">{percentage}%</span>
             </div>
           )}
           <h3 className="text-lg font-semibold w-40 md:w-11">{title}</h3>

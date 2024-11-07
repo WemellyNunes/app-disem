@@ -12,7 +12,7 @@ const ConfirmationModal = ({ title, message, onConfirm, onCancel }) => {
                 </div>
                 <h2 className="text-lg text-primary-dark font-medium mb-3">{title}</h2>
                 <p className="mb-6 text-base text-primary-dark ">{message}</p>
-                <div className="flex justify-center">
+                <div className="flex flex-wrap gap-y-2 justify-center">
                     <ButtonSecondary onClick={onCancel}>
                         Cancelar
                     </ButtonSecondary>

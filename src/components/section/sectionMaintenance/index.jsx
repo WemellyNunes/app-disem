@@ -37,46 +37,63 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     };
 
     const [formData, setFormData] = useState({
-        checklistType: [],
-        observation: '',
-        filesBefore: [],
-        filesAfter: [],
+        observation: { value: null, required: false },
+        filesBefore: { value: [], required: true },
+        filesAfter: { value: [], required: true },
     });
 
-    const disciplines = ['Piso', 'Esquadraria', 'Pluvial', 'Estrutura'];
-    const services = [
-        'Tipo de serviço realizado 1',
-        'Tipo de serviço realizado 2',
-        'Tipo de serviço realizado 3',
-        'Tipo de serviço realizado 4',
-        'Tipo de serviço realizado 5',
-        'Tipo de serviço realizado 6',
-    ];
 
     const dadoOS = orderServiceData;
     const maintenanceType = dadoOS.tipoManutencao.toLowerCase();
     const isPreventive = maintenanceType === 'preventiva';
 
     const handleFieldChange = (field) => (value) => {
-        setFormData((prevData) => ({ ...prevData, [field]: value }));
+        setFormData((prevData) => {
+            const updatedData = { ...prevData, [field]: { ...prevData[field], value } };
+
+            // Atualizar emptyFields para remover o campo do estado se ele for preenchido
+            setEmptyFields((prevEmptyFields) => {
+                const updatedEmptyFields = { ...prevEmptyFields };
+                if (updatedData[field].required) {
+                    if (Array.isArray(value)) {
+                        // Se o campo for um array, verifica se está vazio
+                        if (value.length > 0) {
+                            delete updatedEmptyFields[field];
+                        }
+                    } else if (value && value.trim()) {
+                        // Para strings, verifica se estão preenchidas
+                        delete updatedEmptyFields[field];
+                    }
+                }
+                return updatedEmptyFields;
+            });
+
+            return updatedData;
+        });
     };
 
     const validateFields = () => {
         const newEmptyFields = {};
-        
-        if (isPreventive && formData.checklistType.length === 0) {
-            newEmptyFields.checklistType = true;
-        }
-        if (formData.filesBefore.length === 0) {
-            newEmptyFields.filesBefore = true; 
-        }
-        if (formData.filesAfter.length === 0){
-            newEmptyFields.filesAfter = true;
-        }
+        Object.keys(formData).forEach((field) => {
+            const { value, required } = formData[field];
+
+            if (required) {
+                if (Array.isArray(value)) {
+                    // Para arrays (como `filesBefore` e `filesAfter`), verifica se estão vazios
+                    if (value.length === 0) {
+                        newEmptyFields[field] = true;
+                    }
+                } else if (!value || (typeof value === 'string' && !value.trim())) {
+                    // Para strings, verifica se estão vazias
+                    newEmptyFields[field] = true;
+                }
+            }
+        });
 
         setEmptyFields(newEmptyFields);
         return Object.keys(newEmptyFields).length === 0;
     };
+
 
     const handleSave = () => {
         if (!validateFields()) {
@@ -105,7 +122,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
         <div className="flex flex-col bg-white rounded mb-2 mt-2 shadow">
             <div className="flex justify-between rounded items-center px-4 md:px-6 py-4 cursor-pointer bg-white" onClick={toggleSection}>
                 <h3 className="text-sm md:text-base font-normal text-primary-light">Manutenção</h3>
-                <span className="text-primary-light">{isOpen ? <IoIosRemoveCircleOutline size={25}/> : <IoIosAddCircleOutline size={25}/>}</span>
+                <span className="text-primary-light">{isOpen ? <IoIosRemoveCircleOutline size={25} /> : <IoIosAddCircleOutline size={25} />}</span>
             </div>
             {isOpen && (
                 <div className="px-4 md:px-6">
@@ -122,7 +139,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                                         handleFieldChange('checklistType')(selectedDisciplines);
                                     }
                                 }}
-                                disabled={!isEditing} 
+                                disabled={!isEditing}
                             />
                         </div>
                     )}
@@ -165,7 +182,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                                     <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
                                 </>
                             ) : (
-                                !isMaintenanceClosed && 
+                                !isMaintenanceClosed &&
                                 <>
                                     <ButtonSecondary onClick={() => setIsEditing(true)}>Editar</ButtonSecondary>
                                     <ButtonPrimary onClick={handleClose}>Encerrar</ButtonPrimary>

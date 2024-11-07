@@ -16,25 +16,7 @@ import Loading from "../../components/modal/loading";
 
 export default function Form() {
     const { user } = useUser();
-
     const navigate = useNavigate();
-
-    const [formData, setFormData] = useState({
-        selectedOption: 'comum',
-        classe: '',
-        indiceRisco: '',
-        valorRisco: null,
-        prioridade: '',
-        requisicao: '',
-        solicitante: '',
-        unidade: '',
-        origem: '',
-        manutencao: '',
-        sistema: '',
-        unidadeManutencao: '',
-        campus: '',
-        objetoPreparo: '',
-    });
 
     const [emptyFields, setEmptyFields] = useState({});
     const [showMessageBox, setShowMessageBox] = useState(false);
@@ -43,7 +25,22 @@ export default function Form() {
     const [isSaved, setIsSaved] = useState(false);
     const [status, setStatus] = useState("A atender");
     const [isLoading, setIsLoading] = useState(false);
-
+    const [formData, setFormData] = useState({
+        selectedOption: { value: 'comum', required: false },
+        classe: { value: '', required: true },
+        indiceRisco: { value: '', required: true },
+        valorRisco: { value: null, required: false },
+        prioridade: { value: '', required: false },
+        requisicao: { value: '', required: true },
+        solicitante: { value: '', required: true },
+        unidade: { value: '', required: true },
+        origem: { value: '', required: true },
+        manutencao: { value: '', required: true },
+        sistema: { value: '', required: true },
+        unidadeManutencao: { value: '', required: true },
+        campus: { value: '', required: true },
+        objetoPreparo: { value: '', required: true },
+    });
 
     const options = [
         { label: 'Comum', value: 'comum' },
@@ -111,30 +108,67 @@ export default function Form() {
 
     const handleFieldChange = (field) => (value) => {
         setFormData((prevData) => {
-            const updatedData = { ...prevData, [field]: value };
+            const updatedData = {
+                ...prevData,
+                [field]: { ...prevData[field], value },
+            };
+
+            if (field === 'origem' && value === 'disem') {
+                const randomTwoDigits = Math.floor(Math.random() * 90) + 10; // Gera um número entre 10 e 99
+                const currentYear = new Date().getFullYear();
+                const requisitionNumber = `${randomTwoDigits}${currentYear}`;
+                updatedData.requisicao = { ...prevData.requisicao, value: requisitionNumber };
+    
+                // Remove o campo de requisição dos campos vazios caso tenha sido preenchido automaticamente
+                setEmptyFields((prevEmptyFields) => {
+                    const updatedEmptyFields = { ...prevEmptyFields };
+                    delete updatedEmptyFields.requisicao;
+                    return updatedEmptyFields;
+                });
+            } else if (field === 'origem' && value === 'sipac') {
+                // Limpa o valor da requisição para permitir o preenchimento manual
+                updatedData.requisicao = { ...prevData.requisicao, value: '' };
+            }
 
             if (field === 'unidadeManutencao') {
-                updatedData.campus = campusMapping[value] || '';
+                const campus = campusMapping[value] || '';
+                updatedData.campus = { ...prevData.campus, value: campus };
+
+                // Remover `campus` de `emptyFields` se ele for preenchido automaticamente
+                if (campus) {
+                    setEmptyFields((prevEmptyFields) => {
+                        const updatedEmptyFields = { ...prevEmptyFields };
+                        delete updatedEmptyFields.campus;
+                        return updatedEmptyFields;
+                    });
+                }
+            }
+
+            // Atualiza `emptyFields` para o campo atual, se for obrigatório e foi preenchido
+            if (updatedData[field].required && value.trim()) {
+                setEmptyFields((prevEmptyFields) => {
+                    const updatedEmptyFields = { ...prevEmptyFields };
+                    delete updatedEmptyFields[field];
+                    return updatedEmptyFields;
+                });
             }
 
             return updatedData;
         });
     };
 
+
     const validateFields = () => {
         const newEmptyFields = {};
-        const requiredFields = ['origem', 'classe', 'requisicao', 'solicitante', 'unidade', 'manutencao', 'sistema', 'indiceRisco', 'unidadeManutencao', 'campus', 'objetoPreparo'];
-
-        requiredFields.forEach((field) => {
-            const value = formData[field];
-            if (typeof value !== 'string' || !value.trim()) {
+        Object.keys(formData).forEach((field) => {
+            const { value, required } = formData[field];
+            if (required && (!value || typeof value !== 'string' || !value.trim())) {
                 newEmptyFields[field] = true;
             }
         });
 
         setEmptyFields(newEmptyFields);
         return Object.keys(newEmptyFields).length === 0;
-
     };
 
     console.log('formData antes da validação:', formData);
@@ -187,7 +221,7 @@ export default function Form() {
     };
 
     const handleContinue = () => {
-        navigate("../Programing");
+        navigate("../Listing");
     };
 
     return (
@@ -203,7 +237,7 @@ export default function Form() {
                 />
             )}
 
-            <div className={` flex flex-col px-0 md:px-36 ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
+            <div className={` flex flex-col px-0 md:px-32 ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
                 {/* Seu código de formulário aqui */}
                 <div className="flex justify-center">
                     <PageTitle
@@ -214,7 +248,6 @@ export default function Form() {
                     />
                 </div>
 
-
                 <div className="flex flex-col">
                     <div className="flex-1 ">
                         <SectionCard title={"Dados da ordem de serviço"}>
@@ -223,7 +256,7 @@ export default function Form() {
                                     label="Origem *"
                                     options={origin}
                                     onChange={handleFieldChange('origem')}
-                                    value={formData.origem}
+                                    value={formData.origem.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.origem ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.origem ? colorBorder : ''}
@@ -231,7 +264,7 @@ export default function Form() {
                                 <InputPrimary
                                     label="N° da requisição *"
                                     placeholder="Informe"
-                                    value={formData.requisicao}
+                                    value={formData.requisicao.value}
                                     onChange={handleFieldChange('requisicao')}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.requisicao ? "Este campo é obrigatório" : ""}
@@ -241,7 +274,7 @@ export default function Form() {
                                     label="Classificação *"
                                     options={classification}
                                     onChange={handleFieldChange('classe')}
-                                    value={formData.classe}
+                                    value={formData.classe.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.classe ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.classe ? colorBorder : ''}
@@ -256,7 +289,7 @@ export default function Form() {
                                 <InputPrimary
                                     label="Solicitante *"
                                     placeholder="Informe"
-                                    value={formData.solicitante}
+                                    value={formData.solicitante.value}
                                     onChange={handleFieldChange('solicitante')}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.solicitante ? "Este campo é obrigatório" : ""}
@@ -266,7 +299,7 @@ export default function Form() {
                                     label="Unidade *"
                                     options={unit}
                                     onChange={handleFieldChange('unidade')}
-                                    value={formData.unidade}
+                                    value={formData.unidade.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.unidade ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.unidade ? colorBorder : ''}
@@ -282,7 +315,7 @@ export default function Form() {
                                     label="Objeto de preparo *"
                                     placeholder="Informe"
                                     onChange={handleFieldChange('objetoPreparo')}
-                                    value={formData.objetoPreparo}
+                                    value={formData.objetoPreparo.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.objetoPreparo ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.objetoPreparo ? colorBorder : ''}
@@ -294,7 +327,7 @@ export default function Form() {
                                     label="Tipo de manutenção *"
                                     options={maintence}
                                     onChange={handleFieldChange('manutencao')}
-                                    value={formData.manutencao}
+                                    value={formData.manutencao.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.manutencao ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.manutencao ? colorBorder : ''}
@@ -303,7 +336,7 @@ export default function Form() {
                                     label="Sistema *"
                                     options={system}
                                     onChange={handleFieldChange('sistema')}
-                                    value={formData.sistema}
+                                    value={formData.sistema.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.sistema ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.sistema ? colorBorder : ''}
@@ -314,7 +347,7 @@ export default function Form() {
                                     label="Indice de risco *"
                                     options={indicesRisco}
                                     onChange={handleFieldChange('indiceRisco')}
-                                    value={formData.indiceRisco}
+                                    value={formData.indiceRisco.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.indiceRisco ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.indiceRisco ? colorBorder : ''}
@@ -325,7 +358,7 @@ export default function Form() {
                                     label="Unidade da manutenção *"
                                     options={unitMaintence}
                                     onChange={handleFieldChange('unidadeManutencao')}
-                                    value={formData.unidadeManutencao}
+                                    value={formData.unidadeManutencao.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.unidadeManutencao ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.unidadeManutencao ? colorBorder : ''}
@@ -334,7 +367,7 @@ export default function Form() {
                                 <InputPrimary
                                     label="Campus *"
                                     placeholder="Informe"
-                                    value={formData.campus}
+                                    value={formData.campus.value}
                                     onChange={handleFieldChange('campus')}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.campus ? "Este campo é obrigatório" : ""}
@@ -346,7 +379,7 @@ export default function Form() {
                                     title="Tipo de tratamento"
                                     name="tipoTratamento"
                                     options={options}
-                                    selectedValue={formData.selectedOption}
+                                    selectedValue={formData.selectedOption.value}
                                     onChange={handleFieldChange('selectedOption')}
                                     disabled={!isEditing}
                                     className={emptyFields.options ? colorBorder : ''}

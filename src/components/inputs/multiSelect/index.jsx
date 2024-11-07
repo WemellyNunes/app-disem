@@ -31,7 +31,7 @@ const MultiSelect = ({ label, options, onChange, disabled, selectedValues = [], 
             <div className="relative">
                 <button
                     className={`appearance-none w-full border text-gray-400 px-4 h-9 md:h-10 rounded leading-tight focus:outline-none 
-                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center my-1 text-sm italic ${disabled ? 'bg-gray-100 border-none' : 'bg-white'} ${className}`}
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center my-1 text-sm italic ${disabled ? 'bg-primary-gray border-none' : 'bg-white'} ${className}`}
                     onClick={handleToggle}
                     type="button"
                     disabled={disabled}

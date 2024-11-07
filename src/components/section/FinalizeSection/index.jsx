@@ -14,16 +14,24 @@ const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
 
     const handleFieldChange = (value) => {
         setFinalObservation(value);
-        if (isError) setIsError(false);
+
+        // Atualiza o estado de erro em tempo real
+        if (value.trim()) {
+            setIsError(false);
+        }
     };
 
     const validateFields = () => {
-        return finalObservation.trim() !== '';
+        // Verifica se o campo finalObservation está vazio
+        if (finalObservation.trim() === '') {
+            setIsError(true);
+            return false;
+        }
+        return true;
     };
 
     const handleSave = () => {
         if (!validateFields()) {
-            setIsError(true);
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Este campo é obrigatório.' });
             setShowMessageBox(true);
             setTimeout(() => setShowMessageBox(false), 1500);
@@ -80,6 +88,5 @@ const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
         </div>
     );
 };
-
 
 export default FinalizeSection;

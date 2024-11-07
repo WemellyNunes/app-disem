@@ -158,7 +158,7 @@ export default function UserPage() {
                             className={emptyFields.role ? 'border-red-600' : ''}
                         />
 
-                        <div className="flex flex-col md:flex-row w-full mt-4 justify-end gap-y-2 md:gap-y-0">
+                        <div className="flex flex-col md:flex-row flex-wrap w-full mt-4 justify-center gap-y-2">
                             <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
                             <ButtonSecondary>Cancelar</ButtonSecondary>
                         </div>

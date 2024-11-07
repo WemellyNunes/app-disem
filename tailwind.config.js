@@ -14,6 +14,7 @@ export default {
               hover: '#6082B9',
               dark: '#555555',
               red: '#D50505',
+              gray: '#F7F7F7',
             },
             secondary: {
               hover: '#D7E3F5',

@@ -29,12 +29,12 @@ export default function Programing() {
     const { id } = useParams();
 
     const [formData, setFormData] = useState({
-        data: '',
-        turno: '',
-        encarregado: '',
-        profissionais: [],
-        custo: '',
-        observacao: '',
+        data: { value: '', required: true},
+        turno: { value: '', required: true},
+        encarregado: { value: '', required: true},
+        profissionais: { value: [], required: true},
+        custo: { value: null, required: false},
+        observacao: { value: null, required: false},
     });
 
     const [showHistory, setShowHistory] = useState(false);
@@ -99,24 +99,60 @@ export default function Programing() {
     };
 
     const handleMultiSelectChange = (selectedOptions) => {
-        setFormData((prevData) => ({ ...prevData, profissionais: selectedOptions }));
+        setFormData((prevData) => {
+            const updatedData = { ...prevData, profissionais: { ...prevData.profissionais, value: selectedOptions } };
+            
+            setEmptyFields((prevEmptyFields) => {
+                const updatedEmptyFields = { ...prevEmptyFields };
+                if (selectedOptions.length > 0) {
+                    delete updatedEmptyFields.profissionais;
+                }
+                return updatedEmptyFields;
+            });
+            
+            return updatedData;
+        });
     };
 
     const handleFieldChange = (field) => (value) => {
-        setFormData((prevData) => ({ ...prevData, [field]: value }));
+        setFormData((prevData) => {
+            const updatedData = {
+                ...prevData,
+                [field]: { ...prevData[field], value },
+            };
+    
+            // Atualizar emptyFields para remover o campo do estado se ele for preenchido
+            if (updatedData[field].required && value.trim()) {
+                setEmptyFields((prevEmptyFields) => {
+                    const updatedEmptyFields = { ...prevEmptyFields };
+                    delete updatedEmptyFields[field];
+                    return updatedEmptyFields;
+                });
+            }
+    
+            return updatedData;
+        });
     };
 
     const validateFields = () => {
         const newEmptyFields = {};
-        const requiredFields = ['data', 'turno', 'encarregado', 'profissionais'];
-
-        requiredFields.forEach((field) => {
-            const value = formData[field];
-            if (Array.isArray(value) ? value.length === 0 : !value.trim()) {
-                newEmptyFields[field] = true;
+        Object.keys(formData).forEach((field) => {
+            const { value, required } = formData[field];
+            
+            // Verifica se o campo é obrigatório e está vazio
+            if (required) {
+                if (Array.isArray(value)) {
+                    // Se for um array (como "profissionais"), verifica se está vazio
+                    if (value.length === 0) {
+                        newEmptyFields[field] = true;
+                    }
+                } else if (!value || (typeof value === 'string' && !value.trim())) {
+                    // Para strings, verifica se estão vazias
+                    newEmptyFields[field] = true;
+                }
             }
         });
-
+        
         setEmptyFields(newEmptyFields);
         return Object.keys(newEmptyFields).length === 0;
     };
@@ -148,8 +184,20 @@ export default function Programing() {
     };
 
     const handleDateChange = (date) => {
-        console.log("Data selecionada:", date);
-        setFormData((prevData) => ({ ...prevData, data: date }));
+        setFormData((prevData) => {
+            const updatedData = { ...prevData, data: { ...prevData.data, value: date } };
+    
+            // Atualiza emptyFields se o campo "Data programada" estiver preenchido
+            setEmptyFields((prevEmptyFields) => {
+                const updatedEmptyFields = { ...prevEmptyFields };
+                if (date) {
+                    delete updatedEmptyFields.data;
+                }
+                return updatedEmptyFields;
+            });
+    
+            return updatedData;
+        });
     };
 
     let colorBorder = 'border-primary-red'
@@ -291,7 +339,7 @@ export default function Programing() {
                                     label="Turno *"
                                     options={options}
                                     onChange={handleFieldChange('turno')}
-                                    value={formData.turno}
+                                    value={formData.turno.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.turno ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.turno ? colorBorder : ''}
@@ -300,7 +348,7 @@ export default function Programing() {
                                     label="Encarregado *"
                                     options={overseer}
                                     onChange={handleFieldChange('encarregado')}
-                                    value={formData.encarregado}
+                                    value={formData.encarregado.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.encarregado ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.encarregado ? colorBorder : ''}
@@ -311,7 +359,7 @@ export default function Programing() {
                                     label="Profissional(is) *"
                                     options={professionals}
                                     onChange={handleMultiSelectChange}
-                                    selectedValues={formData.profissionais} 
+                                    selectedValues={formData.profissionais.value} 
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.profissionais ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.profissionais ? colorBorder : ''}
@@ -319,18 +367,20 @@ export default function Programing() {
                                 <InputPrimary
                                     label="Custo estimado"
                                     placeholder="Informe"
-                                    value={formData.custo}
+                                    value={formData.custo.value}
                                     onChange={handleFieldChange('custo')}
                                     disabled={!isEditing}
                                 />
                                 <InputPrimary
                                     label="Observação"
                                     placeholder="Escreva uma observação (opcional)"
-                                    value={formData.observacao}
+                                    value={formData.observacao.value}
                                     onChange={handleFieldChange('observacao')}
                                     disabled={!isEditing}
                                 />
-                                {isSaved && <p className="mt-2 text-sm text-gray-400">Programado por: {user.name}</p>}
+
+                                {isSaved && <p className="mt-2 mb-6 text-sm text-gray-400">Programado por: {user.name}</p>}
+
                             </div>
                             <div className="flex flex-col md:flex-row justify-end">
                                 <div className="flex flex-col md:flex-row gap-y-1.5 ">
