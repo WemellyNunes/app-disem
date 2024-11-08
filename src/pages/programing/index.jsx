@@ -58,7 +58,7 @@ export default function Programing() {
     };
 
     const handleMaintenanceSave = () => {
-        setIsMaintenanceSaved(true); // Atualiza o estado quando a manutenção é salva
+        setIsMaintenanceSaved(true);
     };
 
     const history = [
@@ -121,7 +121,6 @@ export default function Programing() {
                 [field]: { ...prevData[field], value },
             };
     
-            // Atualizar emptyFields para remover o campo do estado se ele for preenchido
             if (updatedData[field].required && value.trim()) {
                 setEmptyFields((prevEmptyFields) => {
                     const updatedEmptyFields = { ...prevEmptyFields };
@@ -129,7 +128,6 @@ export default function Programing() {
                     return updatedEmptyFields;
                 });
             }
-    
             return updatedData;
         });
     };
@@ -139,15 +137,12 @@ export default function Programing() {
         Object.keys(formData).forEach((field) => {
             const { value, required } = formData[field];
             
-            // Verifica se o campo é obrigatório e está vazio
             if (required) {
                 if (Array.isArray(value)) {
-                    // Se for um array (como "profissionais"), verifica se está vazio
                     if (value.length === 0) {
                         newEmptyFields[field] = true;
                     }
                 } else if (!value || (typeof value === 'string' && !value.trim())) {
-                    // Para strings, verifica se estão vazias
                     newEmptyFields[field] = true;
                 }
             }

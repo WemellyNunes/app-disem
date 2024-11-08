@@ -1,5 +1,5 @@
 import PageTitle from "../../components/title";
-import { FaUsers, FaArrowRight, FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { FaUsers, FaArrowRight, FaEdit, FaTrash } from "react-icons/fa";
 import InputSecondary from "../../components/inputs/inputSecondary";
 import InputSelect from "../../components/inputs/inputSelect";
 import ButtonPrimary from "../../components/buttons/buttonPrimary";
@@ -18,8 +18,13 @@ export default function UserPage() {
     const [actionType, setActionType] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [users, setUsers] = useState([]);
-    const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: '' });
-    
+
+    const [newUser, setNewUser] = useState({
+        name: { value: '', required: true },
+        email: { value: '', required: false },
+        password: { value: '', required: true },
+        role: { value: '', required: true },
+    });
 
     const options = [
         { label: 'Administrador', value: 'adm' },
@@ -28,17 +33,29 @@ export default function UserPage() {
     ];
 
     const handleFieldChange = (field) => (value) => {
-        const formattedValue = field === 'name' ? value.toUpperCase() : value;
-        setNewUser((prevData) => ({ ...prevData, [field]: formattedValue  }));
+        setNewUser((prevData) => {
+            const updatedData = {
+                ...prevData,
+                [field]: { ...prevData[field], value },
+            };
+
+            setEmptyFields((prevEmptyFields) => {
+                const updatedEmptyFields = { ...prevEmptyFields };
+                if (updatedData[field].required && value.trim()) {
+                    delete updatedEmptyFields[field];
+                }
+                return updatedEmptyFields;
+            });
+
+            return updatedData;
+        });
     };
 
     const validateFields = () => {
         const newEmptyFields = {};
-        const requiredFields = ['name', 'email', 'password', 'role'];
-
-        requiredFields.forEach((field) => {
-            const value = newUser[field];
-            if (!value.trim()) {
+        Object.keys(newUser).forEach((field) => {
+            const { value, required } = newUser[field];
+            if (required && (!value || !value.trim())) {
                 newEmptyFields[field] = true;
             }
         });
@@ -55,23 +72,33 @@ export default function UserPage() {
             return;
         }
 
+        const userData = {
+            name: newUser.name.value,
+            email: newUser.email.value,
+            password: newUser.password.value,
+            role: newUser.role.value,
+        };
+
         if (isEditing) {
-            // Atualiza o usuário existente
             setUsers((prevUsers) =>
                 prevUsers.map((user) =>
-                    user.id === userToEdit.id ? { ...userToEdit, ...newUser } : user
+                    user.id === userToEdit.id ? { ...userToEdit, ...userData } : user
                 )
             );
             setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Usuário atualizado com sucesso!' });
             setIsEditing(false);
             setUserToEdit(null);
         } else {
-            // Adiciona um novo usuário
-            setUsers([...users, { ...newUser, id: users.length + 1, active: true }]);
+            setUsers([...users, { ...userData, id: users.length + 1, active: true }]);
             setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Usuário cadastrado com sucesso!' });
         }
 
-        setNewUser({ name: '', email: '', password: '', role: '' }); // Limpa os campos após o salvamento
+        setNewUser({
+            name: { value: '', required: true },
+            email: { value: '', required: false },
+            password: { value: '', required: true },
+            role: { value: '', required: true },
+        });
         setShowMessageBox(true);
         setTimeout(() => setShowMessageBox(false), 1500);
     };
@@ -85,10 +112,15 @@ export default function UserPage() {
     const handleConfirmAction = () => {
         if (actionType === 'edit') {
             setIsEditing(true);
-            setNewUser(userToEdit); // Preenche os campos com os dados do usuário
+            setNewUser({
+                name: { value: userToEdit.name, required: true },
+                email: { value: userToEdit.email, required: true },
+                password: { value: userToEdit.password, required: true },
+                role: { value: userToEdit.role, required: true },
+            });
             setShowConfirmation(false);
         } else if (actionType === 'delete') {
-            setUsers(users.filter((user) => user.id !== userToEdit.id)); // Remove o usuário
+            setUsers(users.filter((user) => user.id !== userToEdit.id));
             setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Usuário excluído com sucesso!' });
             setShowMessageBox(true);
             setShowConfirmation(false);
@@ -123,7 +155,7 @@ export default function UserPage() {
                             label="Usuário *"
                             placeholder="Nome do usuário"
                             type="text"
-                            value={newUser.name}
+                            value={newUser.name.value}
                             onChange={handleFieldChange('name')}
                             buttonIcon={<FaArrowRight />}
                             errorMessage={emptyFields.name ? "Este campo é obrigatório" : ""}
@@ -133,7 +165,7 @@ export default function UserPage() {
                             label="Email *"
                             placeholder="Email do usuário"
                             type="text"
-                            value={newUser.email}
+                            value={newUser.email.value}
                             onChange={handleFieldChange('email')}
                             buttonIcon={<IoMdMail />}
                             errorMessage={emptyFields.email ? "Este campo é obrigatório" : ""}
@@ -144,8 +176,9 @@ export default function UserPage() {
                             label="Senha *"
                             placeholder="Defina a senha"
                             type="password"
-                            value={newUser.password}
+                            value={newUser.password.value}
                             onChange={handleFieldChange('password')}
+                            isEditing={isEditing} // Define se estamos no modo edição ou cadastro
                             errorMessage={emptyFields.password ? "Este campo é obrigatório" : ""}
                             className={emptyFields.password ? 'border-red-600' : ''}
                         />
@@ -153,8 +186,9 @@ export default function UserPage() {
                         <InputSelect
                             label="Papel *"
                             options={options}
-                            onChange={handleFieldChange('role')}
-                            value={newUser.role}
+                            onChange={(e) => handleFieldChange('role')(e)}
+                            value={newUser.role.value}
+                            errorMessage={emptyFields.role ? "Este campo é obrigatório" : ""}
                             className={emptyFields.role ? 'border-red-600' : ''}
                         />
 
@@ -164,7 +198,7 @@ export default function UserPage() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col w-full py-4 px-6 rounded-md bg-white shadow ">
+                    <div className="flex flex-col w-full py-4 px-6 rounded-md bg-white shadow">
                         <div className="flex mb-2 border-b border-primary-light">
                             <p className="text-lg font-normal text-primary-light py-2">Lista de usuários</p>
                         </div>

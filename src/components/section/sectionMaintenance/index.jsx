@@ -79,12 +79,10 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
 
             if (required) {
                 if (Array.isArray(value)) {
-                    // Para arrays (como `filesBefore` e `filesAfter`), verifica se estão vazios
                     if (value.length === 0) {
                         newEmptyFields[field] = true;
                     }
                 } else if (!value || (typeof value === 'string' && !value.trim())) {
-                    // Para strings, verifica se estão vazias
                     newEmptyFields[field] = true;
                 }
             }
@@ -93,7 +91,6 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
         setEmptyFields(newEmptyFields);
         return Object.keys(newEmptyFields).length === 0;
     };
-
 
     const handleSave = () => {
         if (!validateFields()) {
@@ -168,7 +165,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                         <InputPrimary
                             label="Observação"
                             placeholder="Escreva uma observação (opcional)"
-                            value={formData.observation}
+                            value={formData.observation.value}
                             onChange={handleFieldChange('observation')}
                             disabled={!isEditing}
                         />

@@ -114,19 +114,17 @@ export default function Form() {
             };
 
             if (field === 'origem' && value === 'disem') {
-                const randomTwoDigits = Math.floor(Math.random() * 90) + 10; // Gera um número entre 10 e 99
+                const randomTwoDigits = Math.floor(Math.random() * 90) + 10; 
                 const currentYear = new Date().getFullYear();
                 const requisitionNumber = `${randomTwoDigits}${currentYear}`;
                 updatedData.requisicao = { ...prevData.requisicao, value: requisitionNumber };
-    
-                // Remove o campo de requisição dos campos vazios caso tenha sido preenchido automaticamente
+
                 setEmptyFields((prevEmptyFields) => {
                     const updatedEmptyFields = { ...prevEmptyFields };
                     delete updatedEmptyFields.requisicao;
                     return updatedEmptyFields;
                 });
             } else if (field === 'origem' && value === 'sipac') {
-                // Limpa o valor da requisição para permitir o preenchimento manual
                 updatedData.requisicao = { ...prevData.requisicao, value: '' };
             }
 
@@ -134,7 +132,6 @@ export default function Form() {
                 const campus = campusMapping[value] || '';
                 updatedData.campus = { ...prevData.campus, value: campus };
 
-                // Remover `campus` de `emptyFields` se ele for preenchido automaticamente
                 if (campus) {
                     setEmptyFields((prevEmptyFields) => {
                         const updatedEmptyFields = { ...prevEmptyFields };
@@ -143,8 +140,6 @@ export default function Form() {
                     });
                 }
             }
-
-            // Atualiza `emptyFields` para o campo atual, se for obrigatório e foi preenchido
             if (updatedData[field].required && value.trim()) {
                 setEmptyFields((prevEmptyFields) => {
                     const updatedEmptyFields = { ...prevEmptyFields };
@@ -156,7 +151,6 @@ export default function Form() {
             return updatedData;
         });
     };
-
 
     const validateFields = () => {
         const newEmptyFields = {};
@@ -202,16 +196,13 @@ export default function Form() {
 
             console.log('Dados da ordem de serviço:', ordemDeServico);
 
-            // Finalizar o loading
             setIsLoading(false);
             setIsSaved(true);
             setIsEditing(false);
-
-            // Exibir mensagem de sucesso
             setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço salva com prioridade: ${prioridadeCalculada}` });
             setShowMessageBox(true);
             setTimeout(() => setShowMessageBox(false), 2500);
-        }, 1000); // 3 segundos de simulação de carregamento
+        }, 1000);
     };
 
 
@@ -238,7 +229,6 @@ export default function Form() {
             )}
 
             <div className={` flex flex-col px-0 md:px-32 ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
-                {/* Seu código de formulário aqui */}
                 <div className="flex justify-center">
                     <PageTitle
                         icon={FaFilePen}
