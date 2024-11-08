@@ -162,7 +162,7 @@ export default function UserPage() {
                             className={emptyFields.name ? 'border-red-600' : ''}
                         />
                         <InputSecondary
-                            label="Email *"
+                            label="Email"
                             placeholder="Email do usuário"
                             type="text"
                             value={newUser.email.value}
