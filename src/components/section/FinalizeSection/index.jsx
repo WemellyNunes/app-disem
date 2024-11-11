@@ -15,7 +15,6 @@ const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
     const handleFieldChange = (value) => {
         setFinalObservation(value);
 
-        // Atualiza o estado de erro em tempo real
         if (value.trim()) {
             setIsError(false);
         }

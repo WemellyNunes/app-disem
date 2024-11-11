@@ -33,6 +33,7 @@ export default function Form() {
         prioridade: { value: '', required: false },
         requisicao: { value: '', required: true },
         solicitante: { value: '', required: true },
+        contato: {value: null, required: false},
         unidade: { value: '', required: true },
         origem: { value: '', required: true },
         manutencao: { value: '', required: true },
@@ -275,7 +276,7 @@ export default function Form() {
 
                     <div className="flex-1">
                         <SectionCard title="Dados do solicitante">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                            <div className="grid grid-cols-1 md:grid-cols-1 gap-x-6">
                                 <InputPrimary
                                     label="Solicitante *"
                                     placeholder="Informe"
@@ -285,6 +286,9 @@ export default function Form() {
                                     errorMessage={emptyFields.solicitante ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.solicitante ? colorBorder : ''}
                                 />
+
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                                 <InputSelect
                                     label="Unidade *"
                                     options={unit}
@@ -293,6 +297,14 @@ export default function Form() {
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.unidade ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.unidade ? colorBorder : ''}
+                                />
+                                <InputPrimary
+                                    label="Contato (ramal, telefone, email)"
+                                    placeholder="Informe"
+                                    value={formData.contato.value}
+                                    onChange={handleFieldChange('contato')}
+                                    disabled={!isEditing}
+                            
                                 />
                             </div>
                         </SectionCard>
