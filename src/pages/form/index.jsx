@@ -40,6 +40,7 @@ export default function Form() {
         sistema: { value: '', required: true },
         unidadeManutencao: { value: '', required: true },
         campus: { value: '', required: true },
+        observacao: { value: null, required: false},
         objetoPreparo: { value: '', required: true },
     });
 
@@ -304,7 +305,6 @@ export default function Form() {
                                     value={formData.contato.value}
                                     onChange={handleFieldChange('contato')}
                                     disabled={!isEditing}
-                            
                                 />
                             </div>
                         </SectionCard>
@@ -365,7 +365,6 @@ export default function Form() {
                                     errorMessage={emptyFields.unidadeManutencao ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.unidadeManutencao ? colorBorder : ''}
                                 />
-
                                 <InputPrimary
                                     label="Campus *"
                                     placeholder="Informe"
@@ -374,6 +373,15 @@ export default function Form() {
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.campus ? "Este campo é obrigatório" : ""}
                                     className={emptyFields.campus ? colorBorder : ''}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-1">
+                                <InputPrimary
+                                    label="Observação"
+                                    placeholder="Escreva uma observação (opcional)"
+                                    onChange={handleFieldChange('objetoPreparo')}
+                                    value={formData.objetoPreparo.value}
+                                    disabled={!isEditing}
                                 />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
