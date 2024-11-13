@@ -13,15 +13,18 @@ import PageTitle from "../../components/title";
 import { FaFilePen } from "react-icons/fa6";
 import { useUser } from "../../contexts/user";
 import Loading from "../../components/modal/loading";
+import { createOrder, updateOrder } from "../../utils/api/api";
 
 export default function Form() {
     const { user } = useUser();
     const navigate = useNavigate();
 
+    const [orderId, setOrderId] = useState(null);
     const [emptyFields, setEmptyFields] = useState({});
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
-    const [isEditing, setIsEditing] = useState(true);
+    const [isCreating, setIsCreating] = useState(true); // `true` para definir o modo de criação
+    const [isEditing, setIsEditing] = useState(true); // Inicia `true` se estiver criando
     const [isSaved, setIsSaved] = useState(false);
     const [status, setStatus] = useState("A atender");
     const [isLoading, setIsLoading] = useState(false);
@@ -33,14 +36,14 @@ export default function Form() {
         prioridade: { value: '', required: false },
         requisicao: { value: '', required: true },
         solicitante: { value: '', required: true },
-        contato: {value: null, required: false},
+        contato: { value: null, required: false },
         unidade: { value: '', required: true },
         origem: { value: '', required: true },
         manutencao: { value: '', required: true },
         sistema: { value: '', required: true },
         unidadeManutencao: { value: '', required: true },
         campus: { value: '', required: true },
-        observacao: { value: null, required: false},
+        observacao: { value: null, required: false },
         objetoPreparo: { value: '', required: true },
     });
 
@@ -50,8 +53,8 @@ export default function Form() {
     ];
 
     const origin = [
-        { label: 'DISEM', value: 'disem' },
-        { label: 'SIPAC', value: 'sipac' },
+        { label: 'DISEM', value: 'DISEM' },
+        { label: 'SIPAC', value: 'SIPAC' },
     ];
 
     const classification = [
@@ -73,15 +76,16 @@ export default function Form() {
         { label: 'UNIDADE III - MARABÁ', value: 'mab3' },
         { label: 'UNIDADE SANTANA DO ARAGUAIA', value: 'santana' },
         { label: 'UNIDADE SÃO FELIX DO XINGU', value: 'saoFelix' },
-        { label: 'UNIDADE RONDON', value: 'rondon' }
+        { label: 'UNIDADE RONDON', value: 'rondon' },
+        { label: 'XINGURAR', value: 'xinguara' },
     ];
 
     const system = [
-        { label: 'CIVIL', value: 'civil' },
-        { label: 'ELETRICO', value: 'eletrico' },
-        { label: 'HIDROSANITARIO', value: 'hidro' },
-        { label: 'REFRIGERAÇÃO', value: 'refri' },
-        { label: 'MISTO', value: 'misto' }
+        { label: 'CIVIL', value: 'CIVIL' },
+        { label: 'ELETRICO', value: 'ELETRICO' },
+        { label: 'HIDROSANITARIO', value: 'HIDROSANITARIO' },
+        { label: 'REFRIGERAÇÃO', value: 'REFRIGERACAO' },
+        { label: 'MISTO', value: 'MISTO' }
     ];
 
     const maintence = [
@@ -98,12 +102,13 @@ export default function Form() {
     ];
 
     const campusMapping = {
-        'mab1': 'Marabá',
-        'mab2': 'Marabá',
-        'mab3': 'Marabá',
+        'mab1': 'MARABA',
+        'mab2': 'MARABA',
+        'mab3': 'MARABA',
         'santana': 'Santana do Araguaia',
         'saoFelix': 'São Félix do Xingu',
         'rondon': 'Rondon',
+        'xinguara': 'Xinguara',
     };
 
     let colorBorder = 'border-primary-red'
@@ -115,8 +120,8 @@ export default function Form() {
                 [field]: { ...prevData[field], value },
             };
 
-            if (field === 'origem' && value === 'disem') {
-                const randomTwoDigits = Math.floor(Math.random() * 90) + 10; 
+            if (field === 'origem' && value === 'DISEM') {
+                const randomTwoDigits = Math.floor(Math.random() * 90) + 10;
                 const currentYear = new Date().getFullYear();
                 const requisitionNumber = `${randomTwoDigits}${currentYear}`;
                 updatedData.requisicao = { ...prevData.requisicao, value: requisitionNumber };
@@ -167,9 +172,35 @@ export default function Form() {
         return Object.keys(newEmptyFields).length === 0;
     };
 
-    console.log('formData antes da validação:', formData);
 
-    const handleSave = () => {
+    const getOrderData = () => {
+        const valor = calcularValorRisco(formData.classe, formData.indiceRisco);
+        const prioridadeCalculada = calcularPrioridade(valor);
+
+        return {
+            origin: formData.origem.value,
+            requisition: formData.requisicao.value,
+            classification: formData.classe.value,
+            maintenanceIndicators: formData.indiceRisco.value,
+            valorRisco: valor,
+            prioridade: prioridadeCalculada,
+            requester: formData.solicitante.value,
+            contact: formData.contato.value,
+            unit: formData.unidade.value,
+            maintenanceUnit: formData.unidadeManutencao.value,
+            campus: formData.campus.value,
+            observation: formData.observacao.value,
+            preparationObject: formData.objetoPreparo.value,
+            system: formData.sistema.value,
+            typeMaintenance: formData.manutencao.value,
+            typeTreatment: formData.selectedOption.value,
+            documento: "uploads/images",
+            status,
+            modificationDate: new Date().toISOString().split("T")[0]
+        };
+    };
+
+    const handleSave = async () => {
         if (!validateFields()) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
             setShowMessageBox(true);
@@ -178,40 +209,70 @@ export default function Form() {
         }
 
         setIsLoading(true);
-        console.log("Loading iniciado");
 
-        setTimeout(() => {
-            const valor = calcularValorRisco(formData.classe, formData.indiceRisco);
-            setFormData((prevData) => ({ ...prevData, valorRisco: valor }));
+        try {
+            const ordemDeServico = getOrderData();
+            const response = await createOrder(ordemDeServico);
 
-            const prioridadeCalculada = calcularPrioridade(valor);
-            setFormData((prevData) => ({ ...prevData, prioridade: prioridadeCalculada }));
-
-            const ordemDeServico = {
-                ...formData,
-                status,
-                valorRisco: valor,
-                prioridade: prioridadeCalculada,
-                tratamento: formData.selectedOption,
-                documento: "caminho_do_arquivo",
-            };
-
-            console.log('Dados da ordem de serviço:', ordemDeServico);
-
-            setIsLoading(false);
-            setIsSaved(true);
-            setIsEditing(false);
-            setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço salva com prioridade: ${prioridadeCalculada}` });
+            if (response) {
+                setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço criada com prioridade: ${ordemDeServico.prioridade}` });
+                setShowMessageBox(true);
+                setIsSaved(true);    // Define como salvo
+                setIsCreating(false); // Sai do modo de criação
+                setIsEditing(false);  // Desativa a edição após salvar
+                setOrderId(response.id);
+            }
+        } catch (error) {
+            setMessageContent({ type: 'error', title: 'Erro.', message: 'Não foi possível salvar a ordem de serviço.' });
             setShowMessageBox(true);
+            console.error("Erro ao salvar a ordem de serviço:", error);
+        } finally {
+            setIsLoading(false);
             setTimeout(() => setShowMessageBox(false), 2500);
-        }, 1000);
+        }
     };
-
 
     const handleEdit = () => {
         setIsEditing(true);
-        setIsSaved(false);
+        setIsSaved(true);
     };
+
+    // handleUpdate usando orderId
+    const handleUpdate = async () => {
+        if (!orderId) {
+            console.error("ID da ordem de serviço não está definido.");
+            return;
+        }
+
+        if (!validateFields()) {
+            setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
+            setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 1500);
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const ordemDeServico = getOrderData();
+            const response = await updateOrder(orderId, ordemDeServico);
+
+            if (response) {
+                setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Ordem de serviço atualizada com sucesso.' });
+                setShowMessageBox(true);
+                setIsSaved(true);  // Mantém como salvo
+                setIsEditing(false); // Desativa a edição após atualizar
+            }
+        } catch (error) {
+            setMessageContent({ type: 'error', title: 'Erro.', message: 'Não foi possível atualizar a ordem de serviço.' });
+            setShowMessageBox(true);
+            console.error("Erro ao atualizar a ordem de serviço:", error);
+        } finally {
+            setIsLoading(false);
+            setTimeout(() => setShowMessageBox(false), 2500);
+        }
+    };
+
 
     const handleContinue = () => {
         navigate("../Listing");
@@ -379,8 +440,8 @@ export default function Form() {
                                 <InputPrimary
                                     label="Observação"
                                     placeholder="Escreva uma observação (opcional)"
-                                    onChange={handleFieldChange('objetoPreparo')}
-                                    value={formData.objetoPreparo.value}
+                                    onChange={handleFieldChange('observacao')}
+                                    value={formData.observacao.value}
                                     disabled={!isEditing}
                                 />
                             </div>
@@ -405,15 +466,26 @@ export default function Form() {
 
                 <div className="flex flex-col border-t border-primary-light bg-white items-center justify-center md:flex-row h-14 md:h-16 gap-y-2npm bottom-0">
                     <div className="flex pr-0 md:pr-6">
-                        {isSaved ? (
-                            <>
-                                <ButtonSecondary onClick={handleEdit}>Editar</ButtonSecondary>
-                                <ButtonPrimary onClick={handleContinue}>Continuar</ButtonPrimary>
-                            </>
-                        ) : (
+                        {isCreating ? (
+                            // Modo de criação (1): Cancelar e Salvar
                             <>
                                 <ButtonSecondary onClick={() => navigate("../Listing")}>Cancelar</ButtonSecondary>
                                 <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
+                            </>
+                        ) : isEditing ? (
+                            // Modo de edição (3): Cancelar e Atualizar
+                            <>
+                                <ButtonSecondary onClick={() => {
+                                    setIsEditing(false);
+                                    setShowMessageBox(false);
+                                }}>Cancelar</ButtonSecondary>
+                                <ButtonPrimary onClick={handleUpdate}>Atualizar</ButtonPrimary>
+                            </>
+                        ) : (
+                            // Dados salvos ou atualizados (2 e 4): Editar e Continuar
+                            <>
+                                <ButtonSecondary onClick={handleEdit}>Editar</ButtonSecondary>
+                                <ButtonPrimary onClick={handleContinue}>Continuar</ButtonPrimary>
                             </>
                         )}
                     </div>

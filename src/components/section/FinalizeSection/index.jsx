@@ -21,7 +21,6 @@ const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
     };
 
     const validateFields = () => {
-        // Verifica se o campo finalObservation está vazio
         if (finalObservation.trim() === '') {
             setIsError(true);
             return false;
@@ -41,7 +40,7 @@ const FinalizeSection = ({ onFinalize, initialObservation = '' }) => {
         setUser({ name: "Fulano da Silva", id: "123" });
         setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Finalizado com sucesso!' });
         setShowMessageBox(true);
-        onFinalize(finalObservation); // Passa a observação final
+        onFinalize(finalObservation); 
         setTimeout(() => setShowMessageBox(false), 1200);
     };
 
