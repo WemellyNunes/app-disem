@@ -18,9 +18,9 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage }
                 ? prev.map((item, index) => (index === editIndex ? newFiles[0] : item))
                 : [...prev, ...newFiles];
             
-            // Executa a atualização após o estado ser alterado
+            // Chama onFilesUpload após o estado ser alterado
             setTimeout(() => onFilesUpload(updatedFiles), 0);
-    
+
             return updatedFiles;
         });
         setShowModal(false);
@@ -31,10 +31,10 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage }
         if (disabled) return;
         setUploadedFiles(prevFiles => {
             const updatedFiles = prevFiles.filter(item => item.file.name !== fileToRemove.name);
-            onFilesUpload(updatedFiles);
+            onFilesUpload(updatedFiles); // Atualiza o componente pai após remover o arquivo
             return updatedFiles;
         });
-        setFileToEdit(null); // Limpa o arquivo de edição ao remover um arquivo
+        setFileToEdit(null);
     };
 
     const handlePreviewFile = (file) => {
@@ -57,6 +57,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage }
                         setFileToEdit(null); // Limpa o arquivo de edição ao abrir para novos uploads
                         setShowModal(true);
                     }
+                
                 }}
             >
                 <FaUpload className={`h-4 w-4 mr-3 ${disabled ? 'text-gray-400' : 'text-primary-light'}`} />
@@ -106,7 +107,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage }
                 isOpen={showModal} 
                 onClose={() => {
                     setShowModal(false);
-                    setFileToEdit(null); // Limpa o arquivo de edição ao fechar o modal
+                    setFileToEdit(null);
                 }} 
                 onUpload={handleUpload}
                 initialFiles={fileToEdit ? [fileToEdit.file] : []}

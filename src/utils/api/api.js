@@ -54,4 +54,22 @@ export const createOrder = async (orderData) => {
     }
   };
 
+  export const uploadDocument = async (file, orderServiceId) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('orderServiceId', orderServiceId);
+
+    try {
+        const response = await api.post('/uploadDocument', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Erro ao fazer upload do documento:", error);
+        throw error;
+    }
+};
+
 export default api;

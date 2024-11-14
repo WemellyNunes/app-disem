@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SectionCard from "../../components/section/sectionPrimary";
 import InputSelect from "../../components/inputs/inputSelect";
@@ -13,18 +13,21 @@ import PageTitle from "../../components/title";
 import { FaFilePen } from "react-icons/fa6";
 import { useUser } from "../../contexts/user";
 import Loading from "../../components/modal/loading";
-import { createOrder, updateOrder } from "../../utils/api/api";
+import MessageCard from "../../components/cards/menssegeCard";
+
+import { createOrder, updateOrder, uploadDocument } from "../../utils/api/api";
 
 export default function Form() {
     const { user } = useUser();
     const navigate = useNavigate();
 
     const [orderId, setOrderId] = useState(null);
+    const [selectedFiles, setSelectedFiles] = useState([]);
     const [emptyFields, setEmptyFields] = useState({});
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
-    const [isCreating, setIsCreating] = useState(true); // `true` para definir o modo de criação
-    const [isEditing, setIsEditing] = useState(true); // Inicia `true` se estiver criando
+    const [isCreating, setIsCreating] = useState(true);
+    const [isEditing, setIsEditing] = useState(true); 
     const [isSaved, setIsSaved] = useState(false);
     const [status, setStatus] = useState("A atender");
     const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +49,7 @@ export default function Form() {
         observacao: { value: null, required: false },
         objetoPreparo: { value: '', required: true },
     });
+
 
     const options = [
         { label: 'Comum', value: 'comum' },
@@ -112,6 +116,27 @@ export default function Form() {
     };
 
     let colorBorder = 'border-primary-red'
+
+    const handleFileChange = (files) => {
+        setSelectedFiles(files); // Atualiza o estado com os arquivos recebidos
+    };
+
+    useEffect(() => {
+        if (orderId) {
+            handleUpload();
+        }
+    }, [orderId]);
+
+    const handleUpload = async () => {
+        try {
+            for (const fileItem of selectedFiles) {
+                await uploadDocument(fileItem.file, orderId);
+            }
+            console.log("Documentos carregados com sucesso.");
+        } catch (error) {
+            console.error("Erro ao fazer upload dos documentos:", error);
+        }
+    };
 
     const handleFieldChange = (field) => (value) => {
         setFormData((prevData) => {
@@ -196,6 +221,7 @@ export default function Form() {
             typeTreatment: formData.selectedOption.value,
             documento: "uploads/images",
             status,
+            date: new Date().toISOString().split("T")[0],
             modificationDate: new Date().toISOString().split("T")[0]
         };
     };
@@ -217,10 +243,10 @@ export default function Form() {
             if (response) {
                 setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço criada com prioridade: ${ordemDeServico.prioridade}` });
                 setShowMessageBox(true);
-                setIsSaved(true);    // Define como salvo
-                setIsCreating(false); // Sai do modo de criação
-                setIsEditing(false);  // Desativa a edição após salvar
                 setOrderId(response.id);
+                setIsSaved(true);
+                setIsCreating(false);
+                setIsEditing(false);
             }
         } catch (error) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Não foi possível salvar a ordem de serviço.' });
@@ -261,7 +287,8 @@ export default function Form() {
                 setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Ordem de serviço atualizada com sucesso.' });
                 setShowMessageBox(true);
                 setIsSaved(true);  // Mantém como salvo
-                setIsEditing(false); // Desativa a edição após atualizar
+                setIsEditing(false);
+                await handleUpload(); // Desativa a edição após atualizar
             }
         } catch (error) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Não foi possível atualizar a ordem de serviço.' });
@@ -290,6 +317,23 @@ export default function Form() {
                     onClose={() => setShowMessageBox(false)}
                 />
             )}
+
+
+            <div className="flex flex-col space-y-1 mb-1 mt-1 px-0 md:px-32">
+                <MessageCard
+                    type="info"
+                    title="Info."
+                    message="Os campos com '*' no final são obrigatórios."
+                    storageKey="showMandatoryMessage"
+                />
+                <MessageCard
+                    type="info"
+                    title="Info."
+                    message="O campo 'Índice de manutenção' indica o impacto e a prioridade da manutenção."
+                    storageKey="showIndexExplanationMessage"
+                />
+            </div>
+
 
             <div className={` flex flex-col px-0 md:px-32 ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
                 <div className="flex justify-center">
@@ -341,7 +385,7 @@ export default function Form() {
                             <div className="grid grid-cols-1 md:grid-cols-1 gap-x-6">
                                 <InputPrimary
                                     label="Solicitante *"
-                                    placeholder="Informe"
+                                    placeholder="Informe o nome do solicitante"
                                     value={formData.solicitante.value}
                                     onChange={handleFieldChange('solicitante')}
                                     disabled={!isEditing}
@@ -362,7 +406,7 @@ export default function Form() {
                                 />
                                 <InputPrimary
                                     label="Contato (ramal, telefone, email)"
-                                    placeholder="Informe"
+                                    placeholder="Informe o contato (opcional)"
                                     value={formData.contato.value}
                                     onChange={handleFieldChange('contato')}
                                     disabled={!isEditing}
@@ -376,7 +420,7 @@ export default function Form() {
                             <div className="grid grid-cols-1 md:grid-cols-1">
                                 <InputPrimary
                                     label="Objeto de preparo *"
-                                    placeholder="Informe"
+                                    placeholder="Informe a descrição da manutenção"
                                     onChange={handleFieldChange('objetoPreparo')}
                                     value={formData.objetoPreparo.value}
                                     disabled={!isEditing}
@@ -407,7 +451,7 @@ export default function Form() {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-1 gap-x-6">
                                 <InputSelect
-                                    label="Indice de risco *"
+                                    label="Índice de manutenção *"
                                     options={indicesRisco}
                                     onChange={handleFieldChange('indiceRisco')}
                                     value={formData.indiceRisco.value}
@@ -428,7 +472,7 @@ export default function Form() {
                                 />
                                 <InputPrimary
                                     label="Campus *"
-                                    placeholder="Informe"
+                                    placeholder="Informe o campus (automático)"
                                     value={formData.campus.value}
                                     onChange={handleFieldChange('campus')}
                                     disabled={!isEditing}
@@ -458,6 +502,7 @@ export default function Form() {
                                 <InputUpload
                                     label="Anexar documento(s)"
                                     disabled={!isEditing}
+                                    onFilesUpload={handleFileChange}
                                 />
                             </div>
                         </SectionCard>
