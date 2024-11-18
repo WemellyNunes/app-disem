@@ -6,19 +6,11 @@ import FilterModal from '../../modal/filter';
 import Tag from '../../tag';
 import { FaSlidersH } from "react-icons/fa";
 import List from '../list';
+import { getAllOrders } from "../../../utils/api/api";
+import { calcularValorRisco, calcularPrioridade } from '../../../utils/matriz';
 
-const data = [
-    { id: 1, requisicao: '90000', criacao: '27/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'HIDROSANITARIO', unidade: 'IGE', solicitante: 'JOAO DA SILVA COSTA', descricao:'texto descritivo da os', status: 'A atender', programacao: false, prioridade: 'Execução em até 7 dias' },
-    { id: 2, requisicao: '15230', criacao: '30/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'HIDROSANITARIO', unidade: 'ICH', solicitante: 'ANA DA SILVA COSTA', descricao:'texto descritivo da os', status: 'A atender', programacao: false, prioridade: 'Execução em até 15 dias' },
-    { id: 3, requisicao: '00000', criacao: '24/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'CIVIL', unidade: 'ICE', solicitante: 'ANA DA SILVA COSTA', descricao:'texto descritivo da os', status: 'Em atendimento', programacao: true, prioridade: 'Execução em até 2 dias' },
-    { id: 4, requisicao: '00000', criacao: '30/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'CIVIL', unidade: 'ICE', solicitante: 'FULANO DA SILVA COSTA', descricao:'texto descritivo da os', status: 'Resolvido', programacao: true, prioridade: 'Execução em até 7 dias' },
-    { id: 5, requisicao: '00000', criacao: '01/10/2024', origem: 'SIPAC', tipo: 'CORRETIVA', sistema: 'CIVIL', unidade: 'CTIC', solicitante: 'FULANO DA SILVA COSTA', descricao:'texto descritivo da os', status: 'A atender', programacao: false, prioridade: 'Execução em até 2 dias' },
-    { id: 6, requisicao: '90000', criacao: '27/09/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'HIDROSANITARIO', unidade: 'IGE', solicitante: 'JOAO DA SILVA COSTA', descricao:'texto descritivo da os', status: 'A atender', programacao: false, prioridade: 'Execução Imediata' },
-    { id: 7, requisicao: '90000', criacao: '01/10/2024', origem: 'DISEM', tipo: 'CORRETIVA', sistema: 'ELETRICO', unidade: 'IGE', solicitante: 'JOAO DA SILVA COSTA', descricao:'lampada queimada na sala do bloco x', status: 'A atender', programacao: false, prioridade: 'Execução Imediata' }
-];
-
-const TabsAndTable = () => {
-    const [osData, setOsData] = useState(data);
+const TabsAndList = () => {
+    const [osData, setOsData] = useState([]);
     const [activeTab, setActiveTab] = useState('Abertas');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -29,12 +21,33 @@ const TabsAndTable = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const savedFilters = localStorage.getItem('appliedFilters');
-        if (savedFilters) {
-            setAppliedFilters(JSON.parse(savedFilters));
-        }
+        const fetchOrders = async () => {
+            try {
+                const response = await getAllOrders();
+                const data = response.content; // Dados vindos do backend
+    
+                // Realiza o cálculo de impacto e prioridade para cada item
+                const calculatedData = data.map(item => {
+                    const valorRisco = calcularValorRisco(item.classification, item.maintenanceIndicators);
+                    const prioridadeCalculada = calcularPrioridade(valorRisco);
+    
+                    return {
+                        ...item,
+                        valorRisco,
+                        prioridade: prioridadeCalculada
+                    };
+                });
+    
+                setOsData(calculatedData);
+            } catch (error) {
+                console.error("Erro ao buscar ordens de serviço:", error);
+                setOsData([]);
+            }
+        };
+    
+        fetchOrders();
     }, []);
-
+    
     const handleProgramClick = (id) => {
         navigate(`/programing/${id}`);
 
@@ -74,6 +87,11 @@ const TabsAndTable = () => {
     };
 
     const filterData = () => {
+        if (!Array.isArray(osData)) {
+            console.error("osData não é um array:", osData);
+            return [];
+        }
+
         const statusMap = {
             'Abertas': 'A atender',
             'Programadas': 'Em atendimento',
@@ -81,74 +99,70 @@ const TabsAndTable = () => {
             'Finalizadas': 'Finalizada',
             'Negadas': 'Negada'
         };
-        
+
         let filtered = osData.filter(item => item.status === statusMap[activeTab]);
-        
+
         if (searchTerm) {
             filtered = filtered.filter(item =>
-                item.requisicao.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.solicitante.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.unidade.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.sistema.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.criacao.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.origem.toLowerCase().includes(searchTerm.toLowerCase())
+                item.id.toString().includes(searchTerm) ||
+                item.requester.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.typeMaintenance.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.maintenanceUnit.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.system.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.date.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.origin.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
         if (appliedFilters) {
-            if (appliedFilters.dataCriacao) {
-                filtered = filtered.filter(item => item.criacao === appliedFilters.dataCriacao);
+            if (appliedFilters.date) {
+                filtered = filtered.filter(item => item.date === appliedFilters.date);
             }
-
-            if (appliedFilters.unidade && appliedFilters.unidade.length > 0) {
+        
+            if (appliedFilters.maintenanceUnit && appliedFilters.maintenanceUnit.length > 0) {
                 filtered = filtered.filter(item =>
-                    appliedFilters.unidade.some(unit =>
-                        item.unidade.toLowerCase().includes(unit.value.toLowerCase()))
+                    appliedFilters.maintenanceUnit.some(unit =>
+                        item.maintenanceUnit.toLowerCase().includes(unit.value.toLowerCase())
+                    )
                 );
             }
-
-            if (appliedFilters.tipoManutencao && appliedFilters.tipoManutencao.length > 0) {
+        
+            if (appliedFilters.typeMaintenance && appliedFilters.typeMaintenance.length > 0) {
                 filtered = filtered.filter(item =>
-                    appliedFilters.tipoManutencao.some(tipo =>
-                        item.tipo.toLowerCase().includes(tipo.value.toLowerCase()))
+                    appliedFilters.typeMaintenance.some(tipo =>
+                        item.typeMaintenance.toLowerCase().includes(tipo.value.toLowerCase())
+                    )
                 );
             }
-
-            if (appliedFilters.sistemas && appliedFilters.sistemas.length > 0) {
+        
+            if (appliedFilters.system && appliedFilters.system.length > 0) {
                 filtered = filtered.filter(item =>
-                    appliedFilters.sistemas.some(system =>
-                        item.sistema.toLowerCase().includes(system.value.toLowerCase()))
+                    appliedFilters.system.some(system =>
+                        item.system.toLowerCase().includes(system.value.toLowerCase())
+                    )
                 );
             }
-
-            if (appliedFilters.origem && appliedFilters.origem.length > 0) {
+        
+            if (appliedFilters.origin && appliedFilters.origin.length > 0) {
                 filtered = filtered.filter(item =>
-                    appliedFilters.origem.some(origin =>
-                        item.origem.toLowerCase().includes(origin.value.toLowerCase()))
+                    appliedFilters.origin.some(origin =>
+                        item.origin.toLowerCase().includes(origin.value.toLowerCase())
+                    )
                 );
             }
-        }
+        }        
 
-        filtered = filtered.sort((a, b) => {
-            return prioridadesPesos[a.prioridade] - prioridadesPesos[b.prioridade];
-        });
+        filtered = filtered.sort((a, b) => b.valorRisco - a.valorRisco);
 
         return filtered;
     };
 
-    const prioridadesPesos = {
-        'Execução Imediata': 1,
-        'Execução em até 2 dias': 2,
-        'Execução em até 7 dias': 3,
-        'Execução em até 15 dias': 4
-    };
-    
-    const memoizedFilteredData = useMemo(filterData, [appliedFilters, searchTerm, osData, activeTab]);
+
+    const memoizedFilteredData = useMemo(() => filterData(), [osData, appliedFilters, searchTerm, activeTab]);
 
     useEffect(() => {
-        setFilteredData(memoizedFilteredData);
-    }, [memoizedFilteredData, appliedFilters, activeTab]);
+            setFilteredData(memoizedFilteredData);
+    }, [memoizedFilteredData]);
 
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const currentItems = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -163,7 +177,7 @@ const TabsAndTable = () => {
     };
 
     return (
-        <div className="flex w-full flex-col mt-1"> 
+        <div className="flex w-full flex-col mt-1">
             <div className='flex flex-row gap-x-2'>
                 <SearchInput placeholder="Buscar..." onSearch={handleSearch} />
                 <button
@@ -183,7 +197,7 @@ const TabsAndTable = () => {
                     if (Array.isArray(filterValue)) {
                         return filterValue.map((item) => (
                             <Tag
-                                key={`${filterKey}-${item.value}`} 
+                                key={`${filterKey}-${item.value}`}
                                 label={`${item.label}`}
                                 onRemove={() => removeFilter(filterKey, item)}
                             />
@@ -204,7 +218,7 @@ const TabsAndTable = () => {
                 <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
             <div className="w-full">
-                <List filteredData={currentItems} onProgramClick={handleProgramClick} />
+                <List filteredData={currentItems} setFilteredData={setOsData} onProgramClick={handleProgramClick} />
             </div>
 
             <div className="flex justify-between bg-white shadow items-center mt-2 px-4 py-2 text-xs text-primary-dark">
@@ -234,4 +248,4 @@ const TabsAndTable = () => {
     );
 };
 
-export default TabsAndTable;
+export default TabsAndList;

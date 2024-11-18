@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SectionCard from "../../components/section/sectionPrimary";
 import InputSelect from "../../components/inputs/inputSelect";
 import InputPrimary from "../../components/inputs/inputPrimary";
@@ -18,6 +18,7 @@ import MessageCard from "../../components/cards/menssegeCard";
 import { createOrder, updateOrder, uploadDocument } from "../../utils/api/api";
 
 export default function Form() {
+    const { id } = useParams();
     const { user } = useUser();
     const navigate = useNavigate();
 
@@ -50,7 +51,6 @@ export default function Form() {
         objetoPreparo: { value: '', required: true },
     });
 
-
     const options = [
         { label: 'Comum', value: 'comum' },
         { label: 'ADM', value: 'adm' },
@@ -81,7 +81,7 @@ export default function Form() {
         { label: 'UNIDADE SANTANA DO ARAGUAIA', value: 'santana' },
         { label: 'UNIDADE SÃO FELIX DO XINGU', value: 'saoFelix' },
         { label: 'UNIDADE RONDON', value: 'rondon' },
-        { label: 'XINGURAR', value: 'xinguara' },
+        { label: 'XINGUARA', value: 'xinguara' },
     ];
 
     const system = [
@@ -122,10 +122,34 @@ export default function Form() {
     };
 
     useEffect(() => {
+        if (id) {
+            setIsEditing(true); // Ativa o modo de edição
+            fetchOrderData(id); // Carrega os dados
+        }
+    }, [id]);
+
+    const fetchOrderData = async (id) => {
+        try {
+            const response = await getOrderById(id); // Faz a chamada à API
+            setOrderId(id);
+            // Atualiza os dados do formulário com os valores do backend
+            setFormData((prevData) => ({
+                ...prevData,
+                origem: { ...prevData.origem, value: response.origin },
+                requisicao: { ...prevData.requisicao, value: response.requisition },
+                // Continue para outros campos...
+            }));
+        } catch (error) {
+            console.error("Erro ao carregar os dados da ordem de serviço:", error);
+        }
+    };
+
+    useEffect(() => {
         if (orderId) {
             handleUpload();
         }
     }, [orderId]);
+
 
     const handleUpload = async () => {
         try {
@@ -241,7 +265,7 @@ export default function Form() {
             const response = await createOrder(ordemDeServico);
 
             if (response) {
-                setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço criada com prioridade: ${ordemDeServico.prioridade}` });
+                setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço criada com sucesso.` });
                 setShowMessageBox(true);
                 setOrderId(response.id);
                 setIsSaved(true);
@@ -263,7 +287,6 @@ export default function Form() {
         setIsSaved(true);
     };
 
-    // handleUpdate usando orderId
     const handleUpdate = async () => {
         if (!orderId) {
             console.error("ID da ordem de serviço não está definido.");
@@ -318,7 +341,6 @@ export default function Form() {
                 />
             )}
 
-
             <div className="flex flex-col space-y-1 mb-1 mt-1 px-0 md:px-32">
                 <MessageCard
                     type="info"
@@ -334,12 +356,11 @@ export default function Form() {
                 />
             </div>
 
-
             <div className={` flex flex-col px-0 md:px-32 ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
                 <div className="flex justify-center">
                     <PageTitle
                         icon={FaFilePen}
-                        text="Cadastro de Ordem de Serviço"
+                        text={isCreating ? "Cadastro de Ordem de Serviço" : "Pré-visualização Ordem de Serviço"}
                         backgroundColor="bg-white"
                         textColor="text-primary-light"
                     />

@@ -1,4 +1,4 @@
-import TabsAndTable from "../../components/table/tabsAndTable";
+import TabsAndList from "../../components/table/tabsAndList";
 import PageTitle from "../../components/title";
 import { FaRegListAlt } from "react-icons/fa";
 
@@ -18,7 +18,7 @@ export default function Listing() {
                 </div>
 
                 <div className="flex flex-grow"> {/* flex-grow para ocupar espaço */}
-                    <TabsAndTable />
+                    <TabsAndList />
                 </div>
             </div>
         </>

@@ -1,55 +1,50 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import DateTimePicker from "../../inputs/dateTimePicker";
 import MultiSelect from "../../inputs/multiSelect";
 import ButtonPrimary from "../../buttons/buttonPrimary";
 import ButtonSecondary from "../../buttons/buttonSecondary";
 
-const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {  
+const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
   const options = [
-    { label: 'IGE', value: 'ige' },
-    { label: 'ICE', value: 'ice' },
-    { label: 'ICH', value: 'ich' },
-    { label: 'CTIC', value: 'ctic' },
+    { label: 'IGE', value: 'IGE' },
+    { label: 'ICE', value: 'ICE' },
+    { label: 'ICH', value: 'ICH' },
+    { label: 'CTIC', value: 'CTIC' },
   ];
 
   const system = [
-    { label: 'CIVIL', value: 'civil' },
-    { label: 'ELETRICO', value: 'eletrico' },
-    { label: 'HIDROSANITARIO', value: 'hidro' },
-    { label: 'REFRIGERAÇÃO', value: 'refri' },
-    { label: 'MISTO', value: 'misto' }
+    { label: 'CIVIL', value: 'CIVIL' },
+    { label: 'ELETRICO', value: 'ELETRICO' },
+    { label: 'HIDROSANITARIO', value: 'HIDROSANITARIO' },
+    { label: 'REFRIGERAÇÃO', value: 'REFRIGERAÇÃO' },
+    { label: 'MISTO', value: 'MISTO' },
   ];
 
   const maintence = [
-    { label: 'CORRETIVA', value: 'corretiva' },
-    { label: 'PREVENTIVA', value: 'preventiva' },
+    { label: 'CORRETIVA', value: 'CORRETIVA' },
+    { label: 'PREVENTIVA', value: 'PREVENTIVA' },
   ];
 
   const origin = [
-    { label: 'DISEM', value: 'disem' },
-    { label: 'SIPAC', value: 'sipac' },
+    { label: 'DISEM', value: 'DISEM' },
+    { label: 'SIPAC', value: 'SIPAC' },
   ];
 
   const [filters, setFilters] = useState({
-    requisicao: '',
-    dataCriacao: '',
-    unidade: [],
-    solicitante: '',
-    tipoManutencao: [],
-    sistemas: [],
-    origem: [],
+    requisition: '',
+    date: '',
+    maintenanceUnit: [],
+    requester: '',
+    typeMaintenance: [],
+    system: [],
+    origin: [],
   });
 
   const inputRef = useRef(null);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
-  };
-
   const handleDateChange = (date) => {
-    setFilters({ ...filters, dataCriacao: date });
+    setFilters({ ...filters, date });
   };
 
   const handleMultiSelectChange = useCallback((name, selectedOptions) => {
@@ -106,31 +101,31 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
             label="Data de criação"
             placeholder="00/00/0000"
             onDateChange={handleDateChange}
-            value={filters.dataCriacao} 
+            value={filters.date}
           />
           <MultiSelect
             label="Unidade"
             options={options}
-            onChange={(selectedOptions) => handleMultiSelectChange('unidade', selectedOptions)}
-            selectedValues={filters.unidade} 
+            onChange={(selectedOptions) => handleMultiSelectChange('maintenanceUnit', selectedOptions)}
+            selectedValues={filters.maintenanceUnit}
           />
           <MultiSelect
             label="Sistemas"
             options={system}
-            onChange={(selectedOptions) => handleMultiSelectChange('sistemas', selectedOptions)}
-            selectedValues={filters.sistemas}  
+            onChange={(selectedOptions) => handleMultiSelectChange('system', selectedOptions)}
+            selectedValues={filters.system}
           />
           <MultiSelect
             label="Tipo de manutenção"
             options={maintence}
-            onChange={(selectedOptions) => handleMultiSelectChange('tipoManutencao', selectedOptions)}
-            selectedValues={filters.tipoManutencao}  
+            onChange={(selectedOptions) => handleMultiSelectChange('typeMaintenance', selectedOptions)}
+            selectedValues={filters.typeMaintenance}
           />
           <MultiSelect
             label="Origem"
             options={origin}
-            onChange={(selectedOptions) => handleMultiSelectChange('origem', selectedOptions)}
-            selectedValues={filters.origem}  
+            onChange={(selectedOptions) => handleMultiSelectChange('origin', selectedOptions)}
+            selectedValues={filters.origin}
           />
         </div>
 

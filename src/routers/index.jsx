@@ -26,6 +26,7 @@ function AppRoutes() {
                     <Route path="/" element={<Login />} />
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="form" element={<Form />} />
+                    <Route path="/form/:id" element={<Form />} />
                     <Route path="programing/:id" element={<Programing />} />
                     <Route path="listing" element={<Listing />} />
                     <Route path="users" element={<UserPage />} />
