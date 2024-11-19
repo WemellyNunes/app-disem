@@ -31,23 +31,28 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
     };
 
     const handleEdit = (id) => {
-        navigate(`/form/${id}`);
+        setActionType('edit');
+        setSelectedId(id); // Armazena o ID da OS a ser editada
+        setShowConfirmation(true);
     };
 
     const handleConfirmAction = async () => {
-        setShowConfirmation(false);
-    
+        setShowConfirmation(false); // Fecha o modal
+
         if (actionType === 'delete') {
             try {
                 await deleteOrder(selectedId); // Chama o endpoint de exclusão
                 console.log(`OS ${selectedId} deletada com sucesso.`);
-    
+
                 // Atualizar a lista localmente
                 const updatedData = filteredData.filter((item) => item.id !== selectedId);
                 setFilteredData(updatedData); // Atualiza o estado da lista no pai
             } catch (error) {
                 console.error(`Erro ao deletar OS ${selectedId}:`, error);
             }
+        } else if (actionType === 'edit') {
+            // Redireciona para o formulário no modo de edição
+            navigate(`/form/${selectedId}`);
         }
     };
 
@@ -61,15 +66,12 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
 
                     const history = [
                         `OS Nº ${item.requisition} Criada em 00/00/0000 agente: Fulano da Silva `,
-                        `OS Nº ${item.requisition} Editada em 00/00/0000 agente: Fulano da Silva`,
-                        `OS Nº ${item.requisition} Programada em 00/00/0000 agente: Fulano da Silva`
                     ];
 
                     return (
                         <div
                             key={item.id}
-                            className={`flex flex-col mt-2 md:flex-row p-4 rounded shadow-sm hover:border-b hover:border-primary-light space-y-1 md:space-y-0 ${index % 2 === 0 ? 'bg-white' : 'bg-blue-50'
-                                }`}
+                            className={`flex flex-col mt-2 md:flex-row p-4 rounded shadow-sm hover:border-b hover:border-primary-light space-y-1 md:space-y-0 bg-white`}
                         >
                             <div className="flex flex-col md:flex-row w-full justify-between">
                                 <div className="flex flex-col md:w-1/2 space-y-1 pb-2 md:pb-0 text-primary-dark text-xs md:text-sm">
@@ -137,15 +139,22 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
                                     </span>
                                     <span className="hidden md:flex">
                                         <ActionsMenu
-                                            onView={() => console.log(`Visualizar OS ${item.id}`)}
                                             onEdit={() => handleEdit(item.id)}
                                             onDelete={() => handleDelete(item.id)}
                                         />
 
                                         {showConfirmation && (
                                             <ConfirmationModal
-                                                title="Confirmar Exclusão"
-                                                message={`Tem certeza que deseja excluir a OS ${selectedId}?`}
+                                                title={
+                                                    actionType === 'edit'
+                                                        ? 'Confirmar Edição'
+                                                        : 'Confirmar Exclusão'
+                                                }
+                                                message={
+                                                    actionType === 'edit'
+                                                        ? `Tem certeza que deseja editar a OS ${selectedId}?`
+                                                        : `Tem certeza que deseja excluir a OS ${selectedId}?`
+                                                }
                                                 onConfirm={handleConfirmAction}
                                                 onCancel={() => setShowConfirmation(false)}
                                             />

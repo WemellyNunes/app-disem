@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { FaFilePen } from "react-icons/fa6";
+import { useUser } from "../../contexts/user";
 import SectionCard from "../../components/section/sectionPrimary";
 import InputSelect from "../../components/inputs/inputSelect";
 import InputPrimary from "../../components/inputs/inputPrimary";
@@ -8,14 +10,12 @@ import InputUpload from "../../components/inputs/inputUpload";
 import ButtonPrimary from "../../components/buttons/buttonPrimary";
 import ButtonSecondary from "../../components/buttons/buttonSecondary";
 import MessageBox from "../../components/box/message";
-import { calcularValorRisco, calcularPrioridade } from "../../utils/matriz";
 import PageTitle from "../../components/title";
-import { FaFilePen } from "react-icons/fa6";
-import { useUser } from "../../contexts/user";
 import Loading from "../../components/modal/loading";
 import MessageCard from "../../components/cards/menssegeCard";
 
-import { createOrder, updateOrder, uploadDocument } from "../../utils/api/api";
+import { calcularValorRisco, calcularPrioridade } from "../../utils/matriz";
+import { createOrder, updateOrder, uploadDocument, getOrderById } from "../../utils/api/api";
 
 export default function Form() {
     const { id } = useParams();
@@ -27,8 +27,8 @@ export default function Form() {
     const [emptyFields, setEmptyFields] = useState({});
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
-    const [isCreating, setIsCreating] = useState(true);
-    const [isEditing, setIsEditing] = useState(true); 
+    const [isCreating, setIsCreating] = useState(!id);
+    const [isEditing, setIsEditing] = useState(!id); 
     const [isSaved, setIsSaved] = useState(false);
     const [status, setStatus] = useState("A atender");
     const [isLoading, setIsLoading] = useState(false);
@@ -123,8 +123,9 @@ export default function Form() {
 
     useEffect(() => {
         if (id) {
-            setIsEditing(true); // Ativa o modo de edição
-            fetchOrderData(id); // Carrega os dados
+            setIsCreating(false); 
+            setIsEditing(true); 
+            fetchOrderData(id); 
         }
     }, [id]);
 
@@ -137,8 +138,20 @@ export default function Form() {
                 ...prevData,
                 origem: { ...prevData.origem, value: response.origin },
                 requisicao: { ...prevData.requisicao, value: response.requisition },
+                classe: { ...prevData.classe, value: response.classification },
+                solicitante: { ...prevData.solicitante, value: response.requester },
+                contato: { ...prevData.contato, value: response.contact},
+                unidade: { ...prevData.unidade, value: response.unit},
+                manutencao: { ...prevData.manutencao, value: response.typeMaintenance },
+                sistema: { ...prevData.sistema, value: response.system },
+                unidadeManutencao: { ...prevData.unidadeManutencao, value: response.maintenanceUnit },
+                campus: { ...prevData.campus, value: response.campus },
+                observacao: { ...prevData.observacao, value: response.observation },
+                objetoPreparo: { ...prevData.objetoPreparo, value: response.preparationObject },
+                indiceRisco: { ...prevData.indiceRisco, value: response.maintenanceIndicators },
                 // Continue para outros campos...
             }));
+            setEmptyFields({});
         } catch (error) {
             console.error("Erro ao carregar os dados da ordem de serviço:", error);
         }
@@ -212,7 +225,7 @@ export default function Form() {
         const newEmptyFields = {};
         Object.keys(formData).forEach((field) => {
             const { value, required } = formData[field];
-            if (required && (!value || typeof value !== 'string' || !value.trim())) {
+            if (required && (!value || value.toString().trim() === "")) {
                 newEmptyFields[field] = true;
             }
         });
