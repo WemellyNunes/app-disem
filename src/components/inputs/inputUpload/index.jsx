@@ -1,14 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaUpload, FaTrash, FaEdit, FaEye } from 'react-icons/fa';
 import UploadModal from '../../modal/upload';
 import PreviewFile from '../../modal/preview';
 
-const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage }) => {
+const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, initialFiles  }) => {
     const [showModal, setShowModal] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [previewFile, setPreviewFile] = useState(null);
-    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [uploadedFiles, setUploadedFiles] = useState(initialFiles);
     const [fileToEdit, setFileToEdit] = useState(null);
+
+    useEffect(() => {
+        setUploadedFiles(initialFiles);
+    }, [initialFiles]);
+    
 
     const handleUpload = (files, description, editIndex = null) => {
         const newFiles = files.map(file => ({ file, description }));
@@ -29,12 +34,11 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage }
 
     const handleRemoveFile = (fileToRemove) => {
         if (disabled) return;
-        setUploadedFiles(prevFiles => {
-            const updatedFiles = prevFiles.filter(item => item.file.name !== fileToRemove.name);
-            onFilesUpload(updatedFiles); // Atualiza o componente pai após remover o arquivo
+        setUploadedFiles((prevFiles) => {
+            const updatedFiles = prevFiles.filter((item) => item.file.name !== fileToRemove.file.name);
+            onFilesUpload(updatedFiles); // Atualiza o estado no componente pai
             return updatedFiles;
         });
-        setFileToEdit(null);
     };
 
     const handlePreviewFile = (file) => {

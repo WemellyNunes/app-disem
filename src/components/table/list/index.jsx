@@ -2,11 +2,12 @@ import Circle from "../circle";
 import { FaCirclePlus, FaRegClock } from "react-icons/fa6";
 import { MdHistory } from "react-icons/md";
 import { useState } from "react";
+import { deleteOrder } from "../../../utils/api/api";
+import { useNavigate } from "react-router-dom";
 import HistoryCard from "../../cards/historyCard";
 import ActionsMenu from "../../verticalMenu/actionMenu";
 import ConfirmationModal from "../../modal/confirmation";
-import { deleteOrder } from "../../../utils/api/api";
-import { useNavigate } from "react-router-dom";
+import MessageBox from "../../box/message";
 
 const List = ({ filteredData, setFilteredData, onProgramClick }) => {
     const navigate = useNavigate();
@@ -15,6 +16,8 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [actionType, setActionType] = useState(null);
     const [selectedId, setSelectedId] = useState(null);
+    const [showMessageBox, setShowMessageBox] = useState(false);
+    const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
 
     const statusClasses = {
         'A atender': 'font-medium bg-status-open text-white rounded-md p-1',
@@ -47,6 +50,17 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
                 // Atualizar a lista localmente
                 const updatedData = filteredData.filter((item) => item.id !== selectedId);
                 setFilteredData(updatedData); // Atualiza o estado da lista no pai
+
+                setMessageContent({
+                    type: 'success',
+                    title: 'Sucesso',
+                    message: `A OS ${selectedId} foi removida com sucesso.`,
+                });
+                setShowMessageBox(true);
+
+                // Ocultar a mensagem após alguns segundos
+                setTimeout(() => setShowMessageBox(false), 1500);
+
             } catch (error) {
                 console.error(`Erro ao deletar OS ${selectedId}:`, error);
             }
@@ -57,6 +71,7 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
     };
 
     return (
+        <>
         <div className="flex flex-col w-full space-y-4">
             {filteredData.length > 0 ? (
                 filteredData.map((item, index) => {
@@ -180,7 +195,17 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
                     Nenhum registro encontrado
                 </div>
             )}
+
         </div>
+            {showMessageBox && (
+                <MessageBox
+                    type={messageContent.type}
+                    title={messageContent.title}
+                    message={messageContent.message}
+                    onClose={() => setShowMessageBox(false)}
+                />
+            )}
+        </>
     );
 };
 

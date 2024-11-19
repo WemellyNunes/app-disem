@@ -32,6 +32,8 @@ export default function Form() {
     const [isSaved, setIsSaved] = useState(false);
     const [status, setStatus] = useState("A atender");
     const [isLoading, setIsLoading] = useState(false);
+    const [uploadedDocuments, setUploadedDocuments] = useState([]);
+
     const [formData, setFormData] = useState({
         selectedOption: { value: 'comum', required: false },
         classe: { value: '', required: true },
@@ -149,8 +151,17 @@ export default function Form() {
                 observacao: { ...prevData.observacao, value: response.observation },
                 objetoPreparo: { ...prevData.objetoPreparo, value: response.preparationObject },
                 indiceRisco: { ...prevData.indiceRisco, value: response.maintenanceIndicators },
+                documento: { ...prevData.documento, value: response.documents}
                 // Continue para outros campos...
             }));
+            setUploadedDocuments(
+                response.documents.map((doc) => ({
+                    name: doc.name,
+                    size: doc.size,
+                    description: doc.description || "Sem descrição", // Caso não tenha descrição
+                }))
+            );
+            
             setEmptyFields({});
         } catch (error) {
             console.error("Erro ao carregar os dados da ordem de serviço:", error);
@@ -291,7 +302,7 @@ export default function Form() {
             console.error("Erro ao salvar a ordem de serviço:", error);
         } finally {
             setIsLoading(false);
-            setTimeout(() => setShowMessageBox(false), 2500);
+            setTimeout(() => setShowMessageBox(false), 1500);
         }
     };
 
@@ -537,6 +548,10 @@ export default function Form() {
                                     label="Anexar documento(s)"
                                     disabled={!isEditing}
                                     onFilesUpload={handleFileChange}
+                                    initialFiles={uploadedDocuments.map((doc) => ({
+                                        file: { name: doc.name, size: doc.size }, // Simula um arquivo
+                                        description: doc.description || "Sem descrição", // Adicione descrição se existir
+                                    }))}
                                 />
                             </div>
                         </SectionCard>

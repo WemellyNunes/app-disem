@@ -2,21 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { getTypeMaintenanceStatistics } from '../../../utils/api/api';
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const DoughnutChart = () => {
     const [chartData, setChartData] = useState({
-        labels: ['Corretiva', 'Preventiva'],
-        datasets: [
-            {
-                label: 'Manutenções',
-                data: [300, 200], // Valores iniciais, substituir pelos dados da API futuramente
-                backgroundColor: ['#4bc0c0', '#05668D'],
-                hoverBackgroundColor: ['#4bc0c0', '#05668D'],
-                borderWidth: 3,
-            },
-        ],
+        labels: [],
+        datasets: [],
     });
 
     const currentMonth = new Date().toLocaleString('default', { month: 'long' });
@@ -24,27 +17,53 @@ const DoughnutChart = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('URL_DO_ENDPOINT'); // Substitua pela URL da sua API
-                const data = await response.json();
-                setChartData((prevState) => ({
-                    ...prevState,
+                const data = await getTypeMaintenanceStatistics();
+
+                const labels = Object.keys(data).map((key) => {
+                    if (key === 'CORRETIVA') { return 'Corretiva'};
+                    if (key === 'PREVENTIVA') { return 'Preventiva'};
+                    if (key === 'EXTRAMANUTENCAO') { return 'Extramanutenção'};
+                    return key; // Caso outros tipos sejam adicionados
+                });
+
+                const values = Object.values(data);
+                const total = values.reduce((sum, value) => sum + value, 0);
+                const percentages = values.map((value) => ((value / total) * 100).toFixed(2));
+
+                setChartData({
+                    labels,
                     datasets: [
                         {
-                            ...prevState.datasets[0],
-                            data: [data.corretiva, data.preventiva],
+                            data: values,
+                            backgroundColor: ['#4bc0c0', '#05668D', '#59A5D8'], // Mesma ordem das labels
+                            hoverBackgroundColor: ['#4bc0c0', '#05668D', '#59A5D8'],
+                            borderWidth: 3,
                         },
                     ],
-                }));
+                });
+                setChartOptions({
+                    plugins: {
+                        datalabels: {
+                            formatter: (_, context) => {
+                                const value = context.dataset.data[context.dataIndex];
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${percentage}%`; // Mostra o percentual
+                            },
+                            color: '#fff', // Cor do texto
+                            font: {
+                                weight: 'bold',
+                            },
+                        },
+                    },
+                });
             } catch (error) {
-                console.error('Erro ao buscar dados:', error);
+                console.error("Erro ao carregar dados do gráfico:", error);
             }
         };
 
         fetchData();
-
-        // Descomente a linha abaixo para habilitar a busca da API
-        // fetchData();
     }, []);
+
 
     const options = {
         responsive: true,
@@ -57,18 +76,21 @@ const DoughnutChart = () => {
                 display: true,
                 text: `Tipo de manutenções abertas em ${currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)}`,
                 font: {
-                    size: 18,
+                    size: 16,
                 },
             },
             datalabels: {
-                display: true, // Certifica-se de que os valores estejam sempre visíveis
-                color: '#fff', // Cor dos números
+                display: true,
+                formatter: (_, context) => {
+                    const value = context.dataset.data[context.dataIndex];
+                    const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                    const percentage = ((value / total) * 100).toFixed(1);
+                    return `${percentage}%`; // Exibe o valor em porcentagem
+                },
+                color: '#fff',
                 font: {
                     weight: 'bold',
                 },
-                formatter: (value) => value, // Exibe o valor numérico
-                anchor: 'center',
-                align: 'center',
             },
         },
     };

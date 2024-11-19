@@ -2,50 +2,56 @@ import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { getOrdersByCampus } from '../../../utils/api/api';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
 const LocationBarChart = () => {
     const [chartData, setChartData] = useState({
-        labels: [
-            'Campus Marabá',
-            'Campus Santana do Araguaia',
-            'Campus Xinguara',
-            'Campus São Felix do Xingu',
-            'Campus Rondon do Pará'
-        ],
+        labels: [],
         datasets: [
             {
                 label: 'OS Abertas',
-                data: [50, 30, 20, 40, 25], // Dados iniciais substituíveis pela API futuramente
-                backgroundColor: ['#13BFD7', '#2783ED', '#59A5D8', '#386FA4', '#133C55'],
+                data: [], // Dados iniciais substituíveis pela API futuramente
+                backgroundColor: [],
                 borderWidth: 0,
             },
         ],
     });
 
     useEffect(() => {
-        // Função para buscar dados da API
         const fetchData = async () => {
             try {
-                const response = await fetch('URL_DO_ENDPOINT'); // Substitua pela URL da sua API
-                const data = await response.json();
-                setChartData((prevState) => ({
-                    ...prevState,
+                const data = await getOrdersByCampus();
+
+                // Mapear os dados retornados pela API
+                const labels = Object.keys(data).map((key) => {
+                    if( key === "MARABA") { return 'Marabá'};
+                    if ( key === "SANTANA_DO_ARAGUAIA") { return 'Sanatan do Araguaia'};
+                    if ( key === "XINGUARA") { return 'Xinguara'};
+                    if ( key === "SAO_FELIX_DO_XINGU") { return 'São Fêlix do Xingu'};
+                    if ( key === "RONDON_DO_PARA") { return 'Rondon do Pará'};
+                    return key;
+                }); // Pegue os nomes dos campi
+                const values = Object.values(data); // Pegue os valores correspondentes
+
+                setChartData({
+                    labels,
                     datasets: [
                         {
-                            ...prevState.datasets[0],
-                            data: data.osData, // Ajuste o campo conforme o retorno da API
+                            label: 'OS Abertas',
+                            data: values,
+                            backgroundColor: ['#13BFD7', '#2783ED', '#59A5D8', '#386FA4', '#133C55'], // Ajuste as cores conforme o número de labels
+                            borderWidth: 0,
                         },
                     ],
-                }));
+                });
             } catch (error) {
-                console.error('Erro ao buscar dados:', error);
+                console.error("Erro ao carregar dados do gráfico:", error);
             }
         };
 
-        // Descomente a linha abaixo para habilitar a busca da API
-         fetchData();
+        fetchData();
     }, []);
 
     const options = {

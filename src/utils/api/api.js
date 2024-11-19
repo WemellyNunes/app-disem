@@ -72,4 +72,45 @@ export const createOrder = async (orderData) => {
     }
 };
 
+export const getClassStatistics = async () => {
+  try {
+      const response = await api.get('/statistics/classification');
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar estatísticas de classificação:", error);
+      throw error;
+  }
+};
+
+export const getTypeMaintenanceStatistics = async () => {
+  try {
+      const response = await api.get('/statistics/typeMaintenance');
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar estatísticas de tipo de manutenção:", error);
+      throw error;
+  }
+};
+
+export const getOrdersBySystemStatistics = async () => {
+  try {
+      const response = await api.get('/statistics/system'); // Atualize o endpoint conforme necessário
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar estatísticas de ordens por sistema:", error);
+      throw error;
+  }
+};
+
+export const getOrdersByCampus = async () => {
+  try {
+      const response = await api.get('/statistics/campus'); // Atualize o endpoint conforme necessário
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar estatísticas de ordens por campus:", error);
+      throw error;
+  }
+};
+
+
 export default api;
