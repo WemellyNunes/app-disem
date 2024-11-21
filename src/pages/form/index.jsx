@@ -365,7 +365,7 @@ export default function Form() {
                 />
             )}
 
-            <div className="flex flex-col space-y-1 mb-1 mt-1 px-0 md:px-32">
+            <div className="flex flex-col gap-y-1 px-0 md:px-32">
                 <MessageCard
                     type="info"
                     title="Info."
@@ -391,7 +391,7 @@ export default function Form() {
                 </div>
 
                 <div className="flex flex-col">
-                    <div className="flex-1 ">
+                    <div className="flex-1 mb-2">
                         <SectionCard title={"Dados da ordem de serviço"}>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6">
                                 <InputSelect
@@ -425,7 +425,7 @@ export default function Form() {
                         </SectionCard>
                     </div>
 
-                    <div className="flex-1">
+                    <div className="flex-1 mb-2">
                         <SectionCard title="Dados do solicitante">
                             <div className="grid grid-cols-1 md:grid-cols-1 gap-x-6">
                                 <InputPrimary
@@ -558,7 +558,7 @@ export default function Form() {
                     </div>
                 </div>
 
-                <div className="flex flex-col border-t border-primary-light bg-white items-center justify-center md:flex-row h-14 md:h-16 gap-y-2npm bottom-0">
+                <div className="flex flex-col border-b border-primary-light bg-white items-center justify-center md:flex-row h-14 md:h-16 gap-y-2npm bottom-0 shadow z-10">
                     <div className="flex pr-0 md:pr-6">
                         {isCreating ? (
                             // Modo de criação (1): Cancelar e Salvar

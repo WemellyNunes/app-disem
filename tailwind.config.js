@@ -15,10 +15,11 @@ export default {
               dark: '#555555',
               red: '#D50505',
               gray: '#F7F7F7',
+              back: '#FCFCFC',
             },
             secondary: {
               hover: '#D7E3F5',
-              back: '#FCFCFC',
+              back: '#f7f7f7',
               light: '#13BFD7',
             },
             tertiary: {

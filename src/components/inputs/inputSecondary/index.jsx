@@ -29,7 +29,7 @@ const InputSecondary = forwardRef(
                 </label>
                 <div className="relative flex items-center">
                     <input
-                        className={`appearance-none block w-full text-gray-400 border border-gray-300 rounded h-9 md:h-10 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500
+                        className={`appearance-none block w-full text-gray-400 border border-gray-400 rounded h-9 md:h-10 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500
                         focus:border-blue-500 my-1 text-xs md:text-sm italic ${disabled ? 'bg-primary-gray border-none text-gray-400' : 'bg-white'} ${className}`}
                         id="inputWithButton"
                         type={showPassword ? 'text' : type}

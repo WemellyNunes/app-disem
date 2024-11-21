@@ -3,7 +3,7 @@ const StatCard = ({ title, approved, finalized, backgroundColor, percentage, hov
       <div className={`p-4 w-full mb-0.5 rounded-md shadow-md ${backgroundColor} text-white flex flex-col justify-between ${hover}`} >
         <div className="flex justify-between items-center mb-4">
           {percentage && (
-            <div className="hidden md:flex bg-white text-blue-600 rounded-full h-11 w-11 flex items-center justify-center">
+            <div className="hidden md:flex bg-white text-blue-600 rounded-full h-11 w-11 items-center justify-center">
               <span className="text-base font-medium ">{percentage}%</span>
             </div>
           )}

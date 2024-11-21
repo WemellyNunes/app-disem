@@ -52,7 +52,9 @@ const BarGraphic = () => {
         scales: {
             x: {
                 beginAtZero: true,
-                max: 70, 
+                ticks: {
+                    stepSize: 10,
+                }, 
             },
         },
         responsive: true,

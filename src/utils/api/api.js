@@ -72,6 +72,9 @@ export const createOrder = async (orderData) => {
     }
 };
 
+
+//ENDPOINT DE ESTATISTICA
+
 export const getClassStatistics = async () => {
   try {
       const response = await api.get('/statistics/classification');
@@ -112,5 +115,54 @@ export const getOrdersByCampus = async () => {
   }
 };
 
+export const getSipacOrdersCount = async () => {
+  try {
+      const response = await api.get('/statistics/sipac');
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar estatísticas SIPAC:", error);
+      throw error;
+  }
+};
+
+export const getMonthOrdersCount = async () => {
+  try {
+      const response = await api.get('/statistics/month');
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar estatísticas mensais:", error);
+      throw error;
+  }
+};
+
+export const getWeekOrdersCount = async () => {
+  try {
+      const response = await api.get('/statistics/week');
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar estatísticas semanais:", error);
+      throw error;
+  }
+}
+
+export const getTodayOrdersCount = async () => {
+  try {
+      const response = await api.get('/statistics/today');
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar estatísticas diárias:", error);
+      throw error;
+  }
+};
+
+export const getYearOrdersCount = async () => {
+  try {
+      const response = await api.get('/statistics/year');
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar estatísticas anuais:", error);
+      throw error;
+  }
+};
 
 export default api;

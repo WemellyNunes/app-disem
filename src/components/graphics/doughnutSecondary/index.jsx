@@ -9,8 +9,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 const DoughnutSystem = () => {
     const [chartData, setChartData] = useState({
         labels: [],
-        datasets: [
-            ],
+        datasets: [],
     });
 
     useEffect(() => {
@@ -66,7 +65,7 @@ const DoughnutSystem = () => {
                 display: true,
                 text: 'Manutenções abertas por tipo de sistema',
                 font: {
-                    size: 18, // Aumenta o tamanho do título
+                    size: 16, // Aumenta o tamanho do título
                 },
             },
             tooltip: {

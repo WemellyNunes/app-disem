@@ -27,7 +27,7 @@ const LocationBarChart = () => {
                 // Mapear os dados retornados pela API
                 const labels = Object.keys(data).map((key) => {
                     if( key === "MARABA") { return 'Marabá'};
-                    if ( key === "SANTANA_DO_ARAGUAIA") { return 'Sanatan do Araguaia'};
+                    if ( key === "SANTANA_DO_ARAGUAIA") { return 'Santana do Araguaia'};
                     if ( key === "XINGUARA") { return 'Xinguara'};
                     if ( key === "SAO_FELIX_DO_XINGU") { return 'São Fêlix do Xingu'};
                     if ( key === "RONDON_DO_PARA") { return 'Rondon do Pará'};
@@ -65,7 +65,7 @@ const LocationBarChart = () => {
                 display: true,
                 text: 'OS abertas por localidade',
                 font: {
-                    size: 18, // Aumenta o tamanho do título
+                    size: 16, // Aumenta o tamanho do título
                 },
             },
             datalabels: {

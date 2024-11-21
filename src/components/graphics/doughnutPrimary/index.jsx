@@ -79,6 +79,13 @@ const DoughnutChart = () => {
                     size: 16,
                 },
             },
+            tooltip: {
+                callbacks: {
+                    label: (tooltipItem) => {
+                        return `${tooltipItem.label}: ${tooltipItem.raw}%`; // Exibe % no tooltip
+                    },
+                },
+            },
             datalabels: {
                 display: true,
                 formatter: (_, context) => {

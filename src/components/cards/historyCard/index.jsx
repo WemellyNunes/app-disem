@@ -2,7 +2,7 @@ import { FaTimes, FaCaretDown } from 'react-icons/fa';
 
 const HistoryCard = ({ history, onClose }) => {
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-30 z-50 ">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-400 bg-opacity-10 z-50 ">
             <div className="bg-white p-4 rounded-lg shadow-lg w-full md:w-1/3 mx-1 md:mx-0">
                 <div className="flex justify-between items-center">
                     <h2 className="text-base md:text-lg text-primary-light font-medium">Histórico</h2>
