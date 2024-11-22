@@ -144,12 +144,12 @@ export default function UserPage() {
                         icon={FaUsers}
                         text="Usuários do sistema"
                         backgroundColor="bg-white"
-                        textColor="text-primary-light"
+                        textColor="text-primary-dark"
                     />
                 </div>
-                <div className="flex flex-col md:flex-row gap-4 mt-3">
-                    <div className="flex flex-col p-6 md:p-8 w-full h-full md:w-1/3 gap-y-4 rounded-md bg-white shadow">
-                        <p className="text-base md:text-lg font-normal text-primary-light mb-2">{isEditing ? "Editar Usuário" : "Cadastrar novo usuário"}</p>
+                <div className="flex flex-col md:flex-row gap-4 mt-3 px-6">
+                    <div className="flex flex-col p-6 md:p-8 w-full h-full md:w-1/3 gap-y-4 rounded-md bg-white border border-gray-300 shadow-sm">
+                        <p className="text-sm font-medium text-primary-dark mb-2">{isEditing ? "Editar Usuário" : "Cadastrar novo usuário"}</p>
 
                         <InputSecondary
                             label="Usuário *"
@@ -198,9 +198,9 @@ export default function UserPage() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col w-full py-4 px-6 rounded-md bg-white shadow">
-                        <div className="flex mb-2 border-b border-primary-light">
-                            <p className="text-lg font-normal text-primary-light py-2">Lista de usuários</p>
+                    <div className="flex flex-col w-full py-4 px-6 rounded-md bg-white border border-gray-300 shadow-sm">
+                        <div className="flex mb-2 border-b border-gray-300">
+                            <p className="text-sm font-normal text-primary-dark py-2">Lista de usuários</p>
                         </div>
 
                         <p className="flex justify-end text-xs text-primary-dark mb-2">Usuários: {users.length}</p>

@@ -18,7 +18,7 @@ const InputSelect = ({ label, options, onChange, value, disabled, className, err
                 <select
                     className={`block appearance-none w-full text-gray-400 border border-gray-400
                     h-9 md:h-10 px-4 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500
-                    focus:border-blue-500 text-xs md:text-sm italic cursor-pointer my-1 ${disabled ? 'bg-primary-gray border-none' : 'bg-white'} ${className} `}
+                    focus:border-blue-500 text-xs md:text-sm italic cursor-pointer my-1 ${disabled ? 'text-gray-950 border-none' : 'bg-white'} ${className} `}
                     onChange={(e) => onChange(e.target.value)}
                     onClick={handleToggle}
                     value={value} 
@@ -34,7 +34,7 @@ const InputSelect = ({ label, options, onChange, value, disabled, className, err
                     ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-primary-dark px-2">
-                {isOpen ? <FaChevronUp className={`h-4 w-4 text-primary-light ${disabled ? 'opacity-50 cursor-not-allowed' : ''} `} /> : <FaChevronDown className={`h-4 w-4 text-primary-light ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} />}
+                {isOpen ? <FaChevronUp className={`h-4 w-4 text-primary-light ${disabled ? 'opacity-50 cursor-not-allowed text-white' : ''} `} /> : <FaChevronDown className={`h-4 w-4 text-primary-light ${disabled ? 'opacity-50 cursor-not-allowed text-white' : ''}`} />}
                 </div>
             </div>
             {errorMessage && <span className="text-red-600 text-xs">{errorMessage}</span>}

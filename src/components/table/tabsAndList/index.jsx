@@ -222,22 +222,24 @@ const TabsAndList = () => {
             <div className="w-full px-6">
                 <List filteredData={currentItems} setFilteredData={setOsData} onProgramClick={handleProgramClick} />
             </div>
-            <div className="flex fixed bottom-0 w-full justify-between bg-white  items-center shadow-sm mt-1 px-4 text-xs text-primary-dark z-10">
-                <div>{filteredData.length} itens de {filteredData.length}</div>
-                <div>
-                    <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={30}>30</option>
-                    </select>
-                </div>
-                <div className='flex flex-row items-center'>
-                    <button onClick={() => handlePageChange(1)} disabled={currentPage === 1} className='text-primary-light'><MdNavigateBefore size={25}/></button>
-                    <button onClick={() => handlePageChange(Math.max(currentPage - 1, 1))} disabled={currentPage === 1}></button>
-                    <span>{currentPage} de {totalPages}</span>
-                    <button onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))} disabled={currentPage === totalPages}></button>
-                    <button onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} className='text-primary-light'><MdNavigateNext size={25}/></button>
+            <div className='flex items-center justify-center'>
+                <div className="flex fixed bottom-0 w-full md:w-1/2 justify-between bg-white text-center items-center shadow-md mt-6 px-4 text-xs text-primary-dark mx-40">
+                    <div>{filteredData.length} itens de {filteredData.length}</div>
+                    <div>
+                        <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={30}>30</option>
+                        </select>
+                    </div>
+                    <div className='flex flex-row items-center'>
+                        <button onClick={() => handlePageChange(1)} disabled={currentPage === 1} className='text-primary-light'><MdNavigateBefore size={25}/></button>
+                        <button onClick={() => handlePageChange(Math.max(currentPage - 1, 1))} disabled={currentPage === 1}></button>
+                        <span>{currentPage} de {totalPages}</span>
+                        <button onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))} disabled={currentPage === totalPages}></button>
+                        <button onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} className='text-primary-light'><MdNavigateNext size={25}/></button>
+                    </div>
                 </div>
             </div>
 

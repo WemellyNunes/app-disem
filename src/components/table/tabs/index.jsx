@@ -3,7 +3,7 @@ const Tabs = ({ activeTab, setActiveTab }) => {
     const tabs = ['Abertas', 'Programadas', 'Resolvidas', 'Finalizadas', 'Negadas'];
 
     return (
-        <nav className="flex w-full bg-white rounded-lg font-normal text-xs md:text-sm border-b">
+        <nav className="flex w-full bg-white font-normal text-xs md:text-sm border-b border-gray-300">
             {tabs.map((tab) => (
                 <button
                     key={tab}

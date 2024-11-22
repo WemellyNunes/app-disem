@@ -16,11 +16,9 @@ function AppRoutes() {
     const isLoginPage = location.pathname === '/'; 
     // Verifica se está na página de login
     return (
-        <div className="flex"> {/* Flex container para ocupar espaço sem overflow horizontal */}
-            {/* Exibe o Sidebar apenas se não estiver na página de login */}
+        <div className="flex">
             {!isLoginPage && <Sidebar isCollapsed={isCollapsed} toggleSidebar={() => setIsCollapsed(!isCollapsed)} />}
             
-            {/* Conteúdo principal, que varia conforme a rota e ocupa o restante do espaço */}
             <div className={`transition-all duration-300 ease-in w-full flex-grow px-1 ${!isLoginPage ? (isCollapsed ? 'ml-0 md:ml-14' : 'ml-0 md:ml-60') : ''}`}>
                 <Routes>
                     <Route path="/" element={<Login />} />
