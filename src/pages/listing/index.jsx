@@ -13,7 +13,7 @@ export default function Listing() {
                         icon={FaRegListAlt}
                         text="Listas "
                         backgroundColor="bg-white"
-                        textColor="text-primary-light"
+                        textColor="text-primary-dark"
                     />
                 </div>
 

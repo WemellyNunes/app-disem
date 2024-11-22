@@ -8,6 +8,8 @@ import HistoryCard from "../../cards/historyCard";
 import ActionsMenu from "../../verticalMenu/actionMenu";
 import ConfirmationModal from "../../modal/confirmation";
 import MessageBox from "../../box/message";
+import { TbClipboardOff } from "react-icons/tb";
+
 
 const List = ({ filteredData, setFilteredData, onProgramClick }) => {
     const navigate = useNavigate();
@@ -102,7 +104,7 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
                         return (
                             <div
                                 key={item.id}
-                                className={`flex flex-col mt-2 md:flex-row p-4 rounded shadow-sm hover:border hover:border-primary-light space-y-1 md:space-y-0 bg-white`}
+                                className={`flex flex-col mt-2 md:flex-row p-4 rounded shadow-sm border border-gray-400 hover:border hover:border-primary-light space-y-1 md:space-y-0 bg-white`}
                             >
                                 <div className="flex flex-col md:flex-row w-full justify-between">
                                     <div className="flex flex-col md:w-1/2 space-y-1 pb-2 md:pb-0 text-primary-dark text-xs md:text-sm">
@@ -192,8 +194,13 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
                         );
                     })
                 ) : (
-                    <div className="text-center p-4 text-sm text-gray-500">
-                        Nenhum registro encontrado
+                    <div className=" flex flex-col items-center justify-center p-4 text-sm text-gray-500">
+                        <div>
+                            <TbClipboardOff className="h-6 w-6 text-gray-300"/>
+                        </div>
+                        <div>
+                            Nenhum registro encontrado
+                        </div>
                     </div>
                 )}
 

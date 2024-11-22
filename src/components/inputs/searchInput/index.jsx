@@ -15,9 +15,9 @@ const SearchInput = ({ placeholder, onSearch }) => {
     };
 
     return (
-        <div className={`flex items-center bg-white border border-primary-light  h-9 px-2 rounded-md transition-all duration-300 ease-in-out ${isExpanded ? 'w-full' : 'w-9'} md:w-1/4`}>
+        <div className={`flex items-center bg-white border border-gray-400 hover:border-primary-light  h-8 px-2 rounded-md transition-all duration-300 ease-in-out ${isExpanded ? 'w-full' : 'w-9'} md:w-1/4`}>
             <FaSearch
-                className="text-primary-light cursor-pointer"
+                className="text-primary-light cursor-pointer h-3 w-3"
                 onClick={toggleExpand}
             />
             <input
@@ -25,7 +25,7 @@ const SearchInput = ({ placeholder, onSearch }) => {
                 placeholder={placeholder}
                 value={searchTerm}
                 onChange={handleInputChange}
-                className={` text-xs md:text-base font-light text-primary-dark w-full placeholder-primary-dark rounded-md py-1 px-2 focus:outline-none transition-all duration-300 ease-in-out ${isExpanded ? 'ml-2 block' : 'hidden'} md:block w-full' `}
+                className={` text-xs md:text-md font-light text-primary-dark w-full placeholder-primary-dark rounded-md px-2 focus:outline-none transition-all duration-300 ease-in-out ${isExpanded ? 'ml-2 block' : 'hidden'} md:block w-full' `}
             />
         </div>
     );
