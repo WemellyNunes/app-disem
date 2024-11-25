@@ -58,7 +58,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                 h-9 md:h-10 transition-colors duration-200 ${disabled ? 'bg-primary-gray border-gray-300 text-gray-400' : 'border-primary-light hover:bg-blue-50'} ${className}`}
                 onClick={() => {
                     if (!disabled) {
-                        setFileToEdit(null); // Limpa o arquivo de edição ao abrir para novos uploads
+                        setFileToEdit(null);
                         setShowModal(true);
                     }
                 

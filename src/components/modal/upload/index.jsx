@@ -36,7 +36,7 @@ const UploadModal = ({ isOpen, onClose, onUpload, initialFiles = [], initialDesc
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg mx-2 md:mx-0 w-full md:w-1/3">
-                <h2 className="text-base md:text-xl font-medium text-primary-light mb-4">Selecione os arquivos</h2>
+                <h2 className="text-sm md:text-base font-medium text-primary-light mb-4">Selecione os arquivos</h2>
                 <div>
                     <input
                         type="file"

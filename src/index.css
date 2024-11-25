@@ -6,5 +6,5 @@
 
 body {
     @apply font-sans;
-    @apply bg-white;
+    @apply bg-primary-back;
 }

@@ -165,4 +165,15 @@ export const getYearOrdersCount = async () => {
   }
 };
 
+export const createPrograming = async (programingData) => {
+  try {
+      const response = await api.post('/programing', programingData);
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao salvar programação:", error);
+      throw error;
+  }
+};
+
+
 export default api;

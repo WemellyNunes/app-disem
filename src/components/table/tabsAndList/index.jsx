@@ -162,10 +162,16 @@ const TabsAndList = () => {
 
     const memoizedFilteredData = useMemo(() => filterData(), [osData, appliedFilters, searchTerm, activeTab]);
 
+    
+    const handleDeleteItem = (id) => {
+        const updatedData = osData.filter(item => item.id !== id);
+        setOsData(updatedData); // Atualiza o estado principal
+    };    
+    
     useEffect(() => {
-            setFilteredData(memoizedFilteredData);
-    }, [memoizedFilteredData]);
-
+        setFilteredData(memoizedFilteredData);
+    }, [memoizedFilteredData, osData]);
+    
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const currentItems = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -219,9 +225,16 @@ const TabsAndList = () => {
             <div className="w-full overflow-auto px-6">
                 <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
+
             <div className="w-full px-6">
-                <List filteredData={currentItems} setFilteredData={setOsData} onProgramClick={handleProgramClick} />
+                <List 
+                filteredData={currentItems} 
+                setFilteredData={setFilteredData} 
+                onProgramClick={handleProgramClick} 
+                onDeleteItem={handleDeleteItem}
+                />
             </div>
+
             <div className='flex items-center justify-center'>
                 <div className="flex fixed bottom-0 w-full md:w-1/2 justify-between bg-white text-center items-center shadow-md mt-6 px-4 text-xs text-primary-dark mx-40">
                     <div>{filteredData.length} itens de {filteredData.length}</div>

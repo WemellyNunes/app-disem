@@ -11,7 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import DateTimePicker from "../../components/inputs/dateTimePicker";
 import { mockOrderServiceData } from "./dados";
 import HistoryCard from "../../components/cards/historyCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MessageBox from "../../components/box/message";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { TbFileExport } from "react-icons/tb";
@@ -20,6 +20,8 @@ import FinalizeSection from "../../components/section/FinalizeSection";
 import AddReport from "../../components/modal/report";
 import ViewReports from "../../components/modal/viewReports";
 import { useUser } from "../../contexts/user";
+
+import { getOrderById } from "../../utils/api/api";
 
 export default function Programing() {
     const { user, setUser } = useUser();
@@ -37,6 +39,7 @@ export default function Programing() {
         observacao: { value: null, required: false},
     });
 
+    const [orderServiceData, setOrderServiceData] = useState(null);
     const [showHistory, setShowHistory] = useState(false);
     const [emptyFields, setEmptyFields] = useState({});
     const [showMessageBox, setShowMessageBox] = useState(false);
@@ -50,7 +53,24 @@ export default function Programing() {
     const [showViewReports, setShowViewReports] = useState(false);
     const [reports, setReports] = useState([])
     const [status, setStatus] = useState("A atender");
-    const [finalObservation, setFinalObservation] = useState(''); // Status inicial
+    const [finalObservation, setFinalObservation] = useState(''); 
+
+    useEffect(() => {
+        const fetchOrderData = async () => {
+            try {
+                const data = await getOrderById(id);
+                setOrderServiceData(data); // Salva os dados da OS no estado
+            } catch (error) {
+                console.error("Erro ao buscar dados da OS:", error);
+            }
+        };
+
+        fetchOrderData();
+    }, [id]);
+
+    if (!orderServiceData) {
+        return <p>Carregando...</p>;
+    }
 
     const handleFinalization = (observation) => {
         setFinalObservation(observation); 
@@ -66,8 +86,6 @@ export default function Programing() {
         `OS Nº ${mockOrderServiceData.requisicao} Editada em 00/00/0000 agente: Fulano da Silva`,
         `OS Nº ${mockOrderServiceData.requisicao} Programada em 00/00/0000 agente: Fulano da Silva`
     ];
-
-    const orderServiceData = mockOrderServiceData;
 
     const overseer = [
         { label: 'Almir Lima', value: 'encarregado1' },
@@ -152,22 +170,38 @@ export default function Programing() {
         return Object.keys(newEmptyFields).length === 0;
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!validateFields()) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
             setShowMessageBox(true);
-            setTimeout(() => setShowMessageBox(false), 1500);
             return;
         }
-
-        setIsSaved(true);
-        setUser({ name: "Fulano da Silva", id: "123" });
-        setIsEditing(false);
-        setStatus("Em atendimento");
-        setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Programação salva com sucesso!' });
-        setShowMessageBox(true);
-        setTimeout(() => setShowMessageBox(false), 1200);
+    
+        try {
+            const programingData = {
+                orderService_id: id,
+                datePrograming: formData.data.value,
+                time: formData.turno.value,
+                overseer: formData.encarregado.value,
+                worker: formData.profissionais.value,
+                cost: formData.custo.value,
+                observation: formData.observacao.value,
+            };
+    
+            await createPrograming(programingData);
+    
+            setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Programação salva com sucesso!' });
+            setShowMessageBox(true);
+    
+            // Redirecionar ou exibir mensagem de sucesso
+            navigate("/"); // Exemplo de redirecionamento
+        } catch (error) {
+            console.error("Erro ao salvar programação:", error);
+            setMessageContent({ type: 'error', title: 'Erro.', message: 'Erro ao salvar a programação.' });
+            setShowMessageBox(true);
+        }
     };
+    
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -207,7 +241,7 @@ export default function Programing() {
                     onClose={() => setShowMessageBox(false)}
                 />
             )}
-            <div className="flex flex-col">
+            <div className="flex flex-col mx-6">
 
                 <div className="flex flex-col">
                     <StatusBar
@@ -224,47 +258,47 @@ export default function Programing() {
 
                 <div className="flex flex-col gap-x-2.5 md:flex-row">
                     <div className="w-full md:w-5/12">
-                        <SectionCard title="Dados da ordem de serviço">
+                        <SectionCard background="bg-gray-50" title="Dados da ordem de serviço">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                                 <InputPrimary
                                     label="Classificação"
-                                    placeholder={orderServiceData.classificacao}
+                                    placeholder={orderServiceData.classification}
                                     disabled
                                 />
                                 <InputPrimary
                                     label="Unidade"
-                                    placeholder={orderServiceData.unidade}
+                                    placeholder={orderServiceData.unit}
                                     disabled
                                 />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-1 gap-x-4">
                                 <InputPrimary
                                     label="Solicitante"
-                                    placeholder={orderServiceData.solicitante}
+                                    placeholder={orderServiceData.requester}
                                     disabled
                                 />
                                 <InputPrimary
                                     label="Objeto de preparo"
-                                    placeholder={orderServiceData.objetoPreparo}
+                                    placeholder={orderServiceData.preparationObject}
                                     disabled
                                 />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                                 <InputPrimary
                                     label="Tipo de manutenção"
-                                    placeholder={orderServiceData.tipoManutencao}
+                                    placeholder={orderServiceData.typeMaintenance}
                                     disabled
                                 />
                                 <InputPrimary
                                     label="Sistema"
-                                    placeholder={orderServiceData.sistema}
+                                    placeholder={orderServiceData.system}
                                     disabled
                                 />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                                 <InputPrimary
                                     label="Unidade da manutenção"
-                                    placeholder={orderServiceData.unidadeManutencao}
+                                    placeholder={orderServiceData.maintenanceUnit}
                                     disabled
                                 />
                                 <InputPrimary
@@ -276,18 +310,16 @@ export default function Programing() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                                 <InputPrimary
                                     label="Data do cadastro"
-                                    placeholder={orderServiceData.dataCadastro}
+                                    placeholder={orderServiceData.date}
                                     disabled
                                 />
                                 <InputPrimary
                                     label="Dias em aberto"
-                                    placeholder={orderServiceData.diasEmAberto}
+                                    placeholder={orderServiceData.openDays}
                                     disabled
                                 />
                             </div>
-                            <div className="mt-2">
-                                <InputUpload label="Anexar documento(s)" disabled />
-                            </div>
+                    
                             <p className="mt-2 text-sm text-gray-400">Cadastrado por: {user.name}</p>
                         </SectionCard>
                     </div>
@@ -418,8 +450,6 @@ export default function Programing() {
                                     )}
                                 </div>
                             </div>
-
-
                         </SectionCard>
                     </div>
                 </div>

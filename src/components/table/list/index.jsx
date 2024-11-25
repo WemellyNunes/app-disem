@@ -11,7 +11,7 @@ import MessageBox from "../../box/message";
 import { TbClipboardOff } from "react-icons/tb";
 
 
-const List = ({ filteredData, setFilteredData, onProgramClick }) => {
+const List = ({ filteredData, onDeleteItem }) => {
     const navigate = useNavigate();
 
     const [showHistory, setShowHistory] = useState(false);
@@ -22,11 +22,11 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
 
     const statusClasses = {
-        'A atender': 'font-medium text-orange-500 bg-orange-100 rounded-md p-1',
-        'Em atendimento': 'font-medium  text-status-prog bg-status-bgProg rounded-md p-1',
-        'Resolvido': 'font-medium text-status-resp bg-status-bgResp rounded-md p-1',
-        'Finalizada': 'font-medium text-status-finish bg-status-bgFinish rounded-full p-1',
-        'Negada': 'font-medium text-status-negative bg-status-bgNegative rounded-full p-1'
+        'A atender': 'font-medium text-orange-500 bg-orange-100 rounded-md p-1 text-xs',
+        'Em atendimento': 'font-medium text-status-prog bg-status-bgProg rounded-md p-1 text-xs',
+        'Resolvido': 'font-medium text-status-resp bg-status-bgResp rounded-md p-1 text-xs',
+        'Finalizada': 'font-medium text-status-finish bg-status-bgFinish rounded-full p-1 text-xs',
+        'Negada': 'font-medium text-status-negative bg-status-bgNegative rounded-full p-1 text-xs'
     };
 
     const handleDelete = (id) => {
@@ -41,28 +41,34 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
         setShowConfirmation(true);
     };
 
+    const handleProgramClick = (id) => {
+        navigate(`/programing/${id}`);
+    };
+    
+
     const handleConfirmAction = async () => {
         setShowConfirmation(false); // Fecha o modal
-
+     
         if (actionType === 'delete') {
             try {
                 await deleteOrder(selectedId); // Chama o endpoint de exclusão
                 console.log(`OS ${selectedId} deletada com sucesso.`);
-
-                // Atualizar a lista localmente
-                const updatedData = filteredData.filter((item) => item.id !== selectedId);
-                setFilteredData(updatedData); // Atualiza o estado da lista no pai
-
+     
+                // Chame a função do pai para atualizar a lista
+                if (onDeleteItem) {
+                    onDeleteItem(selectedId);
+                }
+     
                 setMessageContent({
                     type: 'success',
                     title: 'Sucesso',
                     message: `A OS ${selectedId} foi removida com sucesso.`,
                 });
                 setShowMessageBox(true);
-
+     
                 // Ocultar a mensagem após alguns segundos
                 setTimeout(() => setShowMessageBox(false), 1500);
-
+     
             } catch (error) {
                 console.error(`Erro ao deletar OS ${selectedId}:`, error);
             }
@@ -71,6 +77,7 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
             navigate(`/form/${selectedId}`);
         }
     };
+    
 
     return (
         <>
@@ -107,7 +114,7 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
                                 className={`flex flex-col mt-2 md:flex-row p-4 rounded shadow-sm border border-gray-300 hover:border hover:border-primary-light space-y-1 md:space-y-0 bg-white`}
                             >
                                 <div className="flex flex-col md:flex-row w-full justify-between">
-                                    <div className="flex flex-col md:w-1/2 space-y-1 pb-2 md:pb-0 text-primary-dark text-xs md:text-sm">
+                                    <div className="flex flex-col md:w-1/2 space-y-1 pb-2 md:pb-0 text-primary-dark text-xs ">
                                         <span className="flex flex-row flex-wrap">
                                             <p className="font-semibold mr-1 ">Requisição:</p>
                                             <p>{item.requisition}</p>
@@ -126,7 +133,7 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
                                         </span>
                                     </div>
 
-                                    <div className="flex flex-col md:w-1/3 space-y-1 text-primary-dark text-xs md:text-sm">
+                                    <div className="flex flex-col md:w-1/3 space-y-1 text-primary-dark text-xs ">
                                         <span className="flex flex-row flex-wrap">
                                             <p className="font-semibold mr-1">Sistema:</p>
                                             <p>{item.system}</p>
@@ -146,7 +153,7 @@ const List = ({ filteredData, setFilteredData, onProgramClick }) => {
                                     </div>
 
                                     <div className="flex flex-col items-center justify-center py-3 md:py-0  md:w-1/3 md:items-end text-sm">
-                                        <button onClick={() => onProgramClick(item.id)} className="flex flex-col text-blue-600 items-center justify-center hover:underline">
+                                        <button onClick={() => handleProgramClick(item.id)} className="flex flex-col text-blue-600 items-center justify-center hover:underline">
                                             {item.programacao ? (
                                                 <>
                                                     Programação

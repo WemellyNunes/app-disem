@@ -22,11 +22,11 @@ function AppRoutes() {
             <div className={`transition-all duration-300 ease-in w-full flex-grow px-1 ${!isLoginPage ? (isCollapsed ? 'ml-0 md:ml-14' : 'ml-0 md:ml-60') : ''}`}>
                 <Routes>
                     <Route path="/" element={<Login />} />
-                    <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="form" element={<Form />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/form" element={<Form />} />
                     <Route path="/form/:id" element={<Form />} />
-                    <Route path="programing/:id" element={<Programing />} />
-                    <Route path="listing" element={<Listing />} />
+                    <Route path="/programing/:id" element={<Programing />} />
+                    <Route path="/listing" element={<Listing />} />
                     <Route path="users" element={<UserPage />} />
                 </Routes>
             </div>

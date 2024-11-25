@@ -17,7 +17,7 @@ const AddReport = ({ onAdd, onCancel }) => {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-1/3 mx-1 md:mx-0">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-base md:text-lg text-primary-light font-medium">Relato</h2>
+                    <h2 className="text-sm md:text-base text-primary-light font-medium">Relato</h2>
                     <button onClick={onCancel}>
                         <FaTimes className="text-gray-500 hover:text-red-500" />
                     </button>

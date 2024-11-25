@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IoIosRemoveCircleOutline, IoIosAddCircleOutline } from "react-icons/io";
 
-const SectionCard = ({ title, children }) => {
+const SectionCard = ({ title, children, background }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSection = () => {
@@ -9,7 +9,7 @@ const SectionCard = ({ title, children }) => {
   };
 
   return (
-    <div className=" bg-white px-4 md:px-6 py-4 rounded shadow-sm mb-0 mt-1.5 w-full">
+    <div className={`px-4 bg-white md:px-6 py-4 border rounded shadow-sm mb-0 mt-1.5 w-full`}>
       <h2
         className="text-primary-light text-sm md:text-base font-normal mb-4 cursor-pointer flex items-center"
         onClick={toggleSection}

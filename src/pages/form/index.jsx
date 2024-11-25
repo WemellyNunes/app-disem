@@ -346,7 +346,6 @@ export default function Form() {
         }
     };
 
-
     const handleContinue = () => {
         navigate("../Listing");
     };
@@ -379,7 +378,7 @@ export default function Form() {
                 />
             </div>
 
-            <div className={` flex flex-col px-0 md:px-32 ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
+            <div className={` flex flex-col px-0  ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
                 <div className="flex justify-center">
                     <PageTitle
                         icon={FaFilePen}
@@ -389,7 +388,7 @@ export default function Form() {
                     />
                 </div>
 
-                <div className="flex flex-col border mt-1 px-6">
+                <div className="flex flex-col bg-white border mt-2 mb-2 px-8 mx-32 rounded">
                     <div className="flex-1 mb-2">
                         <p className="text-sm font-medium text-primary-dark my-6">1. Dados da ordem de serviço</p>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6">
