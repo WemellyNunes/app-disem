@@ -154,7 +154,7 @@ const List = ({ filteredData, onDeleteItem }) => {
 
                                     <div className="flex flex-col items-center justify-center py-3 md:py-0  md:w-1/3 md:items-end text-sm">
                                         <button onClick={() => handleProgramClick(item.id)} className="flex flex-col text-blue-600 items-center justify-center hover:underline">
-                                            {item.programacao ? (
+                                            {item.programings ? (
                                                 <>
                                                     Programação
                                                     <div>

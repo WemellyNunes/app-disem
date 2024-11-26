@@ -29,14 +29,14 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
       <div className={`flex flex-col h-1/2 md:h-full bg-gray-100 border-r md:fixed transition-all duration-300 ${isCollapsed ? 'w-12 md:w-14' : 'w-60'} transform`}>
         <div className="flex flex-col p-4">
           <div className="flex flex-col">
-            <div className="flex items-center justify-start  text-primary-light mt-2">
+            <div className="flex items-center justify-start  text-primary-dark mt-2">
               <button
-                className="text-primary-light"
+                className="text-primary-dark"
                 onClick={toggleSidebar}
               >
                 <FaBars className='h-4 w-4' />
               </button>
-              <span className={`transition-all duration-300 ease-in-out transform text-sm md:text-base font-semibold text-primary-light ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'}`}>
+              <span className={`transition-all duration-300 ease-in-out transform text-sm md:text-base font-semibold text-primary-dark ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'}`}>
                 DISEM
               </span>
             </div>
@@ -49,7 +49,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
-                `flex items-center text-primary-light border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-blue-700 text-white hover:text-primary-light' : ''}`
+                `flex items-center text-primary-dark border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-blue-700 text-white hover:text-primary-light' : ''}`
               }>
               <MdOutlineDashboard className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -63,7 +63,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/form"
               className={({ isActive }) =>
-                `flex items-center text-primary-light border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-blue-700 text-white hover:text-primary-light' : ''}`
+                `flex items-center text-primary-dark border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-blue-700 text-white hover:text-primary-light' : ''}`
               }>
               <FaFilePen className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -77,7 +77,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/listing"
               className={({ isActive }) =>
-                `flex items-center text-primary-light border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-blue-700 text-white hover:text-primary-light' : ''}`
+                `flex items-center text-primary-dark border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-blue-700 text-white hover:text-primary-light' : ''}`
               }>
               <FaRegListAlt className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -91,7 +91,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/users"
               className={({ isActive }) =>
-                `flex items-center text-primary-light border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-blue-700 text-white hover:text-primary-light' : ''}`
+                `flex items-center text-primary-dark border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-blue-700 text-white hover:text-primary-light' : ''}`
               }>
               <FaUsers className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span

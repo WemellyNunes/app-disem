@@ -1,7 +1,7 @@
 const ButtonTertiary = ({ children, bgColor = 'bg-white', textColor = 'text-primary-light', hoverColor ='hover:bg-secondary-hover', icon, ...props }) => {
   return (
       <button
-          className={`${bgColor}  ${textColor} ${hoverColor} font-medium text-xs md:text-base h-9 md:h-11 px-10  rounded-full flex items-center justify-center mr-1.5`}
+          className={`${bgColor}  ${textColor} ${hoverColor} font-medium text-xs md:text-sm h-9 md:h-11 px-10  rounded-full flex items-center justify-center mr-1.5`}
           {...props}
       >
           {icon && <span className="mr-2">{icon}</span>}

@@ -47,14 +47,14 @@ const DateTimePicker = ({ label, placeholder, onDateChange, className, disabled,
   return (
     <div className="relative mb-4">
       <label className="block text-xs md:text-sm font-normal text-primary-dark mb-2">{label}</label>
-      <div className={`flex items-center border border-gray-300 rounded h-9 md:h-10 pl-4 pr-1 ${disabled ? 'bg-primary-gray border-none' : ''} ${className}`}>
+      <div className={`flex items-center border border-gray-400 rounded h-9 md:h-10 pl-4 pr-1 ${disabled ? 'bg-gray-50 border-none' : ''} ${className}`}>
         <input
           type="text"
           placeholder={placeholder || "exemplo: 00/00/0000"}
           value={inputValue}
           onChange={handleInputChange}
           maxLength={10} 
-          className={`w-full border-none focus:outline-none placeholder-gray-400 text-xs md:text-sm italic ${disabled ? 'text-gray-400' : 'text-primary-dark'}`}
+          className={`w-full border-none focus:outline-none placeholder-gray-400 text-xs md:text-sm italic ${disabled ? 'text-gray-400' : 'text-gray-400'}`}
           disabled={disabled} 
         />
         <FaCalendarAlt

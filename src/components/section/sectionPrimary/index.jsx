@@ -9,9 +9,9 @@ const SectionCard = ({ title, children, background }) => {
   };
 
   return (
-    <div className={`px-4 bg-white md:px-6 py-4 border rounded shadow-sm mb-0 mt-1.5 w-full`}>
+    <div className={`px-4 bg-white md:px-6 py-4 border border-gray-300 rounded shadow-sm mb-0 mt-1.5 w-full`}>
       <h2
-        className="text-primary-light text-sm md:text-base font-normal mb-4 cursor-pointer flex items-center"
+        className="text-primary-light text-sm font-medium mb-4 cursor-pointer flex items-center"
         onClick={toggleSection}
       >
         {title}

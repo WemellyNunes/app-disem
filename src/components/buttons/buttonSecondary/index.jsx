@@ -2,7 +2,7 @@ const ButtonSecondary = ({ children, borderColor = 'border border-primary-light'
   return (
       <button
           className={`${borderColor} ${bgColor} ${hoverColor} ${textColor} 
-          font-medium text-sm md:text-base h-9 md:h-11 px-10 rounded-full flex items-center justify-center mr-1.5`}
+          font-medium text-xs md:text-sm h-9 md:h-11 px-10 rounded-full flex items-center justify-center mr-1.5`}
           {...props}
       >
           {icon && <span className="mr-2">{icon}</span>}

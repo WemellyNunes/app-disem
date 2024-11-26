@@ -2,26 +2,27 @@ import StatusBar from "../../components/title/statusBar";
 import SectionCard from "../../components/section/sectionPrimary";
 import InputPrimary from "../../components/inputs/inputPrimary";
 import InputSelect from "../../components/inputs/inputSelect";
-import InputUpload from "../../components/inputs/inputUpload";
 import MultiSelect from "../../components/inputs/multiSelect";
 import ButtonPrimary from "../../components/buttons/buttonPrimary";
 import ButtonSecondary from "../../components/buttons/buttonSecondary";
 import ButtonTertiary from "../../components/buttons/buttonTertiary";
 import { useNavigate, useParams } from "react-router-dom";
 import DateTimePicker from "../../components/inputs/dateTimePicker";
-import { mockOrderServiceData } from "./dados";
 import HistoryCard from "../../components/cards/historyCard";
 import { useState, useEffect } from "react";
 import MessageBox from "../../components/box/message";
-import { FaTrash, FaEdit } from "react-icons/fa";
-import { TbFileExport } from "react-icons/tb";
+import { FaTrash, FaEdit, FaUser, FaBuilding, FaCity, FaCalendar, FaHourglassHalf } from "react-icons/fa";
+import { TbFileExport,TbCalendarTime } from "react-icons/tb";
 import MaintenanceSection from "../../components/section/sectionMaintenance";
 import FinalizeSection from "../../components/section/FinalizeSection";
 import AddReport from "../../components/modal/report";
 import ViewReports from "../../components/modal/viewReports";
 import { useUser } from "../../contexts/user";
+import PageTitle from "../../components/title";
+import { MdTextSnippet, MdSettings, MdPriorityHigh, MdPhone  } from "react-icons/md";
+import { RiListSettingsFill } from "react-icons/ri";
 
-import { getOrderById } from "../../utils/api/api";
+import { getOrderById, createPrograming, getProgramingById } from "../../utils/api/api";
 
 export default function Programing() {
     const { user, setUser } = useUser();
@@ -54,23 +55,9 @@ export default function Programing() {
     const [reports, setReports] = useState([])
     const [status, setStatus] = useState("A atender");
     const [finalObservation, setFinalObservation] = useState(''); 
+    const [programingId, setProgramingId] = useState(null);
 
-    useEffect(() => {
-        const fetchOrderData = async () => {
-            try {
-                const data = await getOrderById(id);
-                setOrderServiceData(data); // Salva os dados da OS no estado
-            } catch (error) {
-                console.error("Erro ao buscar dados da OS:", error);
-            }
-        };
 
-        fetchOrderData();
-    }, [id]);
-
-    if (!orderServiceData) {
-        return <p>Carregando...</p>;
-    }
 
     const handleFinalization = (observation) => {
         setFinalObservation(observation); 
@@ -81,11 +68,6 @@ export default function Programing() {
         setIsMaintenanceSaved(true);
     };
 
-    const history = [
-        `OS Nº ${mockOrderServiceData.requisicao} Criada em 00/00/0000 agente: Fulano da Silva `,
-        `OS Nº ${mockOrderServiceData.requisicao} Editada em 00/00/0000 agente: Fulano da Silva`,
-        `OS Nº ${mockOrderServiceData.requisicao} Programada em 00/00/0000 agente: Fulano da Silva`
-    ];
 
     const overseer = [
         { label: 'Almir Lima', value: 'encarregado1' },
@@ -150,6 +132,74 @@ export default function Programing() {
         });
     };
 
+    useEffect(() => {
+        const fetchOrderData = async () => {
+            try {
+                const orderData = await getOrderById(id); // Busca a OS
+                setOrderServiceData(orderData);
+    
+                // Se a OS retornar um programingId, busca os dados da programação
+                if (orderData.programingId) {
+                    const programingData = await getProgramingById(orderData.programingId);
+                    setFormData((prevData) => ({
+                        ...prevData,
+                        data: { ...prevData.data, value: programingData.datePrograming },
+                        turno: { ...prevData.turno, value: programingData.time },
+                        encarregado: { ...prevData.encarregado, value: programingData.overseer },
+                        profissionais: { ...prevData.profissionais, value: programingData.worker.split(",") },
+                        custo: { ...prevData.custo, value: programingData.cost },
+                        observacao: { ...prevData.observacao, value: programingData.observation },
+                    }));
+                    setProgramingId(orderData.programingId); // Salva o ID da programação no estado
+                    setIsSaved(true);
+                    setIsEditing(false);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar dados da OS ou programação:", error);
+                setMessageContent({
+                    type: 'error',
+                    title: 'Erro ao carregar dados',
+                    message: error.message || 'Não foi possível carregar os dados.',
+                });
+                setShowMessageBox(true);
+            }
+        };
+    
+        fetchOrderData();
+    }, [id]);
+    
+    
+    useEffect(() => {
+        const fetchProgramingData = async () => {
+            if (!programingId) return; // Não tenta buscar se o ID for inválido
+    
+            try {
+                const response = await getProgramingById(programingId);
+                setFormData((prevData) => ({
+                    ...prevData,
+                    data: { ...prevData.data, value: response.datePrograming },
+                    turno: { ...prevData.turno, value: response.time },
+                    encarregado: { ...prevData.encarregado, value: response.overseer },
+                    profissionais: { ...prevData.profissionais, value: response.worker.split(",") },
+                    custo: { ...prevData.custo, value: response.cost },
+                    observacao: { ...prevData.observacao, value: response.observation },
+                }));
+                setIsSaved(true);
+            } catch (error) {
+                console.error("Erro ao carregar programação:", error);
+                setMessageContent({
+                    type: 'error',
+                    title: 'Erro ao carregar programação',
+                    message: error.message || 'Não foi possível carregar a programação.',
+                });
+                setShowMessageBox(true);
+            }
+        };
+    
+        fetchProgramingData();
+    }, [programingId]);
+      
+    
     const validateFields = () => {
         const newEmptyFields = {};
         Object.keys(formData).forEach((field) => {
@@ -172,7 +222,11 @@ export default function Programing() {
 
     const handleSave = async () => {
         if (!validateFields()) {
-            setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
+            setMessageContent({ 
+                type: 'error', 
+                title: 'Erro.', 
+                message: 'Por favor, preencha todos os campos obrigatórios.' 
+            });
             setShowMessageBox(true);
             return;
         }
@@ -180,29 +234,34 @@ export default function Programing() {
         try {
             const programingData = {
                 orderService_id: id,
-                datePrograming: formData.data.value,
+                datePrograming: formData.data.value.split('/').reverse().join('-'),
                 time: formData.turno.value,
                 overseer: formData.encarregado.value,
-                worker: formData.profissionais.value,
-                cost: formData.custo.value,
-                observation: formData.observacao.value,
+                worker: formData.profissionais.value.join(', '),
+                cost: parseFloat(formData.custo.value || 0),
+                observation: formData.observacao.value || '',
+                creationDate: new Date().toISOString().split('T')[0],
+                modificationDate: new Date().toISOString().split('T')[0],
+                active: 'true',
             };
     
-            await createPrograming(programingData);
-    
-            setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Programação salva com sucesso!' });
-            setShowMessageBox(true);
-    
-            // Redirecionar ou exibir mensagem de sucesso
-            navigate("/"); // Exemplo de redirecionamento
+            const response = await createPrograming(programingData);
+            setProgramingId(response.id); // Atualiza o ID da programação salva
+            setIsSaved(true);
+            setIsEditing(false);
+            setStatus("Em atendimento");
         } catch (error) {
             console.error("Erro ao salvar programação:", error);
-            setMessageContent({ type: 'error', title: 'Erro.', message: 'Erro ao salvar a programação.' });
+            setMessageContent({ 
+                type: 'error', 
+                title: 'Erro.', 
+                message: 'Erro ao salvar a programação.' 
+            });
             setShowMessageBox(true);
         }
-    };
+    };    
     
-
+     
     const handleEdit = () => {
         setIsEditing(true);
         setIsSaved(false);
@@ -231,6 +290,10 @@ export default function Programing() {
 
     let colorBorder = 'border-primary-red'
 
+    if (!orderServiceData) {
+        return <p>Carregando dados da OS...</p>;
+    }
+    
     return (
         <>
             {showMessageBox && (
@@ -241,90 +304,96 @@ export default function Programing() {
                     onClose={() => setShowMessageBox(false)}
                 />
             )}
-            <div className="flex flex-col mx-6">
+            <div className="flex flex-col">
 
                 <div className="flex flex-col">
+                    <div className="flex justify-center">
+                        <PageTitle
+                            icon={TbCalendarTime}
+                            text="Programação"
+                            backgroundColor="bg-white"
+                            textColor="text-primary-dark"
+                        />
+                    </div>
                     <StatusBar
-                        requisitionNumber={orderServiceData.requisicao}
-                        origin={orderServiceData.origem}
-                        situation={status}
+                        requisitionNumber={orderServiceData?.requisition || "Carregando..."}
+                        origin={orderServiceData?.origin || "Carregando..."}
+                        situation={orderServiceData?.status || "carregando..."}
                         reopening="nenhuma"
                         onHistoryClick={handleHistoryClick}
                         onAddReportClick={() => setShowAddReport(true)}
                         onViewReportsClick={() => setShowViewReports(true)}
                         reportsCount={reports.length}
                     />
+
                 </div>
 
-                <div className="flex flex-col gap-x-2.5 md:flex-row">
+                <div className="flex flex-col gap-x-2.5 md:flex-row mx-6">
                     <div className="w-full md:w-5/12">
                         <SectionCard background="bg-gray-50" title="Dados da ordem de serviço">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                                <InputPrimary
-                                    label="Classificação"
-                                    placeholder={orderServiceData.classification}
-                                    disabled
-                                />
-                                <InputPrimary
-                                    label="Unidade"
-                                    placeholder={orderServiceData.unit}
-                                    disabled
-                                />
+                            <div className="grid grid-cols-1 md:grid-cols-1 gap-y-4 text-sm text-gray-500 mb-8">
+                                <div className="flex flex-row items-center gap-x-2">
+                                    <MdPriorityHigh  className="h-4 w-4"/>
+                                    <p className="font-medium">Clasificação:</p>
+                                    <p className="uppercase">{orderServiceData.classification }</p>
+                                </div>
+                                <div className="flex flex-row items-center gap-x-2">
+                                    <FaUser className="h-4 w-4"/>
+                                    <p className="font-medium">Socilitante:</p>
+                                    <p>{orderServiceData.requester }</p>
+                                </div>
+                                <div className="flex flex-row items-center gap-x-2">
+                                    <MdPhone className="h-4 w-4"/>
+                                    <p className="font-medium">Contato:</p>
+                                    <p>{orderServiceData.contact }</p>
+                                </div>
+                                <div className="flex flex-row items-center gap-x-2">
+                                    <FaBuilding className="h-4 w-4"/>
+                                    <p className="font-medium">Unidade do solicitante:</p>
+                                    <p>{orderServiceData.unit }</p>
+                                </div>
+                                <div className="flex items-center gap-x-2 flex-wrap">
+                                    <MdTextSnippet className="h-4 w-4"/>
+                                    <p className="font-medium">Descrição:</p>
+                                    <p>{orderServiceData.preparationObject }</p>
+                                </div>
+                                <div className="flex flex-row items-center gap-x-2">
+                                    <MdSettings className="h-4 w-4"/>
+                                    <p className="font-medium">Tipo de manutenção:</p>
+                                    <p>{orderServiceData.typeMaintenance }</p>
+                                </div>
+                                <div className="flex flex-row items-center gap-x-2">
+                                    <RiListSettingsFill className="h-4 w-4"/>
+                                    <p className="font-medium">Sistema:</p>
+                                    <p>{orderServiceData.system}</p>
+                                </div>
+                                <div className="flex flex-row items-center gap-x-2">
+                                    <FaBuilding className="h-4 w-4"/>
+                                    <p className="font-medium">Unidade da manutenção:</p>
+                                    <p>{orderServiceData.maintenanceUnit }</p>
+                                </div>
+                                <div className="flex flex-row items-center gap-x-2">
+                                    <FaCity className="h-4 w-4"/>
+                                    <p className="mr-1 font-medium">Campus:</p>
+                                    <p>{orderServiceData.campus }</p>
+                                </div>
+                                <div className="flex flex-row items-center gap-x-2">
+                                    <FaCalendar className="h-4 w-4"/>
+                                    <p className="mr-1 font-medium">Data do cadastro:</p>
+                                    <p>{orderServiceData.date }</p>
+                                </div>
+                                <div className="flex flex-row items-center gap-x-2">
+                                    <FaHourglassHalf className="h-4 w-4"/>
+                                    <p className="mr-1 font-medium">Dias em aberto:</p>
+                                    <p>{orderServiceData.openDays }</p>
+                                </div>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-1 gap-x-4">
-                                <InputPrimary
-                                    label="Solicitante"
-                                    placeholder={orderServiceData.requester}
-                                    disabled
-                                />
-                                <InputPrimary
-                                    label="Objeto de preparo"
-                                    placeholder={orderServiceData.preparationObject}
-                                    disabled
-                                />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                                <InputPrimary
-                                    label="Tipo de manutenção"
-                                    placeholder={orderServiceData.typeMaintenance}
-                                    disabled
-                                />
-                                <InputPrimary
-                                    label="Sistema"
-                                    placeholder={orderServiceData.system}
-                                    disabled
-                                />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                                <InputPrimary
-                                    label="Unidade da manutenção"
-                                    placeholder={orderServiceData.maintenanceUnit}
-                                    disabled
-                                />
-                                <InputPrimary
-                                    label="Campus"
-                                    placeholder={orderServiceData.campus}
-                                    disabled
-                                />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                                <InputPrimary
-                                    label="Data do cadastro"
-                                    placeholder={orderServiceData.date}
-                                    disabled
-                                />
-                                <InputPrimary
-                                    label="Dias em aberto"
-                                    placeholder={orderServiceData.openDays}
-                                    disabled
-                                />
-                            </div>
-                    
+
                             <p className="mt-2 text-sm text-gray-400">Cadastrado por: {user.name}</p>
                         </SectionCard>
                     </div>
 
-                    <div className="flex-1 mb-4">
+                    <div className="flex-1 mb-2">
 
                         {isMaintenanceClosed && !isFinalized && (
                             <FinalizeSection

@@ -175,5 +175,16 @@ export const createPrograming = async (programingData) => {
   }
 };
 
+export const getProgramingById = async (id) => {
+  try {
+      const response = await api.get(`/programing/${id}`);
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar programação:", error);
+      throw error;
+  }
+};
+
+
 
 export default api;
