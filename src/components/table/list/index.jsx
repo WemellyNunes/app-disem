@@ -153,17 +153,20 @@ const List = ({ filteredData, onDeleteItem }) => {
                                     </div>
 
                                     <div className="flex flex-col items-center justify-center py-3 md:py-0  md:w-1/3 md:items-end text-sm">
-                                        <button onClick={() => handleProgramClick(item.id)} className="flex flex-col text-blue-600 items-center justify-center hover:underline">
-                                            {item.programings ? (
+                                        <button
+                                            onClick={() => handleProgramClick(item.id)}
+                                            className="flex flex-col text-blue-600 items-center justify-center hover:underline"
+                                        >
+                                            {item.programingId ? (
                                                 <>
-                                                    Programação
+                                                    <span>Programada</span>
                                                     <div>
                                                         <FaRegClock />
                                                     </div>
                                                 </>
                                             ) : (
                                                 <>
-                                                    Sem programação
+                                                    <span>Sem programação</span>
                                                     <div>
                                                         <FaCirclePlus />
                                                     </div>

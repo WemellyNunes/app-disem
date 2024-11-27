@@ -65,7 +65,7 @@ export default function UserPage() {
                     backgroundColor="bg-white"
                     textColor="text-primary-dark"
                 />
-                <div className="flex justify-start px-6 mt-4">
+                <div className="flex justify-start px-2 md:px-6 mt-4">
                     <button
                         onClick={() => {
                             setUserToEdit(null);
@@ -76,7 +76,7 @@ export default function UserPage() {
                         <FaPlus /> Adicionar Usuário
                     </button>
                 </div>
-                <div className="flex flex-col py-4 px-6 mx-6 rounded-md bg-white border border-gray-300 shadow-sm mt-4">
+                <div className="flex flex-col py-4 px-6 mx-2 md:mx-6 rounded-md bg-white border border-gray-300 shadow-sm mt-4">
                     <div className="flex mb-2 border-b border-gray-300">
                         <p className="text-sm font-normal text-primary-dark py-2">Lista de usuários</p>
                     </div>

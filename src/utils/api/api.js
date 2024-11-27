@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 const api = axios.create({
   baseURL: 'http://localhost:8080/api', // Certifique-se de que a porta está correta
 });
@@ -33,6 +34,39 @@ export const createOrder = async (orderData) => {
       throw error;
     }
   };
+
+  export const downloadReport = async (id) => {
+    try {
+        // Obter o status da ordem de serviço antes de baixar o relatório
+        const order = await getOrderById(id);
+        const status = order.status;
+  
+        // Definir o nome do arquivo com base no status
+        let fileName = `relatorio_os_${id}.pdf`;
+        if (status === 'Em atendimento') {
+            fileName = `programacao_os_${id}.pdf`;
+        }
+  
+        // Fazer o download do relatório
+        const response = await api.get(`/${id}/report`, {
+            responseType: 'blob', // Receber como arquivo binário
+        });
+  
+        // Criar um URL para o Blob e iniciar o download
+        const url = window.URL.createObjectURL(response.data);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName); // Nome do arquivo definido no frontend
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Erro ao baixar o relatório:', error);
+        throw new Error('Não foi possível iniciar o download do relatório.');
+    }
+  };
+  
+
 
   export const updateOrder = async (id, orderData) => {
     try {
@@ -71,7 +105,6 @@ export const createOrder = async (orderData) => {
         throw error;
     }
 };
-
 
 //ENDPOINT DE ESTATISTICA
 
@@ -185,6 +218,25 @@ export const getProgramingById = async (id) => {
   }
 };
 
+export const updatePrograming = async (id, programingData) => {
+  try {
+    const response = await api.put(`/programing/${id}`, programingData);
+    return response.data; // Retorna a resposta do backend
+  } catch (error) {
+    console.error("Erro ao atualizar programação:", error);
+    throw error;
+  }
+};
+
+export const deletePrograming = async (id) => {
+  try {
+      const response = await api.delete(`/programing/${id}`);
+      return response.data; // Retorna a resposta do backend
+  } catch (error) {
+      console.error("Erro ao excluir programação:", error);
+      throw error; // Lança o erro para ser tratado
+  }
+};
 
 
 export default api;

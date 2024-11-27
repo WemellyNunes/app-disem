@@ -21,8 +21,10 @@ import { useUser } from "../../contexts/user";
 import PageTitle from "../../components/title";
 import { MdTextSnippet, MdSettings, MdPriorityHigh, MdPhone  } from "react-icons/md";
 import { RiListSettingsFill } from "react-icons/ri";
+import ConfirmationModal from "../../components/modal/confirmation";
 
-import { getOrderById, createPrograming, getProgramingById } from "../../utils/api/api";
+import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport } from "../../utils/api/api";
+
 
 export default function Programing() {
     const { user, setUser } = useUser();
@@ -30,6 +32,8 @@ export default function Programing() {
     const navigate = useNavigate();
 
     const { id } = useParams();
+
+    const { id: orderServiceId } = useParams(); 
 
     const [formData, setFormData] = useState({
         data: { value: '', required: true},
@@ -56,8 +60,10 @@ export default function Programing() {
     const [status, setStatus] = useState("A atender");
     const [finalObservation, setFinalObservation] = useState(''); 
     const [programingId, setProgramingId] = useState(null);
-
-
+    const [confirmationModal, setConfirmationModal] = useState({
+        show: false,
+        action: null, // "edit" ou "delete"
+    });
 
     const handleFinalization = (observation) => {
         setFinalObservation(observation); 
@@ -68,7 +74,23 @@ export default function Programing() {
         setIsMaintenanceSaved(true);
     };
 
-
+    const handleOpenModal = (action) => {
+        setConfirmationModal({ show: true, action }); // Define a ação ("edit" ou "delete")
+    };
+    
+    const handleCloseModal = () => {
+        setConfirmationModal({ show: false, action: null }); // Reseta o modal
+    };
+    
+    const handleConfirmAction = () => {
+        if (confirmationModal.action === "edit") {
+            handleEdit(); // Habilita a edição
+        } else if (confirmationModal.action === "delete") {
+            handleConfirmDelete(); // Confirma a exclusão
+        }
+        handleCloseModal(); // Fecha o modal
+    };
+ 
     const overseer = [
         { label: 'Almir Lima', value: 'encarregado1' },
         { label: 'Lucas', value: 'encarregado2' },
@@ -87,6 +109,19 @@ export default function Programing() {
         { label: 'BELTRANO', value: 'beltrano' },
         { label: 'CABOCLO', value: 'caboclo' }
     ];
+
+    const handleDownloadReport = async (id) => {
+    try {
+        await downloadReport(id); // ID da OS passado corretamente
+    } catch (error) {
+        setMessageContent({
+            type: 'error',
+            title: 'Erro ao exportar',
+            message: 'Não foi possível iniciar o download do relatório. Tente novamente mais tarde.',
+        });
+        setShowMessageBox(true);
+    }
+    };
 
     const handleAddReport = (newReport) => {
         const reportWithUser = {
@@ -138,19 +173,30 @@ export default function Programing() {
                 const orderData = await getOrderById(id); // Busca a OS
                 setOrderServiceData(orderData);
     
-                // Se a OS retornar um programingId, busca os dados da programação
                 if (orderData.programingId) {
                     const programingData = await getProgramingById(orderData.programingId);
+                    
+                    const formattedDate = programingData.datePrograming
+                        .split('-')
+                        .reverse()
+                        .join('/');
+
                     setFormData((prevData) => ({
                         ...prevData,
-                        data: { ...prevData.data, value: programingData.datePrograming },
+                        data: { ...prevData.data, value: formattedDate },
                         turno: { ...prevData.turno, value: programingData.time },
                         encarregado: { ...prevData.encarregado, value: programingData.overseer },
-                        profissionais: { ...prevData.profissionais, value: programingData.worker.split(",") },
+                        profissionais: { 
+                            ...prevData.profissionais, 
+                            value: programingData.worker.split(', ').map(label => ({
+                                label: label.trim(),
+                                value: label.toLowerCase().replace(/\s/g, ''),
+                            })),
+                        },
                         custo: { ...prevData.custo, value: programingData.cost },
                         observacao: { ...prevData.observacao, value: programingData.observation },
                     }));
-                    setProgramingId(orderData.programingId); // Salva o ID da programação no estado
+                    setProgramingId(orderData.programingId);
                     setIsSaved(true);
                     setIsEditing(false);
                 }
@@ -167,38 +213,6 @@ export default function Programing() {
     
         fetchOrderData();
     }, [id]);
-    
-    
-    useEffect(() => {
-        const fetchProgramingData = async () => {
-            if (!programingId) return; // Não tenta buscar se o ID for inválido
-    
-            try {
-                const response = await getProgramingById(programingId);
-                setFormData((prevData) => ({
-                    ...prevData,
-                    data: { ...prevData.data, value: response.datePrograming },
-                    turno: { ...prevData.turno, value: response.time },
-                    encarregado: { ...prevData.encarregado, value: response.overseer },
-                    profissionais: { ...prevData.profissionais, value: response.worker.split(",") },
-                    custo: { ...prevData.custo, value: response.cost },
-                    observacao: { ...prevData.observacao, value: response.observation },
-                }));
-                setIsSaved(true);
-            } catch (error) {
-                console.error("Erro ao carregar programação:", error);
-                setMessageContent({
-                    type: 'error',
-                    title: 'Erro ao carregar programação',
-                    message: error.message || 'Não foi possível carregar a programação.',
-                });
-                setShowMessageBox(true);
-            }
-        };
-    
-        fetchProgramingData();
-    }, [programingId]);
-      
     
     const validateFields = () => {
         const newEmptyFields = {};
@@ -228,25 +242,49 @@ export default function Programing() {
                 message: 'Por favor, preencha todos os campos obrigatórios.' 
             });
             setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 1000);
             return;
         }
     
         try {
+            const formattedDate = formData.data.value.split('/').reverse().join('-');
+
             const programingData = {
                 orderService_id: id,
-                datePrograming: formData.data.value.split('/').reverse().join('-'),
+                datePrograming: formattedDate,
                 time: formData.turno.value,
                 overseer: formData.encarregado.value,
-                worker: formData.profissionais.value.join(', '),
+                worker: formData.profissionais.value.map(prof => prof.label).join(', '),
                 cost: parseFloat(formData.custo.value || 0),
                 observation: formData.observacao.value || '',
                 creationDate: new Date().toISOString().split('T')[0],
                 modificationDate: new Date().toISOString().split('T')[0],
                 active: 'true',
             };
+
+            if (programingId) {
+                // Atualiza programação existente
+                await updatePrograming(programingId, programingData);
+                setMessageContent({
+                    type: 'success',
+                    title: 'Atualizado.',
+                    message: 'Programação atualizada com sucesso!'
+                });
+                setShowMessageBox(true);
+                setTimeout(() => setShowMessageBox(false), 1500);
+
+            } else {
+                const response = await createPrograming({ ...programingData, orderService_id: id });
+                setProgramingId(response.id); // Atualiza o ID da programação salva
+                setMessageContent({
+                    type: 'success',
+                    title: 'Criado.',
+                    message: 'Programação criada com sucesso!'
+                });
+                setShowMessageBox(true);
+                setTimeout(() => setShowMessageBox(false), 1500);
+              } 
     
-            const response = await createPrograming(programingData);
-            setProgramingId(response.id); // Atualiza o ID da programação salva
             setIsSaved(true);
             setIsEditing(false);
             setStatus("Em atendimento");
@@ -259,9 +297,42 @@ export default function Programing() {
             });
             setShowMessageBox(true);
         }
-    };    
+    }; 
     
-     
+    const handleConfirmDelete = async () => {
+        try {
+            if (!programingId) return; // Verifica se existe um ID válido
+    
+            await deletePrograming(programingId);
+            await updateOrderServiceStatus(orderServiceId, "A atender"); // Chama o endpoint de exclusão
+    
+            setStatus("A atender"); // Atualiza o status da ordem de serviço
+            setMessageContent({
+                type: "success",
+                title: "Exclusão bem-sucedida",
+                message: "Programação excluída com sucesso!",
+            });
+            setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 1500);
+    
+            // Reseta estados relacionados
+            setProgramingId(null); 
+            setIsSaved(false);
+    
+            handleCloseModal(); // Reutiliza o método para fechar o modal
+        } catch (error) {
+            console.error("Erro ao excluir a programação:", error);
+    
+            setMessageContent({
+                type: "error",
+                title: "Erro ao excluir",
+                message: "Não foi possível excluir a programação. Tente novamente.",
+            });
+    
+            setShowMessageBox(true);
+        }
+    };
+       
     const handleEdit = () => {
         setIsEditing(true);
         setIsSaved(false);
@@ -275,7 +346,6 @@ export default function Programing() {
         setFormData((prevData) => {
             const updatedData = { ...prevData, data: { ...prevData.data, value: date } };
     
-            // Atualiza emptyFields se o campo "Data programada" estiver preenchido
             setEmptyFields((prevEmptyFields) => {
                 const updatedEmptyFields = { ...prevEmptyFields };
                 if (date) {
@@ -287,8 +357,6 @@ export default function Programing() {
             return updatedData;
         });
     };
-
-    let colorBorder = 'border-primary-red'
 
     if (!orderServiceData) {
         return <p>Carregando dados da OS...</p>;
@@ -328,7 +396,7 @@ export default function Programing() {
 
                 </div>
 
-                <div className="flex flex-col gap-x-2.5 md:flex-row mx-6">
+                <div className="flex flex-col gap-x-2.5 md:flex-row mx-2 md:mx-6">
                     <div className="w-full md:w-5/12">
                         <SectionCard background="bg-gray-50" title="Dados da ordem de serviço">
                             <div className="grid grid-cols-1 md:grid-cols-1 gap-y-4 text-sm text-gray-500 mb-8">
@@ -428,8 +496,8 @@ export default function Programing() {
                                     placeholder="exemplo: 00/00/0000"
                                     onDateChange={handleDateChange}
                                     disabled={!isEditing}
+                                    value={formData.data.value}
                                     errorMessage={emptyFields.data ? "Este campo é obrigatório" : ""}
-                                    className={emptyFields.data ? colorBorder : ''}
                                 />
                                 <InputSelect
                                     label="Turno *"
@@ -438,7 +506,6 @@ export default function Programing() {
                                     value={formData.turno.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.turno ? "Este campo é obrigatório" : ""}
-                                    className={emptyFields.turno ? colorBorder : ''}
                                 />
                                 <InputSelect
                                     label="Encarregado *"
@@ -447,7 +514,6 @@ export default function Programing() {
                                     value={formData.encarregado.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.encarregado ? "Este campo é obrigatório" : ""}
-                                    className={emptyFields.encarregado ? colorBorder : ''}
                                 />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-1">
@@ -458,7 +524,6 @@ export default function Programing() {
                                     selectedValues={formData.profissionais.value} 
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.profissionais ? "Este campo é obrigatório" : ""}
-                                    className={emptyFields.profissionais ? colorBorder : ''}
                                 />
                                 <InputPrimary
                                     label="Custo estimado"
@@ -486,7 +551,8 @@ export default function Programing() {
                                                 bgColor="bg-white"
                                                 textColor="text-red-500"
                                                 icon={<FaTrash />}
-                                                hoverColor="hover:bg-red-100">
+                                                hoverColor="hover:bg-red-100"
+                                                onClick={() => handleOpenModal("delete")}>
                                                 Excluir
                                             </ButtonTertiary>
 
@@ -496,7 +562,7 @@ export default function Programing() {
                                                 hoverColor="hover:bg-secondary-hover"
                                                 textColor="text-primary-light"
                                                 icon={<FaEdit />}
-                                                onClick={handleEdit}>
+                                                onClick={() => handleOpenModal("edit")}>
                                                 Editar
                                             </ButtonSecondary>
 
@@ -505,6 +571,7 @@ export default function Programing() {
                                                 hoverColor="hover:bg-primary-hover"
                                                 textColor="text-white"
                                                 icon={<TbFileExport />}
+                                                onClick={() => handleDownloadReport(orderServiceId)}
                                             >
                                                 Exportar
                                             </ButtonPrimary>
@@ -522,6 +589,22 @@ export default function Programing() {
                         </SectionCard>
                     </div>
                 </div>
+                {confirmationModal.show && (
+                    <ConfirmationModal
+                        title={
+                            confirmationModal.action === "edit"
+                                ? "Confirmar Edição"
+                                : "Confirmar Exclusão"
+                        }
+                        message={
+                            confirmationModal.action === "edit"
+                                ? "Tem certeza de que deseja habilitar a edição?"
+                                : "Tem certeza de que deseja excluir esta programação? Esta ação não pode ser desfeita."
+                        }
+                        onConfirm={handleConfirmAction} // Executa a ação correspondente
+                        onCancel={handleCloseModal} // Fecha o modal
+                    />
+                )}
             </div>
             {showAddReport && (
                 <AddReport
@@ -536,6 +619,8 @@ export default function Programing() {
                 />
             )}
             {showHistory && <HistoryCard history={history} onClose={() => setShowHistory(false)} />}
+
+            
         </>
     );
 };

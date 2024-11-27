@@ -9,10 +9,10 @@ const StatusBar = ({ requisitionNumber, origin, situation, reopening, onHistoryC
     
 
     return (
-        <div className="flex justify-between items-center px-6 py-1 border-b bg-white ">
+        <div className="flex justify-between items-center px-2 md:px-6 py-1 border-b bg-white ">
       <div className="flex space-x-2 md:space-x-6 px-2">
         <div>
-          <h4 className="text-xs font-medium text-primary-light md:text-sm">N° requisição</h4>
+          <h4 className="text-xs font-medium text-primary-light md:text-sm">Requisição</h4>
           <p className="text-xs font-normal text-primary-dark">{requisitionNumber}</p>
         </div>
         <div>

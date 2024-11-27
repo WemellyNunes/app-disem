@@ -25,7 +25,8 @@ const TabsAndList = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const data = await getAllOrders(); // Agora retorna uma lista completa
+                const data = await getAllOrders();
+                console.log("OS Data:", data); // Agora retorna uma lista completa
     
                 // Realiza o cálculo de impacto e prioridade para cada item
                 const calculatedData = data.map((item) => {
@@ -50,14 +51,18 @@ const TabsAndList = () => {
     }, []);
     
     
-    const handleProgramClick = (id) => {
+    const handleProgramClick = async (id) => {
         navigate(`/programing/${id}`);
-
+    
+        // Atualiza o estado local para refletir a mudança
         const updatedData = osData.map((item) =>
-            item.id === id ? { ...item, status: "Em atendimento", programacao: true } : item
+            item.id === id ? { ...item, programingId: true } : item
         );
         setOsData(updatedData);
+
+        setFilteredData(filterData(updatedData));
     };
+    
 
     const handleSearch = (term) => {
         setSearchTerm(term);
@@ -159,10 +164,8 @@ const TabsAndList = () => {
         return filtered;
     };
 
-
     const memoizedFilteredData = useMemo(() => filterData(), [osData, appliedFilters, searchTerm, activeTab]);
 
-    
     const handleDeleteItem = (id) => {
         const updatedData = osData.filter(item => item.id !== id);
         setOsData(updatedData); // Atualiza o estado principal
@@ -186,7 +189,7 @@ const TabsAndList = () => {
 
     return (
         <div className="flex w-full flex-col mt-1">
-            <div className='flex flex-row gap-x-2 px-6'>
+            <div className='flex flex-row gap-x-2 px-2 md:px-6'>
                 <SearchInput placeholder="Buscar..." onSearch={handleSearch} />
                 <button
                     onClick={() => setIsFilterModalOpen(true)}
@@ -198,7 +201,7 @@ const TabsAndList = () => {
                     <span className='hidden md:block text-sm'>Filtrar</span>
                 </button>
             </div>
-            <div className="flex flex-wrap gap-2 mb-1.5 px-6">
+            <div className="flex flex-wrap gap-2 mb-1.5 px-2 md:px-6">
                 {Object.keys(appliedFilters).map((filterKey) => {
                     const filterValue = appliedFilters[filterKey];
 
@@ -222,11 +225,11 @@ const TabsAndList = () => {
                 })}
             </div>
 
-            <div className="w-full overflow-auto px-6">
+            <div className="w-full overflow-auto px-2 md:px-6">
                 <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
 
-            <div className="w-full px-6">
+            <div className="w-full px-2 md:px-6">
                 <List 
                 filteredData={currentItems} 
                 setFilteredData={setFilteredData} 

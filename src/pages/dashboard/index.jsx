@@ -79,7 +79,7 @@ export default function Dashboard() {
                         textColor="text-primary-dark"
                     />
                 </div>
-                <div className="px-6">
+                <div className="px-2 md:px-6">
                     <div className="flex flex-row justify-between mt-2 gap-x-1 overflow-x-auto">
                         <StatCard
                             title="Sipac"

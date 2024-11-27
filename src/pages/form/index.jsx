@@ -388,7 +388,7 @@ export default function Form() {
                     />
                 </div>
 
-                <div className="flex flex-col bg-white border mt-2 mb-2 px-8 mx-32 rounded">
+                <div className="flex flex-col bg-white border mt-2 mb-2 px-8 mx-2 md:mx-32 rounded">
                     <div className="flex-1 mb-2">
                         <p className="text-sm font-medium text-primary-dark my-6">1. Dados da ordem de serviço</p>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6">
@@ -399,7 +399,6 @@ export default function Form() {
                                 value={formData.origem.value}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.origem ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.origem ? colorBorder : ''}
                             />
                             <InputPrimary
                                 label="N° da requisição *"
@@ -408,7 +407,6 @@ export default function Form() {
                                 onChange={handleFieldChange('requisicao')}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.requisicao ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.requisicao ? colorBorder : ''}
                             />
                             <InputSelect
                                 label="Classificação *"
@@ -417,7 +415,6 @@ export default function Form() {
                                 value={formData.classe.value}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.classe ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.classe ? colorBorder : ''}
                             />
                         </div>
                     </div>
@@ -432,7 +429,6 @@ export default function Form() {
                                 onChange={handleFieldChange('solicitante')}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.solicitante ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.solicitante ? colorBorder : ''}
                             />
 
                         </div>
@@ -444,7 +440,6 @@ export default function Form() {
                                 value={formData.unidade.value}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.unidade ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.unidade ? colorBorder : ''}
                             />
                             <InputPrimary
                                 label="Contato (ramal, telefone, email)"
@@ -466,7 +461,6 @@ export default function Form() {
                                 value={formData.objetoPreparo.value}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.objetoPreparo ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.objetoPreparo ? colorBorder : ''}
                             />
                         </div>
 
@@ -478,7 +472,6 @@ export default function Form() {
                                 value={formData.manutencao.value}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.manutencao ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.manutencao ? colorBorder : ''}
                             />
                             <InputSelect
                                 label="Sistema *"
@@ -487,7 +480,6 @@ export default function Form() {
                                 value={formData.sistema.value}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.sistema ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.sistema ? colorBorder : ''}
                             />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-1 gap-x-6">
@@ -498,7 +490,6 @@ export default function Form() {
                                 value={formData.indiceRisco.value}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.indiceRisco ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.indiceRisco ? colorBorder : ''}
                             />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
@@ -509,7 +500,6 @@ export default function Form() {
                                 value={formData.unidadeManutencao.value}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.unidadeManutencao ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.unidadeManutencao ? colorBorder : ''}
                             />
                             <InputPrimary
                                 label="Campus *"
@@ -518,7 +508,6 @@ export default function Form() {
                                 onChange={handleFieldChange('campus')}
                                 disabled={!isEditing}
                                 errorMessage={emptyFields.campus ? "Este campo é obrigatório" : ""}
-                                className={emptyFields.campus ? colorBorder : ''}
                             />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-1">
@@ -538,7 +527,6 @@ export default function Form() {
                                 selectedValue={formData.selectedOption.value}
                                 onChange={handleFieldChange('selectedOption')}
                                 disabled={!isEditing}
-                                className={emptyFields.options ? colorBorder : ''}
                             />
                             <InputUpload
                                 label="Anexar documento(s)"
@@ -554,13 +542,11 @@ export default function Form() {
                     <div className="flex flex-col items-center justify-center mt-4 md:flex-row h-14 md:h-16 gap-y-2 bottom-0 z-10">
                         <div className="flex pr-0 md:pr-6">
                             {isCreating ? (
-                                // Modo de criação (1): Cancelar e Salvar
                                 <>
                                     <ButtonSecondary onClick={() => navigate("../Listing")}>Cancelar</ButtonSecondary>
                                     <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
                                 </>
                             ) : isEditing ? (
-                                // Modo de edição (3): Cancelar e Atualizar
                                 <>
                                     <ButtonSecondary onClick={() => {
                                         setIsEditing(false);
@@ -569,7 +555,6 @@ export default function Form() {
                                     <ButtonPrimary onClick={handleUpdate}>Atualizar</ButtonPrimary>
                                 </>
                             ) : (
-                                // Dados salvos ou atualizados (2 e 4): Editar e Continuar
                                 <>
                                     <ButtonSecondary onClick={handleEdit}>Editar</ButtonSecondary>
                                     <ButtonPrimary onClick={handleContinue}>Continuar</ButtonPrimary>
