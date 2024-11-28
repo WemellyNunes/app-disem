@@ -88,6 +88,28 @@ export const createOrder = async (orderData) => {
     }
   };
 
+
+
+  export const updateOrderServiceStatus = async (id, statusDescricao) => {
+    try {
+      const response = await api.put(
+        `/serviceOrder/${id}/status`,
+        JSON.stringify(statusDescricao), // Garante que seja enviado como string
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao atualizar o status da OS:", error);
+      throw error;
+    }
+  };
+  
+
+
   export const uploadDocument = async (file, orderServiceId) => {
     const formData = new FormData();
     formData.append('file', file);

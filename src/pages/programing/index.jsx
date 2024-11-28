@@ -23,7 +23,7 @@ import { MdTextSnippet, MdSettings, MdPriorityHigh, MdPhone  } from "react-icons
 import { RiListSettingsFill } from "react-icons/ri";
 import ConfirmationModal from "../../components/modal/confirmation";
 
-import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport } from "../../utils/api/api";
+import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport, updateOrderServiceStatus } from "../../utils/api/api";
 
 
 export default function Programing() {
@@ -301,37 +301,53 @@ export default function Programing() {
     
     const handleConfirmDelete = async () => {
         try {
-            if (!programingId) return; // Verifica se existe um ID válido
-    
-            await deletePrograming(programingId);
-            await updateOrderServiceStatus(orderServiceId, "A atender"); // Chama o endpoint de exclusão
-    
-            setStatus("A atender"); // Atualiza o status da ordem de serviço
-            setMessageContent({
-                type: "success",
-                title: "Exclusão bem-sucedida",
-                message: "Programação excluída com sucesso!",
-            });
-            setShowMessageBox(true);
-            setTimeout(() => setShowMessageBox(false), 1500);
-    
-            // Reseta estados relacionados
-            setProgramingId(null); 
-            setIsSaved(false);
-    
-            handleCloseModal(); // Reutiliza o método para fechar o modal
+          if (!programingId) return;
+      
+          await deletePrograming(programingId);
+          const updatedOrderService = await updateOrderServiceStatus(orderServiceId, "A atender");
+      
+          // Atualiza o estado local com os novos dados da OS
+          setOrderServiceData((prevData) => ({
+            ...prevData,
+            status: updatedOrderService.status,
+          }));
+      
+          setStatus("A atender");
+          setFormData({
+            data: { value: '', required: true },
+            turno: { value: '', required: true },
+            encarregado: { value: '', required: true },
+            profissionais: { value: [], required: true },
+            custo: { value: null, required: false },
+            observacao: { value: null, required: false },
+          });
+      
+          setProgramingId(null);
+          setIsSaved(false);
+          setIsEditing(true);
+      
+          setMessageContent({
+            type: "success",
+            title: "Exclusão bem-sucedida",
+            message: "Programação excluída com sucesso! Status da OS atualizado para 'A atender'.",
+          });
+          setShowMessageBox(true);
+          setTimeout(() => setShowMessageBox(false), 1500);
+      
+          handleCloseModal();
         } catch (error) {
-            console.error("Erro ao excluir a programação:", error);
-    
-            setMessageContent({
-                type: "error",
-                title: "Erro ao excluir",
-                message: "Não foi possível excluir a programação. Tente novamente.",
-            });
-    
-            setShowMessageBox(true);
+          console.error("Erro ao excluir a programação:", error);
+      
+          setMessageContent({
+            type: "error",
+            title: "Erro ao excluir",
+            message: "Não foi possível excluir a programação. Tente novamente.",
+          });
+          setShowMessageBox(true);
         }
     };
+      
+      
        
     const handleEdit = () => {
         setIsEditing(true);
@@ -495,8 +511,8 @@ export default function Programing() {
                                     label="Data programada *"
                                     placeholder="exemplo: 00/00/0000"
                                     onDateChange={handleDateChange}
-                                    disabled={!isEditing}
                                     value={formData.data.value}
+                                    disabled={!isEditing}
                                     errorMessage={emptyFields.data ? "Este campo é obrigatório" : ""}
                                 />
                                 <InputSelect
