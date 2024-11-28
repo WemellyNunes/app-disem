@@ -28,14 +28,10 @@ export const calcularValorRisco = (classe, indiceRisco) => {
     const pesoClasse = pesosClasse[classe] || 0;
     const pesoIndice = pesosRisco[indiceRisco] || 0; 
 
-    console.log(`Classe: ${classe}, Peso Classe: ${pesoClasse}, Índice de Risco: ${indiceRisco}, Peso Índice: ${pesoIndice}`);
-
     const valorRisco = pesoClasse * pesoIndice;
-    console.log(`Valor de Risco Calculado: ${valorRisco}`);
 
     return valorRisco;
 };
-
 
 export const calcularPrioridade = (valorRisco) => {
     if (valorRisco > 45){

@@ -55,7 +55,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         <div className={`flex flex-col mb-4`}>
             <label
                 className={`flex items-center border border-dashed rounded-md p-4 cursor-pointer w-full md:w-2/4 
-                h-9 md:h-10 transition-colors duration-200 ${disabled ? 'bg-primary-gray border-gray-300 text-gray-400' : 'border-primary-light hover:bg-blue-50'} ${className}`}
+                h-9 md:h-10 transition-colors duration-200 ${disabled ? 'bg-primary-gray border-gray-50 text-gray-400' : 'border-primary-light hover:bg-blue-50'} ${className}`}
                 onClick={() => {
                     if (!disabled) {
                         setFileToEdit(null);
@@ -73,17 +73,16 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
             {uploadedFiles?.length > 0 && (
                 <div className="w-full md:w-2/4">
                     {uploadedFiles.map((item, index) => (
-                        <div key={index} className={`flex justify-between items-center border rounded-md p-1.5 mt-1 ${disabled ? 'bg-gray-50' : 'border-gray-100'}`}>
+                        <div key={index} className={`flex justify-between items-center border rounded-md p-1.5 mt-1 ${disabled ? 'bg-gray-50 border-none' : 'border'}`}>
                             <div className="flex flex-col">
-                                <span className={`text-xs md:text-sm font-light ${disabled ? 'text-gray-500' : 'text-primary-light'}`}>{item.file.name}</span>
-                                <span className="text-xs text-gray-500">{(item.file.size / 1024).toFixed(2)} KB</span>
-                                <span className="text-xs text-gray-500">Descrição: {item.description}</span>
+                                <span className={`text-xs md:text-sm font-light ${disabled ? 'text-gray-500' : 'text-primary-light'}`}>{item?.file?.name || "Arquivo não identificado"}</span>
+                                <span className="text-xs text-gray-500"> {(item?.file?.size / 1024).toFixed(2) || "Tamanho não disponível"} KB</span>
+                                <span className="text-xs text-gray-500">Descrição: {item?.description || "Sem descrição"}</span>
                             </div>
                             <div className="flex">
                                 <button
-                                    onClick={() => handlePreviewFile(item.file)}
-                                    className={`text-blue-500 text-xs md:text-sm mr-2 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    disabled={disabled}
+                                    onClick={() => handlePreviewFile(item?.file)}
+                                    className={`text-blue-500 text-xs md:text-sm mr-2`}
                                 >
                                     <FaEye size={18} />
                                 </button>

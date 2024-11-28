@@ -5,39 +5,62 @@ import Form from "../pages/form";
 import Programing from "../pages/programing";
 import Listing from "../pages/listing";
 import Sidebar from "../components/sideBar";
+import MobileMenu from "../components/sideBar/mobile";
 import UserPage from "../pages/users"; // Importe o componente Sidebar
 import { useState } from 'react';
 
-// Componente de Rotas
 function AppRoutes() {
-    const location = useLocation(); // Pega a localização atual (rota)
-    const [isCollapsed, setIsCollapsed] = useState(false); // Adiciona o estado do menu colapsado
-
-    const isLoginPage = location.pathname === '/'; 
-    // Verifica se está na página de login
+    const location = useLocation(); // Captura a rota atual
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+  
+    // Verifica se a rota atual é a tela de login
+    const isLoginPage = location.pathname === "/";
+  
     return (
-        <div className="flex">
-            {!isLoginPage && <Sidebar isCollapsed={isCollapsed} toggleSidebar={() => setIsCollapsed(!isCollapsed)} />}
-            
-            <div className={`transition-all duration-300 ease-in w-full flex-grow px-1 ${!isLoginPage ? (isCollapsed ? 'ml-0 md:ml-14' : 'ml-0 md:ml-60') : ''}`}>
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/form" element={<Form />} />
-                    <Route path="/form/:id" element={<Form />} />
-                    <Route path="/programing/:id" element={<Programing />} />
-                    <Route path="/listing" element={<Listing />} />
-                    <Route path="users" element={<UserPage />} />
-                </Routes>
-            </div>
+      <div className="flex">
+        {/* Renderiza o Sidebar apenas se não estiver na tela de login */}
+        {!isLoginPage && (
+          <Sidebar
+            isCollapsed={isCollapsed}
+            toggleSidebar={() => setIsCollapsed(!isCollapsed)}
+          />
+        )}
+  
+        {/* Renderiza o MobileMenu apenas se não estiver na tela de login */}
+        {!isLoginPage && (
+          <MobileMenu isOpen={isOpen} toggleMenu={() => setIsOpen(!isOpen)} />
+        )}
+  
+        {/* Área principal (conteúdo das rotas) */}
+        <div
+          className={`transition-all duration-300 ease-in w-full flex-grow px-1 ${
+            !isLoginPage
+              ? isCollapsed
+                ? "ml-0 md:ml-14" // Sidebar colapsada
+                : "ml-0 md:ml-60" // Sidebar expandida
+              : "" // Tela de login não possui deslocamento
+          }`}
+        >
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/form" element={<Form />} />
+            <Route path="/form/:id" element={<Form />} />
+            <Route path="/programing/:id" element={<Programing />} />
+            <Route path="/listing" element={<Listing />} />
+            <Route path="/users" element={<UserPage />} />
+          </Routes>
         </div>
+      </div>
     );
 }
 
 export default function AppWrapper() {
     return (
-        <Router>
-            <AppRoutes />
-        </Router>
+      <Router basename="/frontend_application_disem">
+        <AppRoutes />
+      </Router>
     );
 }
+  

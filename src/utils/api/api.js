@@ -65,8 +65,6 @@ export const createOrder = async (orderData) => {
         throw new Error('Não foi possível iniciar o download do relatório.');
     }
   };
-  
-
 
   export const updateOrder = async (id, orderData) => {
     try {
@@ -88,8 +86,6 @@ export const createOrder = async (orderData) => {
     }
   };
 
-
-
   export const updateOrderServiceStatus = async (id, statusDescricao) => {
     try {
       const response = await api.put(
@@ -109,7 +105,6 @@ export const createOrder = async (orderData) => {
   };
   
 
-
   export const uploadDocument = async (file, orderServiceId) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -128,7 +123,6 @@ export const createOrder = async (orderData) => {
     }
 };
 
-//ENDPOINT DE ESTATISTICA
 
 export const getClassStatistics = async () => {
   try {
@@ -260,5 +254,35 @@ export const deletePrograming = async (id) => {
   }
 };
 
+export const uploadImage = async (file, programingId, description, observation) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("programingId", programingId);
+    formData.append("description", description);
+    formData.append("observation", observation || "");
+
+    const response = await api.post("/uploadFile", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao fazer upload da imagem:", error);
+    throw error;
+  }
+};
+
+export const getAllImages = async () => {
+  try {
+      const response = await api.get(`/files`); // Faz a requisição GET ao endpoint
+      return response.data; // Retorna os dados da resposta
+  } catch (error) {
+      console.error("Erro ao buscar as imagens:", error);
+      throw error; // Propaga o erro para quem chamou a função
+  }
+};
 
 export default api;

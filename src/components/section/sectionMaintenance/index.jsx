@@ -3,10 +3,10 @@ import InputUpload from "../../inputs/inputUpload";
 import InputPrimary from "../../inputs/inputPrimary";
 import ButtonPrimary from "../../buttons/buttonPrimary";
 import ButtonSecondary from "../../buttons/buttonSecondary";
-import Checklist from "../../checklist";
 import MessageBox from "../../box/message";
 import { IoIosRemoveCircleOutline, IoIosAddCircleOutline } from "react-icons/io";
 import { useUser } from "../../../contexts/user";
+import { uploadImage, getAllImages } from "../../../utils/api/api";
 
 
 const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanceSave }) => {
@@ -17,7 +17,11 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(true);
     const [isSaved, setIsSaved] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+
     const { user, setUser } = useUser();
+
+    const programingId = orderServiceData?.programingId || null;
 
     useEffect(() => {
         const handleResize = () => {
@@ -71,44 +75,152 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
         const newEmptyFields = {};
         Object.keys(formData).forEach((field) => {
             const { value, required } = formData[field];
-
+    
             if (required) {
                 if (Array.isArray(value)) {
                     if (value.length === 0) {
                         newEmptyFields[field] = true;
                     }
-                } else if (!value || (typeof value === 'string' && !value.trim())) {
+                } else if (!value || (typeof value === "string" && !value.trim())) {
                     newEmptyFields[field] = true;
                 }
             }
         });
-
+    
         setEmptyFields(newEmptyFields);
         return Object.keys(newEmptyFields).length === 0;
+    };    
+
+    const handleFileUpload = async (files, type) => {
+        if (!programingId) {
+            setMessageContent({ type: "error", title: "Erro", message: "ID da programação não encontrado." });
+            setShowMessageBox(true);
+            return;
+        }
+    
+        try {
+            setIsUploading(true);
+    
+            for (const item of files) {
+                const { file, description } = item;
+                await uploadImage(file, programingId, description || `Imagem ${type}`, formData.observation.value);
+            }
+    
+            // Atualiza o estado com os arquivos enviados
+            setFormData((prevData) => ({
+                ...prevData,
+                [type === "antes" ? "filesBefore" : "filesAfter"]: { 
+                    ...prevData[type === "antes" ? "filesBefore" : "filesAfter"],
+                    value: files, // Atualiza o valor dos arquivos no estado
+                },
+            }));
+    
+            setMessageContent({
+                type: "success",
+                title: "Upload realizado",
+                message: `As imagens (${type}) foram enviadas com sucesso!`,
+            });
+        } catch (error) {
+            console.error("Erro no upload de imagens:", error);
+            setMessageContent({
+                type: "error",
+                title: "Erro no upload",
+                message: "Não foi possível enviar as imagens. Tente novamente.",
+            });
+        } finally {
+            setIsUploading(false);
+            setShowMessageBox(true);
+        }
     };
 
-    const handleSave = () => {
+
+    const handleSave = async () => {
         if (!validateFields()) {
-            setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
+            setMessageContent({
+                type: 'error',
+                title: 'Erro.',
+                message: 'Por favor, preencha todos os campos obrigatórios.',
+            });
             setShowMessageBox(true);
             setTimeout(() => setShowMessageBox(false), 1500);
             return;
         }
-
-        setIsEditing(false);
-        setIsSaved(true);
-        setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Dados da manutenção salvos com sucesso!' });
-        setShowMessageBox(true);
-        onMaintenanceSave();
-        setUser({ name: "Fulano da Silva", id: "123" });
-        setTimeout(() => setShowMessageBox(false), 1200);
+    
+        try {
+            // Verifica se há arquivos para upload (antes e depois)
+            if (formData.filesBefore.value.length > 0) {
+                await handleFileUpload(formData.filesBefore.value, "antes");
+            }
+    
+            if (formData.filesAfter.value.length > 0) {
+                await handleFileUpload(formData.filesAfter.value, "depois");
+            }
+    
+            setIsEditing(false);
+            setIsSaved(true);
+            setMessageContent({
+                type: 'success',
+                title: 'Sucesso.',
+                message: 'Dados da manutenção salvos com sucesso!',
+            });
+            setShowMessageBox(true);
+    
+            onMaintenanceSave(); // Notifica o pai que a manutenção foi salva
+            setTimeout(() => setShowMessageBox(false), 1200);
+        } catch (error) {
+            setMessageContent({
+                type: 'error',
+                title: 'Erro ao salvar.',
+                message: 'Ocorreu um erro ao salvar os dados da manutenção. Tente novamente.',
+            });
+            setShowMessageBox(true);
+            console.error("Erro ao salvar manutenção:", error);
+        }
     };
+    
+    const loadMaintenanceData = async () => {
+        if (!programingId) return;
+    
+        try {
+            const images = await getAllImages(); // Faz a requisição ao backend para buscar todas as imagens
+            const relatedImages = images.filter(img => img.programing.id === programingId); // Filtra imagens do programingId atual
+    
+            // Ajuste os dados para garantir a estrutura necessária
+            const filesBefore = relatedImages
+                .filter(img => img.description.includes("antes"))
+                .map(img => ({
+                    file: { name: img.nameFile || "Arquivo sem nome" }, // Garante que `file.name` exista
+                    description: img.description || "",
+                }));
+    
+            const filesAfter = relatedImages
+                .filter(img => img.description.includes("depois"))
+                .map(img => ({
+                    file: { name: img.nameFile || "Arquivo sem nome" }, // Garante que `file.name` exista
+                    description: img.description || "",
+                }));
+    
+            setFormData((prevData) => ({
+                ...prevData,
+                filesBefore: { ...prevData.filesBefore, value: filesBefore },
+                filesAfter: { ...prevData.filesAfter, value: filesAfter },
+                observation: { ...prevData.observation, value: relatedImages[0]?.observation || "" }, // Observação da primeira imagem
+            }));
+        } catch (error) {
+            console.error("Erro ao carregar os dados da manutenção:", error);
+        }
+    };
+    
+    
+    // Chamar no `useEffect` ao carregar o componente
+    useEffect(() => {
+        loadMaintenanceData();
+    }, [programingId]);
+    
 
     const toggleSection = () => {
         setIsOpen(!isOpen);
     };
-
-    let colorBorder = 'border-primary-red';
 
     return (
         <div className="flex flex-col bg-white rounded border border-gray-300 px-6 mb-2 mt-1.5 shadow-sm">
@@ -123,9 +235,8 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 <InputUpload
                     label="Anexar arquivo(s)"
                     initialFiles={formData.filesBefore.value || []}
-                    onFilesUpload={(files) => handleFieldChange('filesBefore')(files)}
+                    onFilesUpload={(files) => handleFieldChange("filesBefore")(files)} // Atualiza o estado
                     errorMessage={emptyFields.filesBefore ? "Este campo é obrigatório" : ""}
-                    className={emptyFields.filesBefore ? colorBorder : ''}
                     disabled={!isEditing}
                 />
             </div>
@@ -134,9 +245,8 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 <InputUpload
                     label="Anexar arquivo(s)"
                     initialFiles={formData.filesAfter.value || []}
-                    onFilesUpload={(files) => handleFieldChange('filesAfter')(files)}
+                    onFilesUpload={(files) => handleFieldChange("filesAfter")(files)} // Atualiza o estado
                     errorMessage={emptyFields.filesAfter ? "Este campo é obrigatório" : ""}
-                    className={emptyFields.filesAfter ? colorBorder : ''}
                     disabled={!isEditing}
                 />
             </div>

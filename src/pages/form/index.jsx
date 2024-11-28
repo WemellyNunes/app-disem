@@ -363,7 +363,17 @@ export default function Form() {
                 />
             )}
 
-            <div className="flex flex-col gap-y-1 px-0 md:px-32">
+
+            <div className={` flex flex-col px-0  ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
+                <div className="flex justify-center">
+                    <PageTitle
+                        icon={FaFilePen}
+                        text={isCreating ? "Cadastro de Ordem de Serviço" : "Pré-visualização Ordem de Serviço"}
+                        backgroundColor="bg-white"
+                        textColor="text-primary-dark"
+                    />
+                </div>
+                <div className="flex flex-col gap-y-1 px-0 md:px-32">
                 <MessageCard
                     type="info"
                     title="Info."
@@ -376,16 +386,6 @@ export default function Form() {
                     message="O campo 'Índice de manutenção' indica o impacto e a prioridade da manutenção."
                     storageKey="showIndexExplanationMessage"
                 />
-            </div>
-
-            <div className={` flex flex-col px-0  ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
-                <div className="flex justify-center">
-                    <PageTitle
-                        icon={FaFilePen}
-                        text={isCreating ? "Cadastro de Ordem de Serviço" : "Pré-visualização Ordem de Serviço"}
-                        backgroundColor="bg-white"
-                        textColor="text-primary-dark"
-                    />
                 </div>
 
                 <div className="flex flex-col bg-white border mt-2 mb-2 px-8 mx-2 md:mx-32 rounded">
