@@ -24,7 +24,7 @@ const List = ({ filteredData, onDeleteItem }) => {
     const statusClasses = {
         'A atender': 'font-medium text-orange-500 bg-orange-100 rounded-md p-1 text-xs',
         'Em atendimento': 'font-medium text-status-prog bg-status-bgProg rounded-md p-1 text-xs',
-        'Resolvido': 'font-medium text-status-resp bg-status-bgResp rounded-md p-1 text-xs',
+        'Resolvido': 'font-medium text-status-resp bg-green-100 rounded-md p-1 text-xs',
         'Finalizada': 'font-medium text-status-finish bg-status-bgFinish rounded-full p-1 text-xs',
         'Negada': 'font-medium text-status-negative bg-status-bgNegative rounded-full p-1 text-xs'
     };
@@ -155,20 +155,20 @@ const List = ({ filteredData, onDeleteItem }) => {
                                     <div className="flex flex-col items-center justify-center py-3 md:py-0  md:w-1/3 md:items-end text-sm">
                                         <button
                                             onClick={() => handleProgramClick(item.id)}
-                                            className="flex flex-col text-blue-600 items-center justify-center hover:underline"
+                                            className="flex flex-col items-center justify-center hover:underline"
                                         >
                                             {item.programingId ? (
                                                 <>
-                                                    <span>Programada</span>
+                                                    <span className="text-primary-light" >Programação</span>
                                                     <div>
-                                                        <FaRegClock />
+                                                        <FaRegClock className="text-primary-light"/>
                                                     </div>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <span>Sem programação</span>
+                                                    <span className="text-red-500">Sem programação</span>
                                                     <div>
-                                                        <FaCirclePlus />
+                                                        <FaCirclePlus className="text-red-500"/>
                                                     </div>
                                                 </>
                                             )}
@@ -228,3 +228,6 @@ const List = ({ filteredData, onDeleteItem }) => {
 };
 
 export default List;
+
+
+

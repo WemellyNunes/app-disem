@@ -6,7 +6,7 @@ import ButtonSecondary from "../../buttons/buttonSecondary";
 import MessageBox from "../../box/message";
 import { IoIosRemoveCircleOutline, IoIosAddCircleOutline } from "react-icons/io";
 import { useUser } from "../../../contexts/user";
-import { uploadImage, getAllImages } from "../../../utils/api/api";
+import { uploadImage, getAllImages, updateOrderServiceStatus } from "../../../utils/api/api";
 
 
 const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanceSave }) => {
@@ -41,7 +41,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     };
 
     const [formData, setFormData] = useState({
-        observation: { value: null, required: false },
+        observation: { value: "", required: false },
         filesBefore: { value: [], required: true },
         filesAfter: { value: [], required: true },
     });
@@ -133,7 +133,6 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
         }
     };
 
-
     const handleSave = async () => {
         if (!validateFields()) {
             setMessageContent({
@@ -155,6 +154,8 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
             if (formData.filesAfter.value.length > 0) {
                 await handleFileUpload(formData.filesAfter.value, "depois");
             }
+
+            await updateOrderServiceStatus(orderServiceData.id, "Resolvido")
     
             setIsEditing(false);
             setIsSaved(true);
@@ -179,40 +180,55 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     };
     
     const loadMaintenanceData = async () => {
-        if (!programingId) return;
+        if (!programingId) {
+            console.warn("Programing ID não definido. Aguardando atualização...");
+            return;
+        }
     
         try {
-            const images = await getAllImages(); // Faz a requisição ao backend para buscar todas as imagens
-            const relatedImages = images.filter(img => img.programing.id === programingId); // Filtra imagens do programingId atual
+            const images = await getAllImages(); 
+            const relatedImages = images.filter(img => img.programing.id === programingId); 
     
             // Ajuste os dados para garantir a estrutura necessária
             const filesBefore = relatedImages
                 .filter(img => img.description.includes("antes"))
                 .map(img => ({
-                    file: { name: img.nameFile || "Arquivo sem nome" }, // Garante que `file.name` exista
+                    file: { name: img.nameFile || "Arquivo sem nome" },
                     description: img.description || "",
+                    id: img.id, // Certifique-se de que img.id existe
                 }));
-    
+
+
             const filesAfter = relatedImages
                 .filter(img => img.description.includes("depois"))
                 .map(img => ({
-                    file: { name: img.nameFile || "Arquivo sem nome" }, // Garante que `file.name` exista
+                    file: { name: img.nameFile || "Arquivo sem nome" }, 
                     description: img.description || "",
+                    id: img.id,
                 }));
-    
-            setFormData((prevData) => ({
-                ...prevData,
-                filesBefore: { ...prevData.filesBefore, value: filesBefore },
-                filesAfter: { ...prevData.filesAfter, value: filesAfter },
-                observation: { ...prevData.observation, value: relatedImages[0]?.observation || "" }, // Observação da primeira imagem
-            }));
+
+                
+                setFormData((prevData) => ({
+                    ...prevData,
+                    filesBefore: { ...prevData.filesBefore, value: filesBefore },
+                    filesAfter: { ...prevData.filesAfter, value: filesAfter },
+                    observation: { ...prevData.observation, value: relatedImages[0]?.observation || "" }, // Observação da primeira imagem
+                }));
+                
+            const isDataSaved = filesBefore.length > 0 || filesAfter.length > 0;
+            setIsEditing(!isDataSaved);
+            setIsSaved(isDataSaved);
         } catch (error) {
             console.error("Erro ao carregar os dados da manutenção:", error);
+            setMessageContent({
+                type: "error",
+                title: "Erro ao carregar",
+                message: "Não foi possível carregar os dados da manutenção.",
+            });
+            setShowMessageBox(true);
         }
     };
     
-    
-    // Chamar no `useEffect` ao carregar o componente
     useEffect(() => {
         loadMaintenanceData();
     }, [programingId]);
@@ -254,7 +270,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 <InputPrimary
                     label="Observação"
                     placeholder="Escreva uma observação (opcional)"
-                    value={formData.observation.value}
+                    value={formData.observation.value || 'sem observação'}
                     onChange={handleFieldChange('observation')}
                     disabled={!isEditing}
                 />
@@ -289,3 +305,6 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
 };
 
 export default MaintenanceSection;
+
+
+//

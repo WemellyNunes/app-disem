@@ -285,4 +285,14 @@ export const getAllImages = async () => {
   }
 };
 
+export const updateImage = async (id, payload) => {
+  try {
+      const response = await api.put(`/file/${id}`, payload);
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao atualizar a imagem:", error);
+      throw error;
+  }
+};
+
 export default api;

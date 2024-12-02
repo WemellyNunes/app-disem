@@ -4,7 +4,7 @@ import Tabs from '../tabs';
 import SearchInput from '../../inputs/searchInput';
 import FilterModal from '../../modal/filter';
 import Tag from '../../tag';
-import { FaSlidersH } from "react-icons/fa";
+import { FaSlidersH, FaPlus } from "react-icons/fa";
 import List from '../list';
 import { getAllOrders } from "../../../utils/api/api";
 import { calcularValorRisco, calcularPrioridade } from '../../../utils/matriz';
@@ -199,6 +199,15 @@ const TabsAndList = () => {
                         <FaSlidersH className='h-3 w-3' />
                     </span>
                     <span className='hidden md:block text-sm'>Filtrar</span>
+                </button>
+                <button
+                    onClick={() => navigate("../form")}
+                    className="flex items-center gap-2 bg-primary-light text-white px-3 md:px-4 h-8 rounded hover:bg-blue-700"
+                >
+                    <span>
+                        <FaPlus className='h-3 w-3' />
+                    </span>
+                    <span className='hidden md:block text-sm'>Nova OS</span>
                 </button>
             </div>
             <div className="flex flex-wrap gap-2 mb-1.5 px-2 md:px-6">

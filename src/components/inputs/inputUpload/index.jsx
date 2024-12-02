@@ -3,6 +3,8 @@ import { FaUpload, FaTrash, FaEdit, FaEye } from 'react-icons/fa';
 import UploadModal from '../../modal/upload';
 import PreviewFile from '../../modal/preview';
 
+import { updateImage } from '../../../utils/api/api';
+
 const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, initialFiles }) => {
     const [showModal, setShowModal] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
@@ -16,21 +18,24 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
 
 
     const handleUpload = (files, description, editIndex = null) => {
-        const newFiles = files.map(file => ({ file, description }));
-
-        setUploadedFiles(prev => {
+        const newFiles = files.map(file => ({
+            file,
+            description,
+            id: editIndex !== null ? uploadedFiles[editIndex]?.id : null, // Mantém o ID original
+        }));
+    
+        setUploadedFiles((prev) => {
             const updatedFiles = editIndex !== null
                 ? prev.map((item, index) => (index === editIndex ? newFiles[0] : item))
                 : [...prev, ...newFiles];
-
-            // Chama onFilesUpload após o estado ser alterado
-            setTimeout(() => onFilesUpload(updatedFiles), 0);
-
+    
+            onFilesUpload(updatedFiles); // Notifica o componente pai
             return updatedFiles;
         });
         setShowModal(false);
         setFileToEdit(null);
     };
+       
 
     const handleRemoveFile = (fileToRemove) => {
         if (disabled) return;
@@ -46,10 +51,29 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         setShowPreview(true);
     };
 
-    const handleEditFile = (file, description, index) => {
-        setFileToEdit({ file, description, index });
-        setShowModal(true);
+    const handleEditFile = async (file, description, index) => {
+        const fileId = uploadedFiles[index]?.id; // Pegue o ID do array principal
+        if (!fileId) {
+            console.log("id não encontrado");
+            return;
+        }
+    
+        const payload = {
+            nameFile: file.name,
+            description: description || "",
+            observation: "Observação atualizada", // Ajuste conforme necessário
+        };
+    
+        try {
+            await updateImage(fileId, payload);
+            console.log("Imagem atualizada com sucesso!");
+        } catch (error) {
+            console.error("Erro ao atualizar a imagem:", error);
+        }
     };
+    
+    
+    
 
     return (
         <div className={`flex flex-col mb-4`}>
@@ -112,11 +136,12 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                     setShowModal(false);
                     setFileToEdit(null);
                 }}
-                onUpload={handleUpload}
+                onUpload={(files, description) => handleUpload(files, description, fileToEdit?.index)}
                 initialFiles={fileToEdit ? [fileToEdit.file] : []}
                 initialDescription={fileToEdit ? fileToEdit.description : ""}
                 editIndex={fileToEdit ? fileToEdit.index : null}
             />
+
 
             {showPreview && (
                 <PreviewFile

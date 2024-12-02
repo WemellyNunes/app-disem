@@ -12,14 +12,14 @@ import HistoryCard from "../../components/cards/historyCard";
 import { useState, useEffect } from "react";
 import MessageBox from "../../components/box/message";
 import { FaTrash, FaEdit, FaUser, FaBuilding, FaCity, FaCalendar, FaHourglassHalf } from "react-icons/fa";
-import { TbFileExport,TbCalendarTime } from "react-icons/tb";
+import { TbFileExport, TbCalendarTime } from "react-icons/tb";
 import MaintenanceSection from "../../components/section/sectionMaintenance";
 import FinalizeSection from "../../components/section/FinalizeSection";
 import AddReport from "../../components/modal/report";
 import ViewReports from "../../components/modal/viewReports";
 import { useUser } from "../../contexts/user";
 import PageTitle from "../../components/title";
-import { MdTextSnippet, MdSettings, MdPriorityHigh, MdPhone  } from "react-icons/md";
+import { MdTextSnippet, MdSettings, MdPriorityHigh, MdPhone } from "react-icons/md";
 import { RiListSettingsFill } from "react-icons/ri";
 import ConfirmationModal from "../../components/modal/confirmation";
 
@@ -33,15 +33,15 @@ export default function Programing() {
 
     const { id } = useParams();
 
-    const { id: orderServiceId } = useParams(); 
+    const { id: orderServiceId } = useParams();
 
     const [formData, setFormData] = useState({
-        data: { value: '', required: true},
-        turno: { value: '', required: true},
-        encarregado: { value: '', required: true},
-        profissionais: { value: [], required: true},
-        custo: { value: null, required: false},
-        observacao: { value: null, required: false},
+        data: { value: '', required: true },
+        turno: { value: '', required: true },
+        encarregado: { value: '', required: true },
+        profissionais: { value: [], required: true },
+        custo: { value: '', required: false },
+        observacao: { value: '', required: false },
     });
 
     const [orderServiceData, setOrderServiceData] = useState(null);
@@ -58,7 +58,7 @@ export default function Programing() {
     const [showViewReports, setShowViewReports] = useState(false);
     const [reports, setReports] = useState([])
     const [status, setStatus] = useState("A atender");
-    const [finalObservation, setFinalObservation] = useState(''); 
+    const [finalObservation, setFinalObservation] = useState('');
     const [programingId, setProgramingId] = useState(null);
     const [confirmationModal, setConfirmationModal] = useState({
         show: false,
@@ -66,22 +66,28 @@ export default function Programing() {
     });
 
     const handleFinalization = (observation) => {
-        setFinalObservation(observation); 
-        setIsFinalized(true); 
+        setFinalObservation(observation);
+        setIsFinalized(true);
     };
 
-    const handleMaintenanceSave = () => {
-        setIsMaintenanceSaved(true);
+    const handleMaintenanceSave = async () => {
+        try {
+            await updateOrderServiceStatus(orderServiceData.id, "Resolvido"); // Atualiza o status no backend
+            setIsMaintenanceSaved(true); // Atualiza no frontend
+            setStatus("Resolvido");
+        } catch (error) {
+            console.error("Erro ao atualizar status da OS:", error);
+        }
     };
 
     const handleOpenModal = (action) => {
         setConfirmationModal({ show: true, action }); // Define a ação ("edit" ou "delete")
     };
-    
+
     const handleCloseModal = () => {
         setConfirmationModal({ show: false, action: null }); // Reseta o modal
     };
-    
+
     const handleConfirmAction = () => {
         if (confirmationModal.action === "edit") {
             handleEdit(); // Habilita a edição
@@ -90,7 +96,7 @@ export default function Programing() {
         }
         handleCloseModal(); // Fecha o modal
     };
- 
+
     const overseer = [
         { label: 'Almir Lima', value: 'encarregado1' },
         { label: 'Lucas', value: 'encarregado2' },
@@ -111,16 +117,16 @@ export default function Programing() {
     ];
 
     const handleDownloadReport = async (id) => {
-    try {
-        await downloadReport(id); // ID da OS passado corretamente
-    } catch (error) {
-        setMessageContent({
-            type: 'error',
-            title: 'Erro ao exportar',
-            message: 'Não foi possível iniciar o download do relatório. Tente novamente mais tarde.',
-        });
-        setShowMessageBox(true);
-    }
+        try {
+            await downloadReport(id); // ID da OS passado corretamente
+        } catch (error) {
+            setMessageContent({
+                type: 'error',
+                title: 'Erro ao exportar',
+                message: 'Não foi possível iniciar o download do relatório. Tente novamente mais tarde.',
+            });
+            setShowMessageBox(true);
+        }
     };
 
     const handleAddReport = (newReport) => {
@@ -136,7 +142,7 @@ export default function Programing() {
     const handleMultiSelectChange = (selectedOptions) => {
         setFormData((prevData) => {
             const updatedData = { ...prevData, profissionais: { ...prevData.profissionais, value: selectedOptions } };
-            
+
             setEmptyFields((prevEmptyFields) => {
                 const updatedEmptyFields = { ...prevEmptyFields };
                 if (selectedOptions.length > 0) {
@@ -144,7 +150,7 @@ export default function Programing() {
                 }
                 return updatedEmptyFields;
             });
-            
+
             return updatedData;
         });
     };
@@ -155,7 +161,7 @@ export default function Programing() {
                 ...prevData,
                 [field]: { ...prevData[field], value },
             };
-    
+
             if (updatedData[field].required && value.trim()) {
                 setEmptyFields((prevEmptyFields) => {
                     const updatedEmptyFields = { ...prevEmptyFields };
@@ -172,10 +178,12 @@ export default function Programing() {
             try {
                 const orderData = await getOrderById(id); // Busca a OS
                 setOrderServiceData(orderData);
-    
+
+                setStatus(orderData.status);
+
                 if (orderData.programingId) {
                     const programingData = await getProgramingById(orderData.programingId);
-                    
+
                     const formattedDate = programingData.datePrograming
                         .split('-')
                         .reverse()
@@ -186,8 +194,8 @@ export default function Programing() {
                         data: { ...prevData.data, value: formattedDate },
                         turno: { ...prevData.turno, value: programingData.time },
                         encarregado: { ...prevData.encarregado, value: programingData.overseer },
-                        profissionais: { 
-                            ...prevData.profissionais, 
+                        profissionais: {
+                            ...prevData.profissionais,
                             value: programingData.worker.split(', ').map(label => ({
                                 label: label.trim(),
                                 value: label.toLowerCase().replace(/\s/g, ''),
@@ -210,15 +218,15 @@ export default function Programing() {
                 setShowMessageBox(true);
             }
         };
-    
+
         fetchOrderData();
-    }, [id]);
-    
+    }, [id, programingId]);
+
     const validateFields = () => {
         const newEmptyFields = {};
         Object.keys(formData).forEach((field) => {
             const { value, required } = formData[field];
-            
+
             if (required) {
                 if (Array.isArray(value)) {
                     if (value.length === 0) {
@@ -229,23 +237,23 @@ export default function Programing() {
                 }
             }
         });
-        
+
         setEmptyFields(newEmptyFields);
         return Object.keys(newEmptyFields).length === 0;
     };
 
     const handleSave = async () => {
         if (!validateFields()) {
-            setMessageContent({ 
-                type: 'error', 
-                title: 'Erro.', 
-                message: 'Por favor, preencha todos os campos obrigatórios.' 
+            setMessageContent({
+                type: 'error',
+                title: 'Erro.',
+                message: 'Por favor, preencha todos os campos obrigatórios.'
             });
             setShowMessageBox(true);
             setTimeout(() => setShowMessageBox(false), 1000);
             return;
         }
-    
+
         try {
             const formattedDate = formData.data.value.split('/').reverse().join('-');
 
@@ -262,93 +270,95 @@ export default function Programing() {
                 active: 'true',
             };
 
+            let newProgramingId;
             if (programingId) {
-                // Atualiza programação existente
                 await updatePrograming(programingId, programingData);
-                setMessageContent({
-                    type: 'success',
-                    title: 'Atualizado.',
-                    message: 'Programação atualizada com sucesso!'
-                });
-                setShowMessageBox(true);
-                setTimeout(() => setShowMessageBox(false), 1500);
-
+                newProgramingId = programingId;
             } else {
-                const response = await createPrograming({ ...programingData, orderService_id: id });
-                setProgramingId(response.id); // Atualiza o ID da programação salva
-                setMessageContent({
-                    type: 'success',
-                    title: 'Criado.',
-                    message: 'Programação criada com sucesso!'
+                const response = await createPrograming({
+                    ...programingData,
+                    orderService_id: id,
                 });
-                setShowMessageBox(true);
-                setTimeout(() => setShowMessageBox(false), 1500);
-              } 
-    
+                newProgramingId = response.id;
+            }
+
+            setProgramingId(newProgramingId);
+
+            setOrderServiceData((prevData) => ({
+                ...prevData,
+                status: "Em atendimento"
+            }));
+
+            setStatus("Em atendimento");
             setIsSaved(true);
             setIsEditing(false);
-            setStatus("Em atendimento");
+            setMessageContent({
+                type: "success",
+                title: "Sucesso.",
+                message: "Programação salva com sucesso!",
+            });
+            setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 1500);
         } catch (error) {
             console.error("Erro ao salvar programação:", error);
-            setMessageContent({ 
-                type: 'error', 
-                title: 'Erro.', 
-                message: 'Erro ao salvar a programação.' 
+            setMessageContent({
+                type: 'error',
+                title: 'Erro.',
+                message: 'Erro ao salvar a programação.'
             });
             setShowMessageBox(true);
         }
-    }; 
-    
+    };
+
     const handleConfirmDelete = async () => {
         try {
-          if (!programingId) return;
-      
-          await deletePrograming(programingId);
-          const updatedOrderService = await updateOrderServiceStatus(orderServiceId, "A atender");
-      
-          // Atualiza o estado local com os novos dados da OS
-          setOrderServiceData((prevData) => ({
-            ...prevData,
-            status: updatedOrderService.status,
-          }));
-      
-          setStatus("A atender");
-          setFormData({
-            data: { value: '', required: true },
-            turno: { value: '', required: true },
-            encarregado: { value: '', required: true },
-            profissionais: { value: [], required: true },
-            custo: { value: null, required: false },
-            observacao: { value: null, required: false },
-          });
-      
-          setProgramingId(null);
-          setIsSaved(false);
-          setIsEditing(true);
-      
-          setMessageContent({
-            type: "success",
-            title: "Exclusão bem-sucedida",
-            message: "Programação excluída com sucesso! Status da OS atualizado para 'A atender'.",
-          });
-          setShowMessageBox(true);
-          setTimeout(() => setShowMessageBox(false), 1500);
-      
-          handleCloseModal();
+            if (!programingId) return;
+
+            await deletePrograming(programingId);
+            const updatedOrderService = await updateOrderServiceStatus(orderServiceId, "A atender");
+
+            // Atualiza o estado local com os novos dados da OS
+            setOrderServiceData((prevData) => ({
+                ...prevData,
+                status: updatedOrderService.status,
+            }));
+
+            setStatus("A atender");
+            setFormData({
+                data: { value: '', required: true },
+                turno: { value: '', required: true },
+                encarregado: { value: '', required: true },
+                profissionais: { value: [], required: true },
+                custo: { value: null, required: false },
+                observacao: { value: null, required: false },
+            });
+
+            setProgramingId(null);
+            setIsSaved(false);
+            setIsEditing(true);
+
+            setMessageContent({
+                type: "success",
+                title: "Exclusão bem-sucedida",
+                message: "Programação excluída com sucesso! Status da OS atualizado para 'A atender'.",
+            });
+            setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 1500);
+
+            handleCloseModal();
         } catch (error) {
-          console.error("Erro ao excluir a programação:", error);
-      
-          setMessageContent({
-            type: "error",
-            title: "Erro ao excluir",
-            message: "Não foi possível excluir a programação. Tente novamente.",
-          });
-          setShowMessageBox(true);
+            console.error("Erro ao excluir a programação:", error);
+
+            setMessageContent({
+                type: "error",
+                title: "Erro ao excluir",
+                message: "Não foi possível excluir a programação. Tente novamente.",
+            });
+            setShowMessageBox(true);
         }
     };
-      
-      
-       
+
+
     const handleEdit = () => {
         setIsEditing(true);
         setIsSaved(false);
@@ -361,7 +371,7 @@ export default function Programing() {
     const handleDateChange = (date) => {
         setFormData((prevData) => {
             const updatedData = { ...prevData, data: { ...prevData.data, value: date } };
-    
+
             setEmptyFields((prevEmptyFields) => {
                 const updatedEmptyFields = { ...prevEmptyFields };
                 if (date) {
@@ -369,15 +379,29 @@ export default function Programing() {
                 }
                 return updatedEmptyFields;
             });
-    
+
             return updatedData;
         });
     };
 
+    useEffect(() => {
+        if (isMaintenanceSaved) {
+            setIsEditing(false);
+            setIsSaved(true);
+        }
+    }, [isMaintenanceSaved]);
+
+    useEffect(() => {
+        if (orderServiceData) {
+            setIsMaintenanceSaved(orderServiceData.status === "Resolvido");
+            setIsMaintenanceClosed(orderServiceData.status === "Finalizado");
+        }
+    }, [orderServiceData]);
+
     if (!orderServiceData) {
         return <p>Carregando dados da OS...</p>;
     }
-    
+
     return (
         <>
             {showMessageBox && (
@@ -402,7 +426,7 @@ export default function Programing() {
                     <StatusBar
                         requisitionNumber={orderServiceData?.requisition || "Carregando..."}
                         origin={orderServiceData?.origin || "Carregando..."}
-                        situation={orderServiceData?.status || "carregando..."}
+                        situation={status || "carregando..."}
                         reopening="nenhuma"
                         onHistoryClick={handleHistoryClick}
                         onAddReportClick={() => setShowAddReport(true)}
@@ -417,59 +441,59 @@ export default function Programing() {
                         <SectionCard background="bg-gray-50" title="Dados da ordem de serviço">
                             <div className="grid grid-cols-1 md:grid-cols-1 gap-y-4 text-sm text-gray-500 mb-8">
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <MdPriorityHigh  className="h-4 w-4"/>
+                                    <MdPriorityHigh className="h-4 w-4" />
                                     <p className="font-medium">Clasificação:</p>
-                                    <p className="uppercase">{orderServiceData.classification }</p>
+                                    <p className="uppercase">{orderServiceData.classification}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaUser className="h-4 w-4"/>
+                                    <FaUser className="h-4 w-4" />
                                     <p className="font-medium">Socilitante:</p>
-                                    <p>{orderServiceData.requester }</p>
+                                    <p>{orderServiceData.requester}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <MdPhone className="h-4 w-4"/>
+                                    <MdPhone className="h-4 w-4" />
                                     <p className="font-medium">Contato:</p>
-                                    <p>{orderServiceData.contact }</p>
+                                    <p>{orderServiceData.contact}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaBuilding className="h-4 w-4"/>
+                                    <FaBuilding className="h-4 w-4" />
                                     <p className="font-medium">Unidade do solicitante:</p>
-                                    <p>{orderServiceData.unit }</p>
+                                    <p>{orderServiceData.unit}</p>
                                 </div>
                                 <div className="flex items-center gap-x-2 flex-wrap">
-                                    <MdTextSnippet className="h-4 w-4"/>
+                                    <MdTextSnippet className="h-4 w-4" />
                                     <p className="font-medium">Descrição:</p>
-                                    <p>{orderServiceData.preparationObject }</p>
+                                    <p>{orderServiceData.preparationObject}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <MdSettings className="h-4 w-4"/>
+                                    <MdSettings className="h-4 w-4" />
                                     <p className="font-medium">Tipo de manutenção:</p>
-                                    <p>{orderServiceData.typeMaintenance }</p>
+                                    <p>{orderServiceData.typeMaintenance}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <RiListSettingsFill className="h-4 w-4"/>
+                                    <RiListSettingsFill className="h-4 w-4" />
                                     <p className="font-medium">Sistema:</p>
                                     <p>{orderServiceData.system}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaBuilding className="h-4 w-4"/>
+                                    <FaBuilding className="h-4 w-4" />
                                     <p className="font-medium">Unidade da manutenção:</p>
-                                    <p>{orderServiceData.maintenanceUnit }</p>
+                                    <p>{orderServiceData.maintenanceUnit}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaCity className="h-4 w-4"/>
+                                    <FaCity className="h-4 w-4" />
                                     <p className="mr-1 font-medium">Campus:</p>
-                                    <p>{orderServiceData.campus }</p>
+                                    <p>{orderServiceData.campus}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaCalendar className="h-4 w-4"/>
+                                    <FaCalendar className="h-4 w-4" />
                                     <p className="mr-1 font-medium">Data do cadastro:</p>
-                                    <p>{orderServiceData.date }</p>
+                                    <p>{orderServiceData.date}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaHourglassHalf className="h-4 w-4"/>
+                                    <FaHourglassHalf className="h-4 w-4" />
                                     <p className="mr-1 font-medium">Dias em aberto:</p>
-                                    <p>{orderServiceData.openDays }</p>
+                                    <p>{orderServiceData.openDays}</p>
                                 </div>
                             </div>
 
@@ -496,14 +520,16 @@ export default function Programing() {
                             />
                         )}
 
-                        {isSaved && <MaintenanceSection
-                            orderServiceData={orderServiceData}
-                            onMaintenanceClose={setIsMaintenanceClosed}
-                            onMaintenanceSave={() => {
-                                setStatus("Resolvido");
-                                handleMaintenanceSave();
-                            }}
-                        />}
+                        {programingId && (
+                            <MaintenanceSection
+                                orderServiceData={{ ...orderServiceData, programingId }}
+                                onMaintenanceClose={setIsMaintenanceClosed}
+                                onMaintenanceSave={() => {
+                                    setStatus("Resolvido");
+                                    handleMaintenanceSave();
+                                }}
+                            />
+                        )}
 
                         <SectionCard title="Programação">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4">
@@ -537,7 +563,7 @@ export default function Programing() {
                                     label="Profissional(is) *"
                                     options={professionals}
                                     onChange={handleMultiSelectChange}
-                                    selectedValues={formData.profissionais.value} 
+                                    selectedValues={formData.profissionais.value}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.profissionais ? "Este campo é obrigatório" : ""}
                                 />
@@ -551,7 +577,7 @@ export default function Programing() {
                                 <InputPrimary
                                     label="Observação"
                                     placeholder="Escreva uma observação (opcional)"
-                                    value={formData.observacao.value}
+                                    value={formData.observacao.value || 'sem observação'}
                                     onChange={handleFieldChange('observacao')}
                                     disabled={!isEditing}
                                 />
@@ -561,7 +587,8 @@ export default function Programing() {
                             </div>
                             <div className="flex flex-col md:flex-row justify-end">
                                 <div className="flex flex-col md:flex-row gap-y-1.5 ">
-                                    {isSaved && !isMaintenanceSaved && !isMaintenanceClosed ? (
+                                    {/* Verifica o status para renderizar os botões */}
+                                    {status === "Em atendimento" && !isMaintenanceClosed ? (
                                         <>
                                             <ButtonTertiary
                                                 bgColor="bg-white"
@@ -602,6 +629,7 @@ export default function Programing() {
                                     )}
                                 </div>
                             </div>
+
                         </SectionCard>
                     </div>
                 </div>
@@ -636,7 +664,7 @@ export default function Programing() {
             )}
             {showHistory && <HistoryCard history={history} onClose={() => setShowHistory(false)} />}
 
-            
+
         </>
     );
 };
