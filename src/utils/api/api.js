@@ -254,34 +254,42 @@ export const deletePrograming = async (id) => {
   }
 };
 
-export const uploadImage = async (file, programingId, description, observation) => {
+export const uploadFiles = async (files, programingId, type, description) => {
+  const formData = new FormData();
+  
+  // Certifique-se de que 'files' seja um array de objetos com { file, description }
+  files.forEach((fileObj) => {
+      formData.append("file", fileObj.file); // Envia o arquivo com a chave 'file'
+  });
+
+  formData.append("programingId", programingId); // Adiciona o ID da programação
+  formData.append("type", type); // Tipo (antes/depois)
+  formData.append("description", description); // Descrição
+
   try {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("programingId", programingId);
-    formData.append("description", description);
-    formData.append("observation", observation || "");
-
-    const response = await api.post("/uploadFile", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    return response.data;
+      const response = await api.post("/uploadFile", formData, {
+          headers: {
+              "Content-Type": "multipart/form-data",
+          },
+      });
+      console.log(`Arquivos ${description} enviados com sucesso:`, response.data);
+      return response.data;
   } catch (error) {
-    console.error("Erro ao fazer upload da imagem:", error);
-    throw error;
+      console.error(`Erro ao enviar arquivos ${description}:`, error.response?.data || error.message);
+      throw error;
   }
 };
 
-export const getAllImages = async () => {
+
+export const getAllImages = async (programingId) => {
   try {
-      const response = await api.get(`/files`); // Faz a requisição GET ao endpoint
-      return response.data; // Retorna os dados da resposta
+      const response = await api.get(`/files`, {
+          params: { programingId }, // Adiciona o parâmetro à requisição
+      });
+      return response.data;
   } catch (error) {
       console.error("Erro ao buscar as imagens:", error);
-      throw error; // Propaga o erro para quem chamou a função
+      throw error;
   }
 };
 

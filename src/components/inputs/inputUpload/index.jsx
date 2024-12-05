@@ -16,25 +16,25 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         setUploadedFiles(initialFiles || []);
     }, [initialFiles]);
 
-
-    const handleUpload = (files, description, editIndex = null) => {
-        const newFiles = files.map(file => ({
+    const handleFilesUpload = (files, description) => {
+        const filesWithDescription = files.map((file) => ({
             file,
-            description,
-            id: editIndex !== null ? uploadedFiles[editIndex]?.id : null, // Mantém o ID original
+            description, // Inclui a descrição para cada arquivo
         }));
-    
-        setUploadedFiles((prev) => {
-            const updatedFiles = editIndex !== null
-                ? prev.map((item, index) => (index === editIndex ? newFiles[0] : item))
-                : [...prev, ...newFiles];
-    
-            onFilesUpload(updatedFiles); // Notifica o componente pai
-            return updatedFiles;
-        });
-        setShowModal(false);
-        setFileToEdit(null);
+        onFilesUpload(filesWithDescription); // Passa os arquivos com descrição para o pai
     };
+    
+    
+    const handleUpload = (files, description) => {
+        const filesWithDescriptions = files.map((file) => ({
+            file,
+            description, // Vincula a descrição a cada arquivo
+        }));
+        onFilesUpload(filesWithDescriptions); // Passa para o pai
+        setShowModal(false);
+    };
+    
+    
        
 
     const handleRemoveFile = (fileToRemove) => {
@@ -73,8 +73,6 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
     };
     
     
-    
-
     return (
         <div className={`flex flex-col mb-4`}>
             <label
