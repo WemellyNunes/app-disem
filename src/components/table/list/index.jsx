@@ -25,19 +25,19 @@ const List = ({ filteredData, onDeleteItem }) => {
         'A atender': 'font-medium text-orange-500 bg-orange-100 rounded-md p-1 text-xs',
         'Em atendimento': 'font-medium text-status-prog bg-status-bgProg rounded-md p-1 text-xs',
         'Resolvido': 'font-medium text-status-resp bg-green-100 rounded-md p-1 text-xs',
-        'Finalizada': 'font-medium text-status-finish bg-status-bgFinish rounded-full p-1 text-xs',
-        'Negada': 'font-medium text-status-negative bg-status-bgNegative rounded-full p-1 text-xs'
+        'Finalizado': 'font-medium text-status-finish bg-status-bgFinish rounded-md p-1 text-xs',
+        'Negada': 'font-medium text-status-negative bg-status-bgNegative rounded-md p-1 text-xs'
     };
 
     const handleDelete = (id) => {
         setActionType('delete');
-        setSelectedId(id); // Armazena o ID da OS a ser deletada
+        setSelectedId(id); 
         setShowConfirmation(true);
     };
 
     const handleEdit = (id) => {
         setActionType('edit');
-        setSelectedId(id); // Armazena o ID da OS a ser editada
+        setSelectedId(id); 
         setShowConfirmation(true);
     };
 
@@ -45,16 +45,14 @@ const List = ({ filteredData, onDeleteItem }) => {
         navigate(`/programing/${id}`);
     };
     
-
     const handleConfirmAction = async () => {
-        setShowConfirmation(false); // Fecha o modal
+        setShowConfirmation(false); 
      
         if (actionType === 'delete') {
             try {
-                await deleteOrder(selectedId); // Chama o endpoint de exclusão
+                await deleteOrder(selectedId); 
                 console.log(`OS ${selectedId} deletada com sucesso.`);
      
-                // Chame a função do pai para atualizar a lista
                 if (onDeleteItem) {
                     onDeleteItem(selectedId);
                 }
@@ -66,14 +64,12 @@ const List = ({ filteredData, onDeleteItem }) => {
                 });
                 setShowMessageBox(true);
      
-                // Ocultar a mensagem após alguns segundos
                 setTimeout(() => setShowMessageBox(false), 1500);
      
             } catch (error) {
                 console.error(`Erro ao deletar OS ${selectedId}:`, error);
             }
         } else if (actionType === 'edit') {
-            // Redireciona para o formulário no modo de edição
             navigate(`/form/${selectedId}`);
         }
     };
@@ -185,7 +181,6 @@ const List = ({ filteredData, onDeleteItem }) => {
                                                 onEdit={() => handleEdit(item.id)}
                                                 onDelete={() => handleDelete(item.id)}
                                             />
-
                                         </span>
                                         <div className="hidden md:flex items-center">
                                             <button onClick={() => setShowHistory(true)} className="flex flex-col">

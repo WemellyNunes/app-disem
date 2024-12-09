@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api', // Certifique-se de que a porta está correta
+  baseURL: 'http://localhost:8080/api', 
 });
 
 export const createOrder = async (orderData) => {
@@ -37,26 +36,23 @@ export const createOrder = async (orderData) => {
 
   export const downloadReport = async (id) => {
     try {
-        // Obter o status da ordem de serviço antes de baixar o relatório
+
         const order = await getOrderById(id);
         const status = order.status;
   
-        // Definir o nome do arquivo com base no status
         let fileName = `relatorio_os_${id}.pdf`;
         if (status === 'Em atendimento') {
             fileName = `programacao_os_${id}.pdf`;
         }
   
-        // Fazer o download do relatório
         const response = await api.get(`/${id}/report`, {
-            responseType: 'blob', // Receber como arquivo binário
+            responseType: 'blob', 
         });
   
-        // Criar um URL para o Blob e iniciar o download
         const url = window.URL.createObjectURL(response.data);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', fileName); // Nome do arquivo definido no frontend
+        link.setAttribute('download', fileName); 
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -90,7 +86,7 @@ export const createOrder = async (orderData) => {
     try {
       const response = await api.put(
         `/serviceOrder/${id}/status`,
-        JSON.stringify(statusDescricao), // Garante que seja enviado como string
+        JSON.stringify(statusDescricao), 
         {
           headers: {
             "Content-Type": "application/json",
@@ -302,5 +298,36 @@ export const updateImage = async (id, payload) => {
       throw error;
   }
 };
+
+export const createFinished = async (finalizeData) => {
+  try {
+      const response = await api.post("/finish", finalizeData);
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao finalizar a ordem de serviço:", error.response?.data || error.message);
+      throw error;
+  }
+};
+
+export const getOneFinished = async (id) => {
+  try {
+    const response = await api.get(`finished/${id}`);
+    return response.data;
+  } catch (error){
+    console.error("Erro ao encontrar a finalização", error);
+    throw error;
+  }
+};
+
+export const getFinalizationByProgramingId = async (programingId) => {
+  try {
+    const response = await api.get(`finished/byPrograming/${programingId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar finalização pelo ID da programação", error);
+    throw error;
+  }
+};
+
 
 export default api;

@@ -12,11 +12,10 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     const [emptyFields, setEmptyFields] = useState({});
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
-    const [isMaintenanceClosed, setIsMaintenanceClosed] = useState(false);
+    const [isMaintenanceClosed, setIsMaintenanceClosed] = useState();
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(true);
     const [isSaved, setIsSaved] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
 
     const { user, setUser } = useUser();
 
@@ -36,7 +35,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     const handleClose = () => {
         setIsEditing(false);
         setIsMaintenanceClosed(true);
-        onMaintenanceClose(true);
+        onMaintenanceClose();
     };
 
     const [formData, setFormData] = useState({
@@ -226,19 +225,18 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 {isSaved && <p className="mt-2 text-sm mb-3 text-gray-400">Enviado por: {user.name}</p>}
             </div>
             <div className="flex flex-col md:flex-row justify-end">
-                <div className="flex flex-col pb-4 md:flex-row gap-y-1.5 ">
-                    {isEditing && !isMaintenanceClosed ? (
+                <div className="flex flex-col pb-4 md:flex-row gap-y-1.5">
+                    {orderServiceData.status !== "Finalizado" && isEditing && !isMaintenanceClosed ? (
                         <>
                             <ButtonSecondary onClick={() => setIsOpen(false)}>Cancelar</ButtonSecondary>
                             <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
                         </>
-                    ) : (
-                        !isMaintenanceClosed &&
+                    ) : orderServiceData.status !== "Finalizado" && !isMaintenanceClosed ? (
                         <>
                             <ButtonSecondary onClick={() => setIsEditing(true)}>Editar</ButtonSecondary>
                             <ButtonPrimary onClick={handleClose}>Encerrar</ButtonPrimary>
                         </>
-                    )}
+                    ) : null}
                 </div>
             </div>
             {showMessageBox && (

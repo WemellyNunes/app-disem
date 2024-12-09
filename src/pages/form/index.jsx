@@ -116,8 +116,6 @@ export default function Form() {
         'xinguara': 'Xinguara',
     };
 
-    let colorBorder = 'border-primary-red'
-
     const handleFileChange = (files) => {
         setSelectedFiles(files); // Atualiza o estado com os arquivos recebidos
     };

@@ -58,17 +58,22 @@ export default function Programing() {
     const [showViewReports, setShowViewReports] = useState(false);
     const [reports, setReports] = useState([])
     const [status, setStatus] = useState("A atender");
-    const [finalObservation, setFinalObservation] = useState('');
     const [programingId, setProgramingId] = useState(null);
     const [confirmationModal, setConfirmationModal] = useState({
         show: false,
         action: null, // "edit" ou "delete"
     });
 
+
     const handleFinalization = (observation) => {
-        setFinalObservation(observation);
-        setIsFinalized(true);
-    };
+        setIsFinalized(true); // Atualiza o estado
+        console.log("Observação finalizada:", observation);
+      };
+
+    const handleMaintenanceClose = () => {
+        setIsMaintenanceClosed(true); // Atualiza o estado quando a manutenção for encerrada
+    }; 
+      
 
     const handleMaintenanceSave = async () => {
         try {
@@ -79,6 +84,8 @@ export default function Programing() {
             console.error("Erro ao atualizar status da OS:", error);
         }
     };
+
+    const shouldShowFinalizeSection = isMaintenanceClosed;
 
     const handleOpenModal = (action) => {
         setConfirmationModal({ show: true, action }); // Define a ação ("edit" ou "delete")
@@ -204,7 +211,9 @@ export default function Programing() {
                         custo: { ...prevData.custo, value: programingData.cost },
                         observacao: { ...prevData.observacao, value: programingData.observation },
                     }));
+
                     setProgramingId(orderData.programingId);
+                    console.log("Programing ID definido em fetchOrderData:", orderData.programingId);
                     setIsSaved(true);
                     setIsEditing(false);
                 }
@@ -503,27 +512,19 @@ export default function Programing() {
 
                     <div className="flex-1 mb-2">
 
-                        {isMaintenanceClosed && !isFinalized && (
+                        {isMaintenanceClosed && programingId && (
                             <FinalizeSection
-                                initialObservation={finalObservation} // Passa a observação atual
-                                onFinalize={handleFinalization}
+                                orderServiceData={{ ...orderServiceData, programingId }}
+                                onFinalize={isFinalized ? () => { } : handleFinalization} // Define o comportamento baseado no estado
+                                isFinalized={isFinalized} // Passa o estado como prop
                             />
                         )}
 
-                        {isFinalized && (
-                            <FinalizeSection
-                                initialObservation={finalObservation} // Passa a observação finalizada
-                                onFinalize={() => {
-                                    setStatus("Finalizado");
-                                    handleFinalization();
-                                }}
-                            />
-                        )}
 
                         {programingId && (
                             <MaintenanceSection
                                 orderServiceData={{ ...orderServiceData, programingId }}
-                                onMaintenanceClose={setIsMaintenanceClosed}
+                                onMaintenanceClose={handleMaintenanceClose}
                                 onMaintenanceSave={() => {
                                     setStatus("Resolvido");
                                     handleMaintenanceSave();
@@ -588,47 +589,52 @@ export default function Programing() {
                             <div className="flex flex-col md:flex-row justify-end">
                                 <div className="flex flex-col md:flex-row gap-y-1.5 ">
                                     {/* Verifica o status para renderizar os botões */}
-                                    {status === "Em atendimento" && !isMaintenanceClosed ? (
+                                    {isEditing ? (
                                         <>
-                                            <ButtonTertiary
-                                                bgColor="bg-white"
-                                                textColor="text-red-500"
-                                                icon={<FaTrash />}
-                                                hoverColor="hover:bg-red-100"
-                                                onClick={() => handleOpenModal("delete")}>
-                                                Excluir
-                                            </ButtonTertiary>
-
-                                            <ButtonSecondary
-                                                borderColor="border border-primary-light"
-                                                bgColor="bg-white"
-                                                hoverColor="hover:bg-secondary-hover"
-                                                textColor="text-primary-light"
-                                                icon={<FaEdit />}
-                                                onClick={() => handleOpenModal("edit")}>
-                                                Editar
-                                            </ButtonSecondary>
-
-                                            <ButtonPrimary
-                                                bgColor="bg-primary-light"
-                                                hoverColor="hover:bg-primary-hover"
-                                                textColor="text-white"
-                                                icon={<TbFileExport />}
-                                                onClick={() => handleDownloadReport(orderServiceId)}
-                                            >
-                                                Exportar
-                                            </ButtonPrimary>
+                                            <ButtonSecondary onClick={() => setIsEditing(false)}>Cancelar</ButtonSecondary>
+                                            <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
                                         </>
                                     ) : (
-                                        !isMaintenanceSaved && !isMaintenanceClosed && (
-                                            <>
-                                                <ButtonSecondary onClick={() => navigate("../Listing")}>Cancelar</ButtonSecondary>
-                                                <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
-                                            </>
-                                        )
+                                        <>
+                                            {status === "Em atendimento" && !isMaintenanceClosed ? (
+                                                <>
+                                                    <ButtonTertiary
+                                                        bgColor="bg-white"
+                                                        textColor="text-red-500"
+                                                        icon={<FaTrash />}
+                                                        hoverColor="hover:bg-red-100"
+                                                        onClick={() => handleOpenModal("delete")}
+                                                    >
+                                                        Excluir
+                                                    </ButtonTertiary>
+
+                                                    <ButtonSecondary
+                                                        borderColor="border border-primary-light"
+                                                        bgColor="bg-white"
+                                                        hoverColor="hover:bg-secondary-hover"
+                                                        textColor="text-primary-light"
+                                                        icon={<FaEdit />}
+                                                        onClick={() => setIsEditing(true)}
+                                                    >
+                                                        Editar
+                                                    </ButtonSecondary>
+
+                                                    <ButtonPrimary
+                                                        bgColor="bg-primary-light"
+                                                        hoverColor="hover:bg-primary-hover"
+                                                        textColor="text-white"
+                                                        icon={<TbFileExport />}
+                                                        onClick={() => handleDownloadReport(orderServiceId)}
+                                                    >
+                                                        Exportar
+                                                    </ButtonPrimary>
+                                                </>
+                                            ) : null}
+                                        </>
                                     )}
                                 </div>
                             </div>
+
 
                         </SectionCard>
                     </div>

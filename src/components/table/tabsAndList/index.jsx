@@ -103,7 +103,7 @@ const TabsAndList = () => {
             'Abertas': 'A atender',
             'Programadas': 'Em atendimento',
             'Resolvidas': 'Resolvido',
-            'Finalizadas': 'Finalizada',
+            'Finalizadas': 'Finalizado',
             'Negadas': 'Negada'
         };
 
