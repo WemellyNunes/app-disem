@@ -24,8 +24,8 @@ const StatusBar = ({ requisitionNumber, origin, situation, reopening, onHistoryC
           <p className="text-xs font-normal text-primary-dark">{situation}</p>
         </div>
         <div>
-          <h4 className="text-xs font-medium text-primary-light md:text-sm">Reabertura</h4>
-          <p className="text-xs font-normal text-primary-dark">{reopening}</p>
+          <h4 className="hidden md:flex text-xs font-medium text-primary-light md:text-sm">Reabertura</h4>
+          <p className="hidden md:flex text-xs font-normal text-primary-dark">{reopening}</p>
         </div>
       </div>
 
@@ -33,7 +33,7 @@ const StatusBar = ({ requisitionNumber, origin, situation, reopening, onHistoryC
         {/* Botão para Adicionar Relato */}
         <button
           onClick={onAddReportClick}
-          className="flex items-center justify-center w-4 h-4 md:w-6 md:h-6 bg-green-500 hover:bg-green-700 text-white rounded-full focus:outline-none" title="Adicionar relato"
+          className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-green-500 hover:bg-green-700 text-white rounded-full focus:outline-none" title="Adicionar relato"
         >
           <span><AiOutlinePlus className="h-4 w-4" /></span>
         </button>
@@ -41,7 +41,7 @@ const StatusBar = ({ requisitionNumber, origin, situation, reopening, onHistoryC
         {/* Botão para Ver Relatos */}
         <button
           onClick={onViewReportsClick}
-          className="md:flex hidden items-center justify-center w-4 h-4 md:w-6 md:h-6  bg-blue-500 hover:bg-blue-700 text-white rounded-full focus:outline-none relative " title="Ver relatos"
+          className="flex  items-center justify-center w-5 h-5 md:w-6 md:h-6  bg-blue-500 hover:bg-blue-700 text-white rounded-full focus:outline-none relative " title="Ver relatos"
         >
           <span><AiOutlineFileText className="h-4 w-4" /></span>
           {reportsCount > 0 && (

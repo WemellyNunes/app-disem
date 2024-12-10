@@ -329,5 +329,28 @@ export const getFinalizationByProgramingId = async (programingId) => {
   }
 };
 
+export const createNote = async (note) => {
+  try {
+    const response = await api.post(`/note`, note);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao criar relato:", error);
+    throw new Error("Não foi possível criar o relato.");
+  }
+};
+
+export const getNotesByProgramingId = async (programingId) => {
+  try {
+    const response = await api.get(`/note/byPrograming/${programingId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar relatos:", error);
+    throw new Error("Não foi possível buscar os relatos.");
+  }
+};
+
+
+
+
 
 export default api;

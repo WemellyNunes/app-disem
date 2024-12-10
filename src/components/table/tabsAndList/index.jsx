@@ -15,7 +15,7 @@ const TabsAndList = () => {
     const [osData, setOsData] = useState([]);
     const [activeTab, setActiveTab] = useState('Abertas');
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const [appliedFilters, setAppliedFilters] = useState({});
@@ -117,7 +117,8 @@ const TabsAndList = () => {
                 item.maintenanceUnit.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.system.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.date.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.origin.toLowerCase().includes(searchTerm.toLowerCase())
+                item.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.requisition.toString().includes(searchTerm)
             );
         }
 

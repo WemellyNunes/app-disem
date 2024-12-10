@@ -23,7 +23,7 @@ import { MdTextSnippet, MdSettings, MdPriorityHigh, MdPhone } from "react-icons/
 import { RiListSettingsFill } from "react-icons/ri";
 import ConfirmationModal from "../../components/modal/confirmation";
 
-import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport, updateOrderServiceStatus } from "../../utils/api/api";
+import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport, updateOrderServiceStatus, createNote, getNotesByProgramingId } from "../../utils/api/api";
 
 
 export default function Programing() {
@@ -64,17 +64,15 @@ export default function Programing() {
         action: null, // "edit" ou "delete"
     });
 
-
     const handleFinalization = (observation) => {
         setIsFinalized(true); // Atualiza o estado
         console.log("Observação finalizada:", observation);
       };
 
     const handleMaintenanceClose = () => {
-        setIsMaintenanceClosed(true); // Atualiza o estado quando a manutenção for encerrada
+        setIsMaintenanceClosed(true); 
     }; 
       
-
     const handleMaintenanceSave = async () => {
         try {
             await updateOrderServiceStatus(orderServiceData.id, "Resolvido"); // Atualiza o status no backend
@@ -110,10 +108,10 @@ export default function Programing() {
     ];
 
     const options = [
-        { label: '08h às 12h', value: 'manha' },
-        { label: '14h às 18h', value: 'tarde' },
-        { label: '19h às 22h', value: 'noite' },
-        { label: '08h às 18h', value: 'integral' }
+        { label: '08h às 12h', value: '08h às 12h' },
+        { label: '14h às 18h', value: '14h às 18h' },
+        { label: '19h às 22h', value: '19h às 22h' },
+        { label: '08h às 18h', value: '08h às 18h' }
     ];
 
     const professionals = [
@@ -135,16 +133,62 @@ export default function Programing() {
             setShowMessageBox(true);
         }
     };
+    
 
-    const handleAddReport = (newReport) => {
-        const reportWithUser = {
-            usuario: "Fulano da Silva",
-            texto: newReport,
-            data: new Date().toLocaleString('pt-BR'),
+    useEffect(() => {
+        const fetchReports = async () => {
+            if (!programingId) return;
+    
+            try {
+                const notes = await getNotesByProgramingId(programingId); // Certifique-se de que este endpoint retorna os relatos corretos
+                console.log("Relatos carregados:", notes); // Log para verificar o retorno do backend
+                const formattedReports = notes.map((note) => ({
+                    id: note.id,
+                    usuario: note.usuario || "Desconhecido",
+                    texto: note.content,
+                    data: `${note.date} ${note.time}`,
+                }));
+                setReports(formattedReports);
+            } catch (error) {
+                console.error("Erro ao buscar relatos:", error);
+            }
         };
-        setReports([...reports, reportWithUser]);
-        setShowAddReport(false);
+    
+        fetchReports();
+    }, [programingId]);
+    
+
+    
+      
+
+    const handleAddReport = async (newReport) => {
+        if (!programingId) { return;}
+      
+        const noteData = {
+          programing_id: programingId,
+          content: newReport, 
+        };
+      
+        try {
+          const createdNote = await createNote(noteData);
+
+          console.log("relato:", noteData)
+      
+          const reportWithUser = {
+            usuario: user.name, 
+            texto: createdNote.content, 
+            data: `${createdNote.date} ${createdNote.time}`,
+          };
+      
+          setReports((prevReports) => [...prevReports, reportWithUser]);
+          setShowAddReport(false);
+          
+        } catch (error) {
+        
+          console.error("Erro ao adicionar relato:", error);
+        }
     };
+
 
     const handleMultiSelectChange = (selectedOptions) => {
         setFormData((prevData) => {
@@ -225,6 +269,7 @@ export default function Programing() {
                     message: error.message || 'Não foi possível carregar os dados.',
                 });
                 setShowMessageBox(true);
+                setTimeout(() => setShowMessageBox(false), 1000);
             }
         };
 
@@ -307,7 +352,7 @@ export default function Programing() {
                 message: "Programação salva com sucesso!",
             });
             setShowMessageBox(true);
-            setTimeout(() => setShowMessageBox(false), 1500);
+            setTimeout(() => setShowMessageBox(false), 1000);
         } catch (error) {
             console.error("Erro ao salvar programação:", error);
             setMessageContent({

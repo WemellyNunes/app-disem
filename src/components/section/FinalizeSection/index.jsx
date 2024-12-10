@@ -87,7 +87,7 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
     if (!validateFields()) {
       setMessageContent({ type: "error", title: "Erro.", message: "Este campo é obrigatório." });
       setShowMessageBox(true);
-      setTimeout(() => setShowMessageBox(false), 2000);
+      setTimeout(() => setShowMessageBox(false), 1000);
       return;
     }
 
@@ -99,12 +99,13 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
         dateContent: new Date().toISOString().split("T")[0],
       };
 
-      await createFinished(finalizeData);
       await updateOrderServiceStatus(orderServiceData.id, "Finalizado");
+      await createFinished(finalizeData);
 
       setIsSaved(true);
       setMessageContent({ type: "success", title: "Sucesso.", message: "Finalizado com sucesso!" });
       setShowMessageBox(true);
+      setTimeout(() => setShowMessageBox(false), 1000);
       onFinalize(formData.observation.value);
     } catch (error) {
       setMessageContent({
@@ -113,6 +114,7 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
         message: error.response?.data || "Erro ao finalizar a ordem de serviço.",
       });
       setShowMessageBox(true);
+      setTimeout(() => setShowMessageBox(false), 1000);
       console.error("Erro ao finalizar:", error);
     } finally {
       setIsSaving(false);
@@ -131,7 +133,7 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
       });
     } finally {
       setShowMessageBox(true);
-      setTimeout(() => setShowMessageBox(false), 2000);
+      setTimeout(() => setShowMessageBox(false), 1000);
     }
   };
 

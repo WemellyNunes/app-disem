@@ -76,21 +76,21 @@ export default function Form() {
     ];
 
     const unitMaintence = [
-        { label: 'UNIDADE I - MARABÁ', value: 'mab1' },
-        { label: 'UNIDADE II - MARABÁ', value: 'mab2' },
-        { label: 'UNIDADE III - MARABÁ', value: 'mab3' },
-        { label: 'UNIDADE SANTANA DO ARAGUAIA', value: 'santana' },
-        { label: 'UNIDADE SÃO FELIX DO XINGU', value: 'saoFelix' },
-        { label: 'UNIDADE RONDON', value: 'rondon' },
-        { label: 'XINGUARA', value: 'xinguara' },
+        { label: 'UNIDADE I - MARABÁ', value: 'UNIDADE I - MARABÁ' },
+        { label: 'UNIDADE II - MARABÁ', value: 'UNIDADE II - MARABÁ' },
+        { label: 'UNIDADE III - MARABÁ', value: 'UNIDADE III - MARABÁ' },
+        { label: 'UNIDADE SANTANA DO ARAGUAIA', value: 'UNIDADE SANTANA DO ARAGUAIA' },
+        { label: 'UNIDADE SÃO FELIX DO XINGU', value: 'UNIDADE SÃO FELIX DO XINGU' },
+        { label: 'UNIDADE RONDON', value: 'UNIDADE RONDON' },
+        { label: 'UNIDADE XINGUARA', value: 'UNIDADE XINGUARA' },
     ];
 
     const system = [
-        { label: 'CIVIL', value: 'CIVIL' },
-        { label: 'ELETRICO', value: 'ELETRICO' },
-        { label: 'HIDROSANITARIO', value: 'HIDROSANITARIO' },
-        { label: 'REFRIGERAÇÃO', value: 'REFRIGERACAO' },
-        { label: 'MISTO', value: 'MISTO' }
+        { label: 'CIVIL'},
+        { label: 'ELETRICO'},
+        { label: 'HIDROSANITARIO'},
+        { label: 'REFRIGERAÇÃO'},
+        { label: 'MISTO' }
     ];
 
     const maintence = [
@@ -107,13 +107,13 @@ export default function Form() {
     ];
 
     const campusMapping = {
-        'mab1': 'MARABA',
-        'mab2': 'MARABA',
-        'mab3': 'MARABA',
-        'santana': 'Santana do Araguaia',
-        'saoFelix': 'São Félix do Xingu',
-        'rondon': 'Rondon',
-        'xinguara': 'Xinguara',
+        'UNIDADE I - MARABÁ': 'MARABA',
+        'UNIDADE II - MARABÁ': 'MARABA',
+        'UNIDADE III - MARABÁ': 'MARABA',
+        'UNIDADE SANTANA DO ARAGUAIA': 'SANTANA DO ARAGUAIA',
+        'UNIDADE SÃO FELIX DO XINGU': 'SÃO FELIX DO XINGU',
+        'UNIDADE RONDON': 'RONDON',
+        'UNIDADE XINGUARA': 'XINGUARA',
     };
 
     const handleFileChange = (files) => {
@@ -130,9 +130,9 @@ export default function Form() {
 
     const fetchOrderData = async (id) => {
         try {
-            const response = await getOrderById(id); // Faz a chamada à API
+            const response = await getOrderById(id); 
             setOrderId(id);
-            // Atualiza os dados do formulário com os valores do backend
+
             setFormData((prevData) => ({
                 ...prevData,
                 origem: { ...prevData.origem, value: response.origin },
@@ -149,13 +149,13 @@ export default function Form() {
                 objetoPreparo: { ...prevData.objetoPreparo, value: response.preparationObject },
                 indiceRisco: { ...prevData.indiceRisco, value: response.maintenanceIndicators },
                 documento: { ...prevData.documento, value: response.documents }
-                // Continue para outros campos...
+                
             }));
             setUploadedDocuments(
                 response.documents.map((doc) => ({
                     name: doc.name,
                     size: doc.size,
-                    description: doc.description || "Sem descrição", // Caso não tenha descrição
+                    description: doc.description || "Sem descrição", 
                 }))
             );
 
@@ -191,9 +191,8 @@ export default function Form() {
             };
 
             if (field === 'origem' && value === 'DISEM') {
-                const randomTwoDigits = Math.floor(Math.random() * 90) + 10;
-                const currentYear = new Date().getFullYear();
-                const requisitionNumber = `${randomTwoDigits}${currentYear}`;
+                const randomNumber = Math.floor(Math.random() * 90000) + 10000;
+                const requisitionNumber = randomNumber;
                 updatedData.requisicao = { ...prevData.requisicao, value: requisitionNumber };
 
                 setEmptyFields((prevEmptyFields) => {
@@ -275,7 +274,7 @@ export default function Form() {
         if (!validateFields()) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
             setShowMessageBox(true);
-            setTimeout(() => setShowMessageBox(false), 1500);
+            setTimeout(() => setShowMessageBox(false), 1000);
             return;
         }
 
@@ -299,7 +298,7 @@ export default function Form() {
             console.error("Erro ao salvar a ordem de serviço:", error);
         } finally {
             setIsLoading(false);
-            setTimeout(() => setShowMessageBox(false), 1500);
+            setTimeout(() => setShowMessageBox(false), 1000);
         }
     };
 
@@ -317,7 +316,7 @@ export default function Form() {
         if (!validateFields()) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
             setShowMessageBox(true);
-            setTimeout(() => setShowMessageBox(false), 1500);
+            setTimeout(() => setShowMessageBox(false), 1000);
             return;
         }
 
@@ -330,9 +329,10 @@ export default function Form() {
             if (response) {
                 setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Ordem de serviço atualizada com sucesso.' });
                 setShowMessageBox(true);
-                setIsSaved(true);  // Mantém como salvo
+                setTimeout(() => setShowMessageBox(false), 1000);
+                setIsSaved(true); 
                 setIsEditing(false);
-                await handleUpload(); // Desativa a edição após atualizar
+                await handleUpload(); 
             }
         } catch (error) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Não foi possível atualizar a ordem de serviço.' });
@@ -340,7 +340,7 @@ export default function Form() {
             console.error("Erro ao atualizar a ordem de serviço:", error);
         } finally {
             setIsLoading(false);
-            setTimeout(() => setShowMessageBox(false), 2500);
+            setTimeout(() => setShowMessageBox(false), 1000);
         }
     };
 
@@ -360,8 +360,7 @@ export default function Form() {
                     onClose={() => setShowMessageBox(false)}
                 />
             )}
-
-
+            
             <div className={` flex flex-col px-0  ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
                 <div className="flex justify-center">
                     <PageTitle
