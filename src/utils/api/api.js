@@ -309,6 +309,16 @@ export const createFinished = async (finalizeData) => {
   }
 };
 
+export const createNegation = async (negationData) =>{
+  try {
+    const response = await api.post("/negation", negationData);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao negar a OS: ", error.response?.data || error.message);
+    throw error;
+  }
+}
+
 export const getOneFinished = async (id) => {
   try {
     const response = await api.get(`finished/${id}`);

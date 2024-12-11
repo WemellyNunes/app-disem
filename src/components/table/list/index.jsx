@@ -9,7 +9,10 @@ import ActionsMenu from "../../verticalMenu/actionMenu";
 import ConfirmationModal from "../../modal/confirmation";
 import MessageBox from "../../box/message";
 import { TbClipboardOff } from "react-icons/tb";
+import { MdEngineering } from "react-icons/md";
 
+
+import { updateOrderServiceStatus } from "../../../utils/api/api";
 
 const List = ({ filteredData, onDeleteItem }) => {
     const navigate = useNavigate();
@@ -26,7 +29,7 @@ const List = ({ filteredData, onDeleteItem }) => {
         'Em atendimento': 'font-medium text-status-prog bg-status-bgProg rounded-md p-1 text-xs',
         'Resolvido': 'font-medium text-status-resp bg-green-100 rounded-md p-1 text-xs',
         'Finalizado': 'font-medium text-status-finish bg-status-bgFinish rounded-md p-1 text-xs',
-        'Negada': 'font-medium text-status-negative bg-status-bgNegative rounded-md p-1 text-xs'
+        'Negada': 'font-medium text-red-600 bg-red-100 rounded-md p-1 text-xs'
     };
 
     const handleDelete = (id) => {
@@ -41,36 +44,68 @@ const List = ({ filteredData, onDeleteItem }) => {
         setShowConfirmation(true);
     };
 
+    const handleNegate = async (id) => {
+        setActionType('negate');
+        setSelectedId(id);
+        setShowConfirmation(true);
+    }
+
     const handleProgramClick = (id) => {
         navigate(`/programing/${id}`);
     };
     
     const handleConfirmAction = async () => {
-        setShowConfirmation(false); 
-     
+        setShowConfirmation(false);
+
         if (actionType === 'delete') {
             try {
-                await deleteOrder(selectedId); 
+                await deleteOrder(selectedId);
                 console.log(`OS ${selectedId} deletada com sucesso.`);
-     
+
                 if (onDeleteItem) {
                     onDeleteItem(selectedId);
                 }
-     
+
                 setMessageContent({
                     type: 'success',
                     title: 'Sucesso',
                     message: `A OS ${selectedId} foi removida com sucesso.`,
                 });
                 setShowMessageBox(true);
-     
+
                 setTimeout(() => setShowMessageBox(false), 1500);
-     
+
             } catch (error) {
                 console.error(`Erro ao deletar OS ${selectedId}:`, error);
             }
         } else if (actionType === 'edit') {
             navigate(`/form/${selectedId}`);
+
+        } else if (actionType === 'negate') {
+            try {
+                await updateOrderServiceStatus(selectedId, 'Negada');
+                console.log(`OS ${selectedId} negada com sucesso.`);
+
+                setMessageContent({
+                    type: 'success',
+                    title: 'Sucesso',
+                    message: `A OS ${selectedId} foi negada com sucesso.`,
+                });
+                setShowMessageBox(true);
+
+                navigate(`/programing/${selectedId}`);
+
+                setTimeout(() => setShowMessageBox(false), 1500);
+            } catch (error) {
+                console.error(`Erro ao negar OS ${selectedId}:`, error);
+                setMessageContent({
+                    type: 'error',
+                    title: 'Erro',
+                    message: `Não foi possível negar a OS ${selectedId}.`,
+                });
+                setShowMessageBox(true);
+                setTimeout(() => setShowMessageBox(false), 1500);
+            }
         }
     };
     
@@ -82,12 +117,16 @@ const List = ({ filteredData, onDeleteItem }) => {
                     title={
                         actionType === 'edit'
                             ? 'Confirmar Edição'
-                            : 'Confirmar Exclusão'
+                            : actionType === 'delete'
+                                ? 'Confirmar Exclusão'
+                                : 'Confirmar Negação'
                     }
                     message={
                         actionType === 'edit'
                             ? `Tem certeza que deseja editar a OS ${selectedId}?`
-                            : `Tem certeza que deseja excluir a OS ${selectedId}?`
+                            : actionType === 'delete'
+                                ? `Tem certeza que deseja excluir a OS ${selectedId}?`
+                                : `Tem certeza que deseja negar a OS ${selectedId}?`
                     }
                     onConfirm={handleConfirmAction}
                     onCancel={() => setShowConfirmation(false)}
@@ -153,18 +192,25 @@ const List = ({ filteredData, onDeleteItem }) => {
                                             onClick={() => handleProgramClick(item.id)}
                                             className="flex flex-col items-center justify-center hover:underline"
                                         >
-                                            {item.programingId ? (
+                                            {(item.status === "Resolvido" || item.status === "Finalizado" || item.status === "Negada") ? (
                                                 <>
-                                                    <span className="text-primary-light" >Programação</span>
+                                                    <span className="text-primary-light">Ver atendimento</span>
                                                     <div>
-                                                        <FaRegClock className="text-primary-light"/>
+                                                        <MdEngineering className="text-primary-light h-4 w-4" />
+                                                    </div>
+                                                </>
+                                            ) : item.programingId ? (
+                                                <>
+                                                    <span className="text-primary-light">Programação</span>
+                                                    <div>
+                                                        <FaRegClock className="text-primary-light h-4 w-4" />
                                                     </div>
                                                 </>
                                             ) : (
                                                 <>
                                                     <span className="text-red-500">Sem programação</span>
                                                     <div>
-                                                        <FaCirclePlus className="text-red-500"/>
+                                                        <FaCirclePlus className="text-red-500 h-4 w-4" />
                                                     </div>
                                                 </>
                                             )}
@@ -180,6 +226,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                                             <ActionsMenu
                                                 onEdit={() => handleEdit(item.id)}
                                                 onDelete={() => handleDelete(item.id)}
+                                                onNegate={() => handleNegate(item.id)}
                                             />
                                         </span>
                                         <div className="hidden md:flex items-center">

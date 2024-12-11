@@ -21,12 +21,10 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
 
   const programingId = orderServiceData?.programingId || null;
 
-  // Fetch observação salva
   const fetchFinalizationData = async () => {
     if (!programingId) return;
     try {
       const response = await getFinalizationByProgramingId(programingId);
-      console.log("Resposta do endpoint:", response); // Verifique a estrutura da resposta
 
       if (response && response.length > 0) {
         // Use a última observação ou concatene todas, dependendo da lógica
@@ -45,8 +43,6 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
       setIsLoading(false);
     }
   };
-
-
 
   useEffect(() => {
     fetchFinalizationData();

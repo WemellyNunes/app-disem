@@ -12,7 +12,7 @@ import HistoryCard from "../../components/cards/historyCard";
 import { useState, useEffect } from "react";
 import MessageBox from "../../components/box/message";
 import { FaTrash, FaEdit, FaUser, FaBuilding, FaCity, FaCalendar, FaHourglassHalf } from "react-icons/fa";
-import { TbFileExport, TbCalendarTime } from "react-icons/tb";
+import { TbFileExport } from "react-icons/tb";
 import MaintenanceSection from "../../components/section/sectionMaintenance";
 import FinalizeSection from "../../components/section/FinalizeSection";
 import AddReport from "../../components/modal/report";
@@ -21,7 +21,9 @@ import { useUser } from "../../contexts/user";
 import PageTitle from "../../components/title";
 import { MdTextSnippet, MdSettings, MdPriorityHigh, MdPhone } from "react-icons/md";
 import { RiListSettingsFill } from "react-icons/ri";
+import { GrHostMaintenance } from "react-icons/gr";
 import ConfirmationModal from "../../components/modal/confirmation";
+import NegationSection from "../../components/section/SectionNegation";
 
 import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport, updateOrderServiceStatus, createNote, getNotesByProgramingId } from "../../utils/api/api";
 
@@ -471,8 +473,8 @@ export default function Programing() {
                 <div className="flex flex-col">
                     <div className="flex justify-center">
                         <PageTitle
-                            icon={TbCalendarTime}
-                            text="Programação"
+                            icon={GrHostMaintenance}
+                            text="Atendimento da Ordem de Serviço"
                             backgroundColor="bg-white"
                             textColor="text-primary-dark"
                         />
@@ -557,6 +559,11 @@ export default function Programing() {
 
                     <div className="flex-1 mb-2">
 
+                        { status === "Negada" && (
+                            <NegationSection orderServiceId={orderServiceId}/>
+                        )}
+
+
                         {isMaintenanceClosed && programingId && (
                             <FinalizeSection
                                 orderServiceData={{ ...orderServiceData, programingId }}
@@ -577,111 +584,112 @@ export default function Programing() {
                             />
                         )}
 
-                        <SectionCard title="Programação">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4">
-                                <DateTimePicker
-                                    label="Data programada *"
-                                    placeholder="exemplo: 00/00/0000"
-                                    onDateChange={handleDateChange}
-                                    value={formData.data.value}
-                                    disabled={!isEditing}
-                                    errorMessage={emptyFields.data ? "Este campo é obrigatório" : ""}
-                                />
-                                <InputSelect
-                                    label="Turno *"
-                                    options={options}
-                                    onChange={handleFieldChange('turno')}
-                                    value={formData.turno.value}
-                                    disabled={!isEditing}
-                                    errorMessage={emptyFields.turno ? "Este campo é obrigatório" : ""}
-                                />
-                                <InputSelect
-                                    label="Encarregado *"
-                                    options={overseer}
-                                    onChange={handleFieldChange('encarregado')}
-                                    value={formData.encarregado.value}
-                                    disabled={!isEditing}
-                                    errorMessage={emptyFields.encarregado ? "Este campo é obrigatório" : ""}
-                                />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-1">
-                                <MultiSelect
-                                    label="Profissional(is) *"
-                                    options={professionals}
-                                    onChange={handleMultiSelectChange}
-                                    selectedValues={formData.profissionais.value}
-                                    disabled={!isEditing}
-                                    errorMessage={emptyFields.profissionais ? "Este campo é obrigatório" : ""}
-                                />
-                                <InputPrimary
-                                    label="Custo estimado"
-                                    placeholder="Informe"
-                                    value={formData.custo.value}
-                                    onChange={handleFieldChange('custo')}
-                                    disabled={!isEditing}
-                                />
-                                <InputPrimary
-                                    label="Observação"
-                                    placeholder="Escreva uma observação (opcional)"
-                                    value={formData.observacao.value || 'sem observação'}
-                                    onChange={handleFieldChange('observacao')}
-                                    disabled={!isEditing}
-                                />
-
-                                {isSaved && <p className="mt-2 mb-6 text-sm text-gray-400">Programado por: {user.name}</p>}
-
-                            </div>
-                            <div className="flex flex-col md:flex-row justify-end">
-                                <div className="flex flex-col md:flex-row gap-y-1.5 ">
-                                    {/* Verifica o status para renderizar os botões */}
-                                    {isEditing ? (
-                                        <>
-                                            <ButtonSecondary onClick={() => setIsEditing(false)}>Cancelar</ButtonSecondary>
-                                            <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
-                                        </>
-                                    ) : (
-                                        <>
-                                            {status === "Em atendimento" && !isMaintenanceClosed ? (
-                                                <>
-                                                    <ButtonTertiary
-                                                        bgColor="bg-white"
-                                                        textColor="text-red-500"
-                                                        icon={<FaTrash />}
-                                                        hoverColor="hover:bg-red-100"
-                                                        onClick={() => handleOpenModal("delete")}
-                                                    >
-                                                        Excluir
-                                                    </ButtonTertiary>
-
-                                                    <ButtonSecondary
-                                                        borderColor="border border-primary-light"
-                                                        bgColor="bg-white"
-                                                        hoverColor="hover:bg-secondary-hover"
-                                                        textColor="text-primary-light"
-                                                        icon={<FaEdit />}
-                                                        onClick={() => setIsEditing(true)}
-                                                    >
-                                                        Editar
-                                                    </ButtonSecondary>
-
-                                                    <ButtonPrimary
-                                                        bgColor="bg-primary-light"
-                                                        hoverColor="hover:bg-primary-hover"
-                                                        textColor="text-white"
-                                                        icon={<TbFileExport />}
-                                                        onClick={() => handleDownloadReport(orderServiceId)}
-                                                    >
-                                                        Exportar
-                                                    </ButtonPrimary>
-                                                </>
-                                            ) : null}
-                                        </>
-                                    )}
+                        {status !== "Negada" && (
+                            <SectionCard title="Programação">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4">
+                                    <DateTimePicker
+                                        label="Data programada *"
+                                        placeholder="exemplo: 00/00/0000"
+                                        onDateChange={handleDateChange}
+                                        value={formData.data.value}
+                                        disabled={!isEditing}
+                                        errorMessage={emptyFields.data ? "Este campo é obrigatório" : ""}
+                                    />
+                                    <InputSelect
+                                        label="Turno *"
+                                        options={options}
+                                        onChange={handleFieldChange('turno')}
+                                        value={formData.turno.value}
+                                        disabled={!isEditing}
+                                        errorMessage={emptyFields.turno ? "Este campo é obrigatório" : ""}
+                                    />
+                                    <InputSelect
+                                        label="Encarregado *"
+                                        options={overseer}
+                                        onChange={handleFieldChange('encarregado')}
+                                        value={formData.encarregado.value}
+                                        disabled={!isEditing}
+                                        errorMessage={emptyFields.encarregado ? "Este campo é obrigatório" : ""}
+                                    />
                                 </div>
-                            </div>
+                                <div className="grid grid-cols-1 md:grid-cols-1">
+                                    <MultiSelect
+                                        label="Profissional(is) *"
+                                        options={professionals}
+                                        onChange={handleMultiSelectChange}
+                                        selectedValues={formData.profissionais.value}
+                                        disabled={!isEditing}
+                                        errorMessage={emptyFields.profissionais ? "Este campo é obrigatório" : ""}
+                                    />
+                                    <InputPrimary
+                                        label="Custo estimado"
+                                        placeholder="Informe"
+                                        value={formData.custo.value}
+                                        onChange={handleFieldChange('custo')}
+                                        disabled={!isEditing}
+                                    />
+                                    <InputPrimary
+                                        label="Observação"
+                                        placeholder="Escreva uma observação (opcional)"
+                                        value={formData.observacao.value || 'sem observação'}
+                                        onChange={handleFieldChange('observacao')}
+                                        disabled={!isEditing}
+                                    />
 
+                                    {isSaved && <p className="mt-2 mb-6 text-sm text-gray-400">Programado por: {user.name}</p>}
 
-                        </SectionCard>
+                                </div>
+                                <div className="flex flex-col md:flex-row justify-end">
+                                    <div className="flex flex-col md:flex-row gap-y-1.5 ">
+                                        {/* Verifica o status para renderizar os botões */}
+                                        {isEditing ? (
+                                            <>
+                                                <ButtonSecondary onClick={() => setIsEditing(false)}>Cancelar</ButtonSecondary>
+                                                <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {status === "Em atendimento" && !isMaintenanceClosed ? (
+                                                    <>
+                                                        <ButtonTertiary
+                                                            bgColor="bg-white"
+                                                            textColor="text-red-500"
+                                                            icon={<FaTrash />}
+                                                            hoverColor="hover:bg-red-100"
+                                                            onClick={() => handleOpenModal("delete")}
+                                                        >
+                                                            Excluir
+                                                        </ButtonTertiary>
+
+                                                        <ButtonSecondary
+                                                            borderColor="border border-primary-light"
+                                                            bgColor="bg-white"
+                                                            hoverColor="hover:bg-secondary-hover"
+                                                            textColor="text-primary-light"
+                                                            icon={<FaEdit />}
+                                                            onClick={() => setIsEditing(true)}
+                                                        >
+                                                            Editar
+                                                        </ButtonSecondary>
+
+                                                        <ButtonPrimary
+                                                            bgColor="bg-primary-light"
+                                                            hoverColor="hover:bg-primary-hover"
+                                                            textColor="text-white"
+                                                            icon={<TbFileExport />}
+                                                            onClick={() => handleDownloadReport(orderServiceId)}
+                                                        >
+                                                            Exportar
+                                                        </ButtonPrimary>
+                                                    </>
+                                                ) : null}
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </SectionCard>
+                        )}
+
                     </div>
                 </div>
                 {confirmationModal.show && (
