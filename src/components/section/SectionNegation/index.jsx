@@ -4,7 +4,7 @@ import MessageBox from "../../box/message";
 import { useState, useEffect } from "react";
 import { useUser } from "../../../contexts/user";
 
-import { createNegation } from "../../../utils/api/api";
+import { createNegation, getNegationByOrderServiceId, downloadReport } from "../../../utils/api/api";
 
 const NegationSection = ({orderServiceId}) => {
    
@@ -18,6 +18,36 @@ const NegationSection = ({orderServiceId}) => {
     const [messageContent, setMessageContent] = useState({ type: "", title: "", message: "" });
     const [emptyFields, setEmptyFields] = useState({});
     const { user } = useUser();
+
+    const fetchNegationData = async () => {
+      if (!orderServiceId) return;
+    
+      try {
+        const negation = await getNegationByOrderServiceId(orderServiceId); // Ajuste para buscar apenas um objeto
+    
+        if (negation) {
+          setFormData({
+            conteudo: { value: negation.content || "", required: true },
+          });
+          setIsSaved(true); // Define como salvo
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          console.warn("Nenhuma negação encontrada para a ordem de serviço.");
+          setFormData({
+            conteudo: { value: "", required: true },
+          });
+          setIsSaved(false); // Define como não salvo
+        } else {
+          console.error("Erro ao buscar os dados da negação:", error);
+        }
+      }
+    };
+    
+  
+    useEffect(() => {
+      fetchNegationData();
+    }, [orderServiceId]);
 
 
     const handleFieldChange = (field) => (value) => {
@@ -88,8 +118,22 @@ const NegationSection = ({orderServiceId}) => {
           setIsSaving(false);
         }
     };
-    
 
+  const handleExportReport = async () => {
+    try {
+      await downloadReport(orderServiceId)
+      setMessageContent({ type: "success", title: "Sucesso.", message: "Relatório baixado com sucesso!" });
+    } catch (error) {
+      setMessageContent({
+        type: "error",
+        title: "Erro ao baixar relatório.",
+        message: "Não foi possível baixar o relatório. Tente novamente.",
+      });
+    } finally {
+      setShowMessageBox(true);
+      setTimeout(() => setShowMessageBox(false), 1000);
+    }
+  };
 
     return (
         <div className="flex flex-col bg-white border border-gray-300 rounded mb-2 mt-1.5 shadow">
@@ -97,7 +141,7 @@ const NegationSection = ({orderServiceId}) => {
                 <h3 className="text-sm font-medium text-primary-light">Sem aprovação</h3>
                 <div className="mt-4">
                     <InputPrimary
-                        label="Motivo da negação *"
+                        label="Justificativa *"
                         placeholder="Escreva o motivo da negativa"
                         value={formData.conteudo.value}
                         onChange={handleFieldChange("conteudo")}

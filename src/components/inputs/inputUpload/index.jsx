@@ -19,29 +19,37 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
     const handleFilesUpload = (files, description) => {
         const filesWithDescription = files.map((file) => ({
             file,
-            description, // Inclui a descrição para cada arquivo
+            description, 
         }));
-        onFilesUpload(filesWithDescription); // Passa os arquivos com descrição para o pai
+        onFilesUpload(filesWithDescription); 
     };
-    
+
+    const MAX_SIZE_MB =5;
     
     const handleUpload = (files, description) => {
-        const filesWithDescriptions = files.map((file) => ({
-            file,
-            description, // Vincula a descrição a cada arquivo
-        }));
-        onFilesUpload(filesWithDescriptions); // Passa para o pai
-        setShowModal(false);
+        const validFiles = files.filter((file) => {
+            if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+                alert(`O arquivo "${file.name}" excede o limite de 5MB e não foi carregado.`);
+                return false;
+            }
+            return true;
+        });
+    
+        if (validFiles.length > 0) {
+            const filesWithDescriptions = validFiles.map((file) => ({
+                file,
+                description, 
+            }));
+            onFilesUpload(filesWithDescriptions); 
+            setShowModal(false);
+        }
     };
-    
-    
        
-
     const handleRemoveFile = (fileToRemove) => {
         if (disabled) return;
         setUploadedFiles((prevFiles) => {
             const updatedFiles = prevFiles.filter((item) => item.file.name !== fileToRemove.file.name);
-            onFilesUpload(updatedFiles); // Atualiza o estado no componente pai
+            onFilesUpload(updatedFiles); 
             return updatedFiles;
         });
     };
@@ -52,7 +60,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
     };
 
     const handleEditFile = async (file, description, index) => {
-        const fileId = uploadedFiles[index]?.id; // Pegue o ID do array principal
+        const fileId = uploadedFiles[index]?.id;
         if (!fileId) {
             console.log("id não encontrado");
             return;
@@ -61,7 +69,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         const payload = {
             nameFile: file.name,
             description: description || "",
-            observation: "Observação atualizada", // Ajuste conforme necessário
+            observation: "Observação atualizada", 
         };
     
         try {
@@ -71,7 +79,6 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
             console.error("Erro ao atualizar a imagem:", error);
         }
     };
-    
     
     return (
         <div className={`flex flex-col mb-4`}>
@@ -83,7 +90,6 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                         setFileToEdit(null);
                         setShowModal(true);
                     }
-
                 }}
             >
                 <FaUpload className={`h-4 w-4 mr-3 ${disabled ? 'text-gray-400' : 'text-primary-light'}`} />
@@ -98,7 +104,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                         <div key={index} className={`flex justify-between items-center border rounded-md p-1.5 mt-1 ${disabled ? 'bg-gray-50 border-none' : 'border'}`}>
                             <div className="flex flex-col">
                                 <span className={`text-xs md:text-sm font-light ${disabled ? 'text-gray-500' : 'text-primary-light'}`}>{item?.file?.name || "Arquivo não identificado"}</span>
-                                <span className="text-xs text-gray-500"> {(item?.file?.size / 1024).toFixed(2) || "Tamanho não disponível"} KB</span>
+                                <span className="text-xs text-gray-500"> {(item?.file?.size / 1024 / 1024).toFixed(2) || "Tamanho não disponível"} MB</span>
                                 <span className="text-xs text-gray-500">Descrição: {item?.description || "Sem descrição"}</span>
                             </div>
                             <div className="flex">
@@ -139,7 +145,6 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                 initialDescription={fileToEdit ? fileToEdit.description : ""}
                 editIndex={fileToEdit ? fileToEdit.index : null}
             />
-
 
             {showPreview && (
                 <PreviewFile

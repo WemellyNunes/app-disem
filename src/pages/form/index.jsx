@@ -44,7 +44,7 @@ export default function Form() {
         contato: { value: '', required: false },
         unidade: { value: '', required: true },
         origem: { value: '', required: true },
-        manutencao: { value: '', required: true },
+        manutencao: { value: 'CORRETIVA', required: true },
         sistema: { value: '', required: true },
         unidadeManutencao: { value: '', required: true },
         campus: { value: '', required: true },

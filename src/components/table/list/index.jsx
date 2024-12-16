@@ -1,18 +1,15 @@
 import Circle from "../circle";
 import { FaCirclePlus, FaRegClock } from "react-icons/fa6";
-import { MdHistory } from "react-icons/md";
 import { useState } from "react";
-import { deleteOrder } from "../../../utils/api/api";
 import { useNavigate } from "react-router-dom";
 import HistoryCard from "../../cards/historyCard";
 import ActionsMenu from "../../verticalMenu/actionMenu";
 import ConfirmationModal from "../../modal/confirmation";
 import MessageBox from "../../box/message";
 import { TbClipboardOff } from "react-icons/tb";
-import { MdEngineering } from "react-icons/md";
+import { MdEngineering, MdHistory } from "react-icons/md";
 
-
-import { updateOrderServiceStatus } from "../../../utils/api/api";
+import { updateOrderServiceStatus, deleteOrder } from "../../../utils/api/api";
 
 const List = ({ filteredData, onDeleteItem }) => {
     const navigate = useNavigate();
@@ -133,7 +130,6 @@ const List = ({ filteredData, onDeleteItem }) => {
                 />
             )}
 
-
             <div className="flex flex-col w-full space-y-2">
                 {filteredData.length > 0 ? (
                     filteredData.map((item, index) => {
@@ -174,7 +170,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                                             <p>{item.system}</p>
                                         </span>
                                         <span className="flex flex-row flex-wrap">
-                                            <p className="font-semibold mr-1">Unidade:</p>
+                                            <p className="font-semibold mr-1">Unidade da manutenção:</p>
                                             <p className="uppercase" >{item.maintenanceUnit}</p>
                                         </span>
                                         <span className="flex flex-row flex-wrap">
@@ -208,14 +204,13 @@ const List = ({ filteredData, onDeleteItem }) => {
                                                 </>
                                             ) : (
                                                 <>
-                                                    <span className="text-red-500">Sem programação</span>
+                                                    <span className="text-primary-light">Sem programação</span>
                                                     <div>
-                                                        <FaCirclePlus className="text-red-500 h-4 w-4" />
+                                                        <FaCirclePlus className="text-primary-light h-4 w-4" />
                                                     </div>
                                                 </>
                                             )}
                                         </button>
-
                                     </div>
 
                                     <div className="flex flex-col md:w-1/3 space-y-1 md:items-end text-primary-dark text-xs md:text-sm">
