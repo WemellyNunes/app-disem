@@ -24,10 +24,10 @@ export default function Dashboard() {
         yearly: { approved: 0, finalized: 0 },
     });
 
-    const [selectedYear, setSelectedYear] = useState(currentYear); // Estado do ano selecionado
+    const [selectedYear, setSelectedYear] = useState(currentYear); 
     const [selectedMonth, setSelectedMonth] = useState(currentMonth);
 
-    const years = [2022, 2023, 2024, 2025]; // Lista de anos
+    const years = [2022, 2023, 2024, 2025]; 
     const months = [
         { name: "Janeiro", value: 1 },
         { name: "Fevereiro", value: 2 },
@@ -64,7 +64,7 @@ export default function Dashboard() {
     };
 
     useEffect(() => {
-        fetchData(selectedYear, selectedMonth); // Executa a função com os valores selecionados
+        fetchData(selectedYear, selectedMonth);
     }, [selectedYear, selectedMonth]);
 
     return (
@@ -79,20 +79,25 @@ export default function Dashboard() {
                         textColor="text-primary-dark"
                     />
                 </div>
-                <div className="flex gap-x-2 md:gap-x-4 items-center justify-center md:justify-end py-1 md:px-6 border-b">
-                    <p className="hidden md:flex text-xs text-gray-500" >Comparar periodos</p>
-                    <PeriodSelect
-                        type='ano'
-                        value={selectedYear}
-                        onChange={(e) => setSelectedYear(e.target.value)}
-                        options={years}
-                    />
-                    <PeriodSelect
-                        type='mês'
-                        value={selectedMonth}
-                        onChange={(e) => setSelectedMonth(e.target.value)}
-                        options={months}
-                />
+                <div className="flex gap-x-2 md:gap-x-4 items-center justify-center md:justify-between py-1 md:px-6 border-b">
+                    <div>
+                        <p className="hidden md:flex text-primary-dark text-sm">Dados das Ordem de Serviços no sitema</p>
+                    </div>
+                    <div className="flex gap-x-2 md:gap-x-4 items-center ">
+                        <p className="hidden md:flex text-xs text-gray-500" >Comparar periodos</p>
+                        <PeriodSelect
+                            type='ano'
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(e.target.value)}
+                            options={years}
+                        />
+                        <PeriodSelect
+                            type='mês'
+                            value={selectedMonth}
+                            onChange={(e) => setSelectedMonth(e.target.value)}
+                            options={months}
+                        />
+                    </div>
                 </div>
                 <div className="px-2 md:px-6">
                     <div className="flex flex-row justify-between mt-2 gap-x-1 overflow-x-auto">
@@ -154,14 +159,9 @@ export default function Dashboard() {
                                 <DoughnutSystem />
                             </Card>
                         </div>
-
                     </div>
-
                 </div>
-
-
             </div>
-
         </>
     )
 };

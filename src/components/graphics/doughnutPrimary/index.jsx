@@ -20,41 +20,25 @@ const DoughnutChart = () => {
                 const data = await getTypeMaintenanceStatistics();
 
                 const labels = Object.keys(data).map((key) => {
-                    if (key === 'CORRETIVA') { return 'Corretiva'};
-                    if (key === 'PREVENTIVA') { return 'Preventiva'};
-                    if (key === 'EXTRAMANUTENCAO') { return 'Extramanutenção'};
+                    if (key === 'CORRETIVA') return 'Corretiva';
+                    if (key === 'PREVENTIVA') return 'Preventiva';
+                    if (key === 'EXTRAMANUTENCAO') return 'Extramanutenção';
                     return key; // Caso outros tipos sejam adicionados
                 });
 
                 const values = Object.values(data);
                 const total = values.reduce((sum, value) => sum + value, 0);
-                const percentages = values.map((value) => ((value / total) * 100).toFixed(2));
 
                 setChartData({
                     labels,
                     datasets: [
                         {
                             data: values,
-                            backgroundColor: ['#4bc0c0', '#05668D', '#59A5D8'], // Mesma ordem das labels
+                            backgroundColor: ['#4bc0c0', '#05668D', '#59A5D8'],
                             hoverBackgroundColor: ['#4bc0c0', '#05668D', '#59A5D8'],
                             borderWidth: 3,
                         },
                     ],
-                });
-                setChartOptions({
-                    plugins: {
-                        datalabels: {
-                            formatter: (_, context) => {
-                                const value = context.dataset.data[context.dataIndex];
-                                const percentage = ((value / total) * 100).toFixed(1);
-                                return `${percentage}%`; // Mostra o percentual
-                            },
-                            color: '#fff', // Cor do texto
-                            font: {
-                                weight: 'bold',
-                            },
-                        },
-                    },
                 });
             } catch (error) {
                 console.error("Erro ao carregar dados do gráfico:", error);
@@ -63,7 +47,6 @@ const DoughnutChart = () => {
 
         fetchData();
     }, []);
-
 
     const options = {
         responsive: true,

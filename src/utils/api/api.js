@@ -100,7 +100,6 @@ export const updateOrderServiceStatus = async (id, statusDescricao) => {
   }
 };
 
-
 export const uploadDocument = async (file, orderServiceId) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -118,7 +117,6 @@ export const uploadDocument = async (file, orderServiceId) => {
     throw error;
   }
 };
-
 
 export const getClassStatistics = async () => {
   try {
@@ -142,7 +140,7 @@ export const getTypeMaintenanceStatistics = async () => {
 
 export const getOrdersBySystemStatistics = async () => {
   try {
-    const response = await api.get('/statistics/system'); // Atualize o endpoint conforme necessário
+    const response = await api.get('/statistics/system');
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar estatísticas de ordens por sistema:", error);
@@ -152,7 +150,7 @@ export const getOrdersBySystemStatistics = async () => {
 
 export const getOrdersByCampus = async () => {
   try {
-    const response = await api.get('/statistics/campus'); // Atualize o endpoint conforme necessário
+    const response = await api.get('/statistics/campus'); 
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar estatísticas de ordens por campus:", error);
@@ -170,9 +168,11 @@ export const getSipacOrdersCount = async () => {
   }
 };
 
-export const getMonthOrdersCount = async () => {
+export const getMonthOrdersCount = async (year, month) => {
   try {
-    const response = await api.get('/statistics/month');
+    const response = await api.get('/statistics/month', {
+      params: {year, month}
+    });
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar estatísticas mensais:", error);
@@ -253,7 +253,7 @@ export const deletePrograming = async (id) => {
 export const uploadFiles = async (files, programingId, type, description) => {
   const formData = new FormData();
 
-  // Certifique-se de que 'files' seja um array de objetos com { file, description }
+ 
   files.forEach((fileObj) => {
     formData.append("file", fileObj.file); // Envia o arquivo com a chave 'file'
   });
@@ -275,7 +275,6 @@ export const uploadFiles = async (files, programingId, type, description) => {
     throw error;
   }
 };
-
 
 export const getAllImages = async (programingId) => {
   try {
@@ -368,8 +367,6 @@ export const getNegationByOrderServiceId = async (orderServiceId) => {
     throw error;
   }
 };
-
-
 
 
 export default api;
