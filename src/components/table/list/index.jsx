@@ -9,12 +9,14 @@ import MessageBox from "../../box/message";
 import { TbClipboardOff } from "react-icons/tb";
 import { MdEngineering, MdHistory } from "react-icons/md";
 
-import { updateOrderServiceStatus, deleteOrder } from "../../../utils/api/api";
+import { updateOrderServiceStatus, deleteOrder, getHistoryByOrderId } from "../../../utils/api/api";
 
 const List = ({ filteredData, onDeleteItem }) => {
     const navigate = useNavigate();
 
     const [showHistory, setShowHistory] = useState(false);
+    const [currentHistory, setCurrentHistory] = useState([]);
+    const [loadingHistory, setLoadingHistory] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [actionType, setActionType] = useState(null);
     const [selectedId, setSelectedId] = useState(null);
@@ -27,6 +29,23 @@ const List = ({ filteredData, onDeleteItem }) => {
         'Resolvido': 'font-medium text-status-resp bg-green-100 rounded-md p-1 text-xs',
         'Finalizado': 'font-medium text-status-finish bg-status-bgFinish rounded-md p-1 text-xs',
         'Negada': 'font-medium text-red-600 bg-red-100 rounded-md p-1 text-xs'
+    };
+
+    const fetchHistory = async (orderId) => {
+        setLoadingHistory(true);
+        try {
+            const history = await getHistoryByOrderId(orderId); // Chamada da API
+            setCurrentHistory(history); // Armazena o histórico retornado
+        } catch (error) {
+            console.error("Erro ao buscar o histórico:", error);
+        } finally {
+            setLoadingHistory(false);
+        }
+    };
+
+    const handleShowHistory = (orderId) => {
+        fetchHistory(orderId); // Busca o histórico ao abrir o modal
+        setShowHistory(true);
     };
 
     const handleDelete = (id) => {
@@ -225,7 +244,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                                             />
                                         </span>
                                         <div className="hidden md:flex items-center">
-                                            <button onClick={() => setShowHistory(true)} className="flex flex-col">
+                                            <button onClick={() => handleShowHistory(item.id)} className="flex flex-col">
                                                 <div className="text-primary-light rounded-full hover:bg-status-bgProg" ><MdHistory size={20} /></div>
                                             </button>
                                         </div>
@@ -236,7 +255,12 @@ const List = ({ filteredData, onDeleteItem }) => {
                                     </div>
 
                                 </div>
-                                {showHistory && <HistoryCard history={history} onClose={() => setShowHistory(false)} />}
+                                {showHistory && (
+                                    <HistoryCard 
+                                    history={currentHistory} 
+                                    onClose={() => setShowHistory(false)}
+                                    loading={loadingHistory} />
+                                )}
                             </div>
                         );
                     })

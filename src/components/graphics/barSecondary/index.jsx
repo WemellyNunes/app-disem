@@ -6,7 +6,7 @@ import { getOrdersByCampus } from '../../../utils/api/api';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
-const LocationBarChart = () => {
+const LocationBarChart = ({ year }) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
@@ -19,10 +19,14 @@ const LocationBarChart = () => {
         ],
     });
 
+    const [loading, setLoading] = useState(true);
+    
+
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
-                const data = await getOrdersByCampus();
+                const data = await getOrdersByCampus(year);
 
                 // Mapear os dados retornados pela API
                 const labels = Object.keys(data).map((key) => {
@@ -48,11 +52,13 @@ const LocationBarChart = () => {
                 });
             } catch (error) {
                 console.error("Erro ao carregar dados do gráfico:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchData();
-    }, []);
+    }, [year]);
 
     const options = {
         indexAxis: 'y',
@@ -88,6 +94,10 @@ const LocationBarChart = () => {
             },
         },
     };
+
+    if (loading) {
+        return <p>Carregando...</p>;
+    }
 
     return <Bar data={chartData} options={options} />;
 };

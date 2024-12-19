@@ -16,6 +16,7 @@ export default function Dashboard() {
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
 
+    const [loading, setLoading] = useState(false);
     const [stats, setStats] = useState({
         sipac: { approved: 0, finalized: 0 },
         monthly: { approved: 0, finalized: 0 },
@@ -44,6 +45,7 @@ export default function Dashboard() {
     ];
 
     const fetchData = async (year, month) => {
+        setLoading(true);
         try {
             const sipacData = await getSipacOrdersCount();
             const monthlyData = await getMonthOrdersCount(year, month);
@@ -60,6 +62,8 @@ export default function Dashboard() {
             });
         } catch (error) {
             console.error("Erro ao buscar dados:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -70,7 +74,6 @@ export default function Dashboard() {
     return (
         <>
             <div className="flex flex-col">
-
                 <div className="flex justify-center">
                     <PageTitle
                         icon={MdStackedBarChart}
@@ -145,18 +148,18 @@ export default function Dashboard() {
                     <div className="flex flex-col  mb-2">
                         <div className="flex flex-col gap-x-1.5 sm:flex-row">
                             <Card>
-                                <BarGraphic />
+                                <BarGraphic year={selectedYear} month={selectedMonth} />
                             </Card>
-                            <Card>
-                                <DoughnutChart />
+                            <Card >
+                                <DoughnutChart year={selectedYear} month={selectedMonth} />
                             </Card>
                         </div>
                         <div className="flex flex-col gap-x-1.5 sm:flex-row">
                             <Card>
-                                <LocationBarChart />
+                                <LocationBarChart year={selectedYear} />
                             </Card>
                             <Card>
-                                <DoughnutSystem />
+                                <DoughnutSystem year={selectedYear}/>
                             </Card>
                         </div>
                     </div>

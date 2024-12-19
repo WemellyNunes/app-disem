@@ -6,24 +6,39 @@ import { getTypeMaintenanceStatistics } from '../../../utils/api/api';
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-const DoughnutChart = () => {
+const DoughnutChart = ({year, month}) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [],
     });
 
-    const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+    const [loading, setLoading] = useState(true);
+    const [title, setTitle] = useState('');
+
+    const getMonthName = (monthNumber) => {
+        const date = new Date();
+        date.setMonth(monthNumber - 1); // Subtraímos 1 porque os meses no JS são indexados de 0
+        return date.toLocaleString("default", { month: "long" });
+    };
+
+    useEffect(() => {
+        // Atualize o título sempre que o mês mudar
+        setTitle(`Tipo de manutenções abertas em ${getMonthName(month)}`);
+    }, [month]);
+
+    
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
-                const data = await getTypeMaintenanceStatistics();
+                const data = await getTypeMaintenanceStatistics(year, month);
 
                 const labels = Object.keys(data).map((key) => {
                     if (key === 'CORRETIVA') return 'Corretiva';
                     if (key === 'PREVENTIVA') return 'Preventiva';
                     if (key === 'EXTRAMANUTENCAO') return 'Extramanutenção';
-                    return key; // Caso outros tipos sejam adicionados
+                    return key; 
                 });
 
                 const values = Object.values(data);
@@ -42,11 +57,13 @@ const DoughnutChart = () => {
                 });
             } catch (error) {
                 console.error("Erro ao carregar dados do gráfico:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchData();
-    }, []);
+    }, [year, month]);
 
     const options = {
         responsive: true,
@@ -57,7 +74,7 @@ const DoughnutChart = () => {
             },
             title: {
                 display: true,
-                text: `Tipo de manutenções abertas em ${currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)}`,
+                text: title,
                 font: {
                     size: 16,
                 },
@@ -65,7 +82,7 @@ const DoughnutChart = () => {
             tooltip: {
                 callbacks: {
                     label: (tooltipItem) => {
-                        return `${tooltipItem.label}: ${tooltipItem.raw}%`; // Exibe % no tooltip
+                        return `${tooltipItem.label}: ${tooltipItem.raw}%`;
                     },
                 },
             },
@@ -84,6 +101,10 @@ const DoughnutChart = () => {
             },
         },
     };
+
+    if (loading) {
+        return <p>Carregando...</p>;
+    }
 
     return <Doughnut data={chartData} options={options} />;
 };

@@ -6,16 +6,19 @@ import { getOrdersBySystemStatistics } from '../../../utils/api/api';
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-const DoughnutSystem = () => {
+const DoughnutSystem = ({ year }) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [],
     });
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
-                const data = await getOrdersBySystemStatistics();
+                const data = await getOrdersBySystemStatistics(year);
 
                 // Mapeando os dados do backend para labels e valores
                 const labels = Object.keys(data).map((key) => {
@@ -48,11 +51,13 @@ const DoughnutSystem = () => {
                 });
             } catch (error) {
                 console.error("Erro ao carregar dados do gráfico:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchData();
-    }, []);
+    }, [year]);
 
     const options = {
         responsive: true,
@@ -87,6 +92,10 @@ const DoughnutSystem = () => {
             },
         },
     };
+
+    if (loading) {
+        return <p>Carregando...</p>;
+    }
 
     return <Doughnut data={chartData} options={options} />;
 };

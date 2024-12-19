@@ -118,9 +118,11 @@ export const uploadDocument = async (file, orderServiceId) => {
   }
 };
 
-export const getClassStatistics = async () => {
+export const getClassStatistics = async (year, month) => {
   try {
-    const response = await api.get('/statistics/classification');
+    const response = await api.get('/statistics/classification', {
+      params: { year, month },
+    });
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar estatísticas de classificação:", error);
@@ -128,9 +130,11 @@ export const getClassStatistics = async () => {
   }
 };
 
-export const getTypeMaintenanceStatistics = async () => {
+export const getTypeMaintenanceStatistics = async (year, month) => {
   try {
-    const response = await api.get('/statistics/typeMaintenance');
+    const response = await api.get('/statistics/typeMaintenance', {
+      params: { year, month },
+    });
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar estatísticas de tipo de manutenção:", error);
@@ -138,9 +142,11 @@ export const getTypeMaintenanceStatistics = async () => {
   }
 };
 
-export const getOrdersBySystemStatistics = async () => {
+export const getOrdersBySystemStatistics = async (year) => {
   try {
-    const response = await api.get('/statistics/system');
+    const response = await api.get('/statistics/system', {
+      params: {year},
+    });
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar estatísticas de ordens por sistema:", error);
@@ -148,9 +154,11 @@ export const getOrdersBySystemStatistics = async () => {
   }
 };
 
-export const getOrdersByCampus = async () => {
+export const getOrdersByCampus = async (year) => {
   try {
-    const response = await api.get('/statistics/campus'); 
+    const response = await api.get('/statistics/campus', {
+      params: { year },
+    }); 
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar estatísticas de ordens por campus:", error);
@@ -364,6 +372,16 @@ export const getNegationByOrderServiceId = async (orderServiceId) => {
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar negações por ID da ordem de serviço:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getHistoryByOrderId = async (orderId) => {
+  try {
+    const response = await api.get(`/${orderId}/history`); 
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar o histórico da OS:", error);
     throw error;
   }
 };
