@@ -65,7 +65,7 @@ const DateTimePicker = ({ label, placeholder, onDateChange, className, disabled,
           value={inputValue}
           onChange={handleInputChange}
           maxLength={10}
-          className={`w-full border-none focus:outline-none placeholder-gray-400 text-xs md:text-sm italic ${disabled ? 'text-gray-400' : 'text-gray-400'}`}
+          className={`w-full border-none focus:outline-none placeholder-gray-400 text-xs md:text-sm italic ${disabled ? 'text-gray-400' : 'text-gray-500'}`}
           disabled={disabled}
         />
         <FaCalendarAlt

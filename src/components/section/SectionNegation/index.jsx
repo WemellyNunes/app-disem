@@ -136,13 +136,16 @@ const NegationSection = ({orderServiceId}) => {
   };
 
     return (
-        <div className="flex flex-col bg-white border border-gray-300 rounded mb-2 mt-1.5 shadow">
+        <div className="flex flex-col bg-white border border-gray-300 rounded-xl mb-2 mt-1.5">
             <div className="px-4 md:px-6 py-4">
-                <h3 className="text-sm font-medium text-primary-light">Sem aprovação</h3>
-                <div className="mt-4">
+              <div className="flex flex-col gap-y-1">
+                <h3 className="text-sm md:text-base font-medium text-gray-800">Sem aprovação</h3>
+                <p className="text-sm text-primary-dark">Informe o motivo para não realizar o atendimento desta ordem de serviço.</p>
+              </div>
+                <div className="mt-7">
                     <InputPrimary
                         label="Justificativa *"
-                        placeholder="Escreva o motivo da negativa"
+                        placeholder="Escrever uma justificativa"
                         value={formData.conteudo.value}
                         onChange={handleFieldChange("conteudo")}
                         disabled={isSaved || isSaving}

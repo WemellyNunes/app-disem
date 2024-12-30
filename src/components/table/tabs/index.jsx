@@ -1,6 +1,6 @@
 const Tabs = ({ activeTab, setActiveTab }) => {
     
-    const tabs = ['Abertas', 'Programadas', 'Resolvidas', 'Finalizadas', 'Negadas'];
+    const tabs = ['Abertas', 'Programadas', 'Atendidas', 'Finalizadas', 'Negadas'];
 
     return (
         <nav className="flex w-full bg-white font-normal text-xs md:text-sm border-b border-gray-300">

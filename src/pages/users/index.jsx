@@ -4,6 +4,7 @@ import { useState } from "react";
 import ConfirmationModal from "../../components/modal/confirmation";
 import UserModal from "../../components/modal/user";
 import MessageBox from "../../components/box/message";
+import ButtonPrimary from "../../components/buttons/buttonPrimary";
 
 export default function UserPage() {
     const [emptyFields, setEmptyFields] = useState({});
@@ -65,7 +66,7 @@ export default function UserPage() {
                     backgroundColor="bg-white"
                     textColor="text-primary-dark"
                 />
-                <div className="flex justify-start px-2 md:px-6 mt-4">
+                <div className="flex justify-between items-center gap-x-2 px-2 md:px-6 mt-4">
                     <button
                         onClick={() => {
                             setUserToEdit(null);
@@ -73,19 +74,26 @@ export default function UserPage() {
                         }}
                         className="flex items-center gap-2 px-4 py-1 text-base bg-primary-light text-white rounded-md shadow-sm"
                     >
-                        <FaPlus /> Adicionar Usuário
+
+                        <FaPlus className="h-3 w-3"/> 
+                        <span className="text-sm">Adicionar Usuário</span>
                     </button>
+                    <p className="flex text-sm text-primary-dark mb-2">Total de usuários: {users.length}</p>
                 </div>
                 <div className="flex flex-col py-4 px-6 mx-2 md:mx-6 rounded-md bg-white border border-gray-300 shadow-sm mt-4">
-                    <div className="flex mb-2 border-b border-gray-300">
-                        <p className="text-sm font-normal text-primary-dark py-2">Lista de usuários</p>
+                    <div className="flex">
+                        <p className="text-sm py-2 font-medium text-primary-dark">Lista de usuários</p>
                     </div>
-                    <p className="flex justify-end text-xs text-primary-dark mb-2">Usuários: {users.length}</p>
+                    <div className="flex text-sm text-primary-dark justify-between mb-3 px-2.5 border-b border-gray-300 py-2">
+                        <p>Nome/Email</p>
+                        <p>Papel</p>
+                        <p>Ações</p>
+                    </div>
                     <div className="flex flex-col space-y-2">
                         {users.map((user) => (
                             <div
                                 key={user.id}
-                                className="flex flex-col md:flex-row px-4 py-2 rounded shadow-sm text-primary-dark text-sm bg-white border border-gray-200 hover:border-primary-light"
+                                className="flex flex-col md:flex-row px-4 py-2 rounded shadow-sm text-primary-dark text-sm bg-white border border-gray-300 hover:border-primary-light"
                             >
                                 <div className="flex flex-col md:w-1/2">
                                     <span>{user.name}</span>

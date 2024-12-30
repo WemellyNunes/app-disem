@@ -71,7 +71,8 @@ const LocationBarChart = ({ year }) => {
                 display: true,
                 text: 'OS abertas por localidade',
                 font: {
-                    size: 16, // Aumenta o tamanho do título
+                    size: 16,
+                    weight: 'normal' // Aumenta o tamanho do título
                 },
             },
             datalabels: {

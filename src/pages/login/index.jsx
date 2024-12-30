@@ -39,7 +39,7 @@ export default function Login() {
                             />
                             <p className="text-xs text-primary-dark">Esqueci a senha</p>
                         </div>
-                        <ButtonPrimary onClick={e => navigate("../Form")}  >Entrar</ButtonPrimary>
+                        <ButtonPrimary onClick={e => navigate("../Dashboard")}  >Entrar</ButtonPrimary>
                     </div>
                 </div>
             </div>

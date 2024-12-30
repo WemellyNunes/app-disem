@@ -8,3 +8,7 @@ body {
     @apply font-sans;
     @apply bg-white;
 }
+
+body.bg-form-page {
+    @apply bg-gray-50; /* Exemplo: define um fundo cinza claro */
+}

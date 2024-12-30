@@ -11,7 +11,7 @@ import DateTimePicker from "../../components/inputs/dateTimePicker";
 import HistoryCard from "../../components/cards/historyCard";
 import { useState, useEffect } from "react";
 import MessageBox from "../../components/box/message";
-import { FaTrash, FaEdit, FaUser, FaBuilding, FaCity, FaCalendar, FaHourglassHalf } from "react-icons/fa";
+import { FaTrash, FaEdit } from "react-icons/fa";
 import { TbFileExport } from "react-icons/tb";
 import MaintenanceSection from "../../components/section/sectionMaintenance";
 import FinalizeSection from "../../components/section/FinalizeSection";
@@ -19,8 +19,6 @@ import AddReport from "../../components/modal/report";
 import ViewReports from "../../components/modal/viewReports";
 import { useUser } from "../../contexts/user";
 import PageTitle from "../../components/title";
-import { MdTextSnippet, MdSettings, MdPriorityHigh, MdPhone } from "react-icons/md";
-import { RiListSettingsFill } from "react-icons/ri";
 import { GrHostMaintenance } from "react-icons/gr";
 import ConfirmationModal from "../../components/modal/confirmation";
 import NegationSection from "../../components/section/SectionNegation";
@@ -77,15 +75,13 @@ export default function Programing() {
       
     const handleMaintenanceSave = async () => {
         try {
-            await updateOrderServiceStatus(orderServiceData.id, "Resolvido"); // Atualiza o status no backend
+            await updateOrderServiceStatus(orderServiceData.id, "Atendida"); // Atualiza o status no backend
             setIsMaintenanceSaved(true); // Atualiza no frontend
-            setStatus("Resolvido");
+            setStatus("Atendida");
         } catch (error) {
             console.error("Erro ao atualizar status da OS:", error);
         }
     };
-
-    const shouldShowFinalizeSection = isMaintenanceClosed;
 
     const handleOpenModal = (action) => {
         setConfirmationModal({ show: true, action }); // Define a ação ("edit" ou "delete")
@@ -159,9 +155,6 @@ export default function Programing() {
         fetchReports();
     }, [programingId]);
     
-
-    
-      
 
     const handleAddReport = async (newReport) => {
         if (!programingId) { return;}
@@ -414,7 +407,6 @@ export default function Programing() {
         }
     };
 
-
     const handleEdit = () => {
         setIsEditing(true);
         setIsSaved(false);
@@ -449,7 +441,7 @@ export default function Programing() {
 
     useEffect(() => {
         if (orderServiceData) {
-            setIsMaintenanceSaved(orderServiceData.status === "Resolvido");
+            setIsMaintenanceSaved(orderServiceData.status === "Atendida");
             setIsMaintenanceClosed(orderServiceData.status === "Finalizado");
         }
     }, [orderServiceData]);
@@ -492,62 +484,51 @@ export default function Programing() {
 
                 </div>
 
-                <div className="flex flex-col gap-x-2.5 md:flex-row mx-2 md:mx-6">
+                <div className="flex flex-col gap-x-4 md:flex-row mx-2 md:mx-6 mt-2">
                     <div className="w-full md:w-5/12">
-                        <SectionCard background="bg-gray-50" title="Dados da ordem de serviço">
+                        <SectionCard background="bg-gray-50" title="Ordem de serviço" placeholder="Informações cadastradas da ordem de serviço.">
                             <div className="grid grid-cols-1 md:grid-cols-1 gap-y-4 text-sm text-gray-500 mb-8">
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <MdPriorityHigh className="h-4 w-4" />
-                                    <p className="font-medium">Clasificação:</p>
+                                    <p className="font-medium ">Clasificação:</p>
                                     <p className="uppercase">{orderServiceData.classification}</p>
                                 </div>
-                                <div className="flex flex-row items-center gap-x-2">
-                                    <FaUser className="h-4 w-4" />
+                                <div className="flex flex-row items-center gap-x-2 uppercase">
                                     <p className="font-medium">Socilitante:</p>
                                     <p>{orderServiceData.requester}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <MdPhone className="h-4 w-4" />
                                     <p className="font-medium">Contato:</p>
-                                    <p>{orderServiceData.contact}</p>
+                                    <p className="uppercase">{orderServiceData.contact}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaBuilding className="h-4 w-4" />
                                     <p className="font-medium">Unidade do solicitante:</p>
-                                    <p>{orderServiceData.unit}</p>
+                                    <p className="uppercase">{orderServiceData.unit}</p>
                                 </div>
                                 <div className="flex items-center gap-x-2 flex-wrap">
-                                    <MdTextSnippet className="h-4 w-4" />
                                     <p className="font-medium">Descrição:</p>
-                                    <p>{orderServiceData.preparationObject}</p>
+                                    <p className="uppercase">{orderServiceData.preparationObject}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <MdSettings className="h-4 w-4" />
                                     <p className="font-medium">Tipo de manutenção:</p>
                                     <p>{orderServiceData.typeMaintenance}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <RiListSettingsFill className="h-4 w-4" />
                                     <p className="font-medium">Sistema:</p>
                                     <p>{orderServiceData.system}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaBuilding className="h-4 w-4" />
                                     <p className="font-medium">Unidade da manutenção:</p>
                                     <p>{orderServiceData.maintenanceUnit}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaCity className="h-4 w-4" />
                                     <p className="mr-1 font-medium">Campus:</p>
                                     <p>{orderServiceData.campus}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaCalendar className="h-4 w-4" />
                                     <p className="mr-1 font-medium">Data do cadastro:</p>
                                     <p>{orderServiceData.date}</p>
                                 </div>
                                 <div className="flex flex-row items-center gap-x-2">
-                                    <FaHourglassHalf className="h-4 w-4" />
                                     <p className="mr-1 font-medium">Dias em aberto:</p>
                                     <p>{orderServiceData.openDays}</p>
                                 </div>
@@ -563,29 +544,27 @@ export default function Programing() {
                             <NegationSection orderServiceId={orderServiceId}/>
                         )}
 
-
                         {isMaintenanceClosed && programingId && (
                             <FinalizeSection
                                 orderServiceData={{ ...orderServiceData, programingId }}
-                                onFinalize={isFinalized ? () => { } : handleFinalization} // Define o comportamento baseado no estado
-                                isFinalized={isFinalized} // Passa o estado como prop
+                                onFinalize={isFinalized ? () => { } : handleFinalization} 
+                                isFinalized={isFinalized} 
                             />
                         )}
-
 
                         {programingId && (
                             <MaintenanceSection
                                 orderServiceData={{ ...orderServiceData, programingId }}
                                 onMaintenanceClose={handleMaintenanceClose}
                                 onMaintenanceSave={() => {
-                                    setStatus("Resolvido");
+                                    setStatus("Atendida");
                                     handleMaintenanceSave();
                                 }}
                             />
                         )}
 
                         {status !== "Negada" && (
-                            <SectionCard title="Programação">
+                            <SectionCard title="Programação" placeholder="Agende a programação para a realização da manutenção.">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4">
                                     <DateTimePicker
                                         label="Data programada *"
@@ -641,7 +620,6 @@ export default function Programing() {
                                 </div>
                                 <div className="flex flex-col md:flex-row justify-end">
                                     <div className="flex flex-col md:flex-row gap-y-1.5 ">
-                                        {/* Verifica o status para renderizar os botões */}
                                         {isEditing ? (
                                             <>
                                                 <ButtonSecondary onClick={() => setIsEditing(false)}>Cancelar</ButtonSecondary>

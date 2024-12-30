@@ -1,4 +1,3 @@
-
 import ButtonPrimary from "../../buttons/buttonPrimary";
 
 const PreviewFile = ({ file, onClose }) => {

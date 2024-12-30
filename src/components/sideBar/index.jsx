@@ -1,7 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { MdOutlineDashboard } from "react-icons/md";
 import { FaFilePen } from "react-icons/fa6";
-import { FaRegListAlt, FaBars, FaSignOutAlt, FaUsers } from "react-icons/fa";
+import { FaRegListAlt, FaBars, FaUsers } from "react-icons/fa";
+import { RiLogoutCircleRLine } from "react-icons/ri";
 import { useState } from "react";
 import ConfirmationModal from "../modal/confirmation";
 
@@ -84,7 +85,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
                 className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
                   }`}
               >
-                Lista
+                Filas
               </span>
             </NavLink>
 
@@ -105,16 +106,15 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
 
         </div>
 
-        <div className="flex items-center justify-center p-4 mt-auto cursor-pointer hover:bg-red-100" onClick={handleLogoutClick}>
-    <FaSignOutAlt className="text-red-600 h-4 w-4" /> {/* Ícone com tamanho fixo */}
-    <span
-      className={`text-red-500 font-medium transition-all duration-300 ease-in-out transform ${
-        isCollapsed ? 'opacity-0 translate-x-[-10px] text-sm w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto ml-2'
-      }`}
-    >
-      Sair
-    </span>
-  </div>
+        <div className="flex items-center justify-center p-4 mt-auto cursor-pointer hover:bg-gray-200" onClick={handleLogoutClick}>
+          <RiLogoutCircleRLine className="text-gray-700 h-5 w-5" /> {/* Ícone com tamanho fixo */}
+          <span
+            className={`text-gray-700 font-medium transition-all duration-300 ease-in-out transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] text-sm w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto ml-2'
+              }`}
+          >
+            Sair
+          </span>
+        </div>
 
       </div>
       {/* Modal de confirmação */}

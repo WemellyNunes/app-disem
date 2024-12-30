@@ -102,7 +102,7 @@ const TabsAndList = () => {
         const statusMap = {
             'Abertas': 'A atender',
             'Programadas': 'Em atendimento',
-            'Resolvidas': 'Resolvido',
+            'Atendidas': 'Atendida',
             'Finalizadas': 'Finalizado',
             'Negadas': 'Negada'
         };

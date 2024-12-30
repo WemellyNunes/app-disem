@@ -3,9 +3,9 @@ import { FaUpload, FaTrash, FaEdit, FaEye } from 'react-icons/fa';
 import UploadModal from '../../modal/upload';
 import PreviewFile from '../../modal/preview';
 
-import { updateImage } from '../../../utils/api/api';
+import { updateImage, uploadDocument } from '../../../utils/api/api';
 
-const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, initialFiles }) => {
+const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, initialFiles, uploadType = "image", orderServiceId }) => {
     const [showModal, setShowModal] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [previewFile, setPreviewFile] = useState(null);
@@ -16,19 +16,9 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         setUploadedFiles(initialFiles || []);
     }, [initialFiles]);
 
-    const handleFilesUpload = (files, description) => {
-        const filesWithDescription = files.map((file) => ({
-            file,
-            description, 
-        }));
-        onFilesUpload(filesWithDescription); 
-    };
-
-    const MAX_SIZE_MB =5;
-    
-    const handleUpload = (files, description) => {
+    const handleUpload = async (files, description) => {
         const validFiles = files.filter((file) => {
-            if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+            if (file.size > 5 * 1024 * 1024) {
                 alert(`O arquivo "${file.name}" excede o limite de 5MB e não foi carregado.`);
                 return false;
             }
@@ -36,12 +26,28 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         });
     
         if (validFiles.length > 0) {
-            const filesWithDescriptions = validFiles.map((file) => ({
-                file,
-                description, 
-            }));
-            onFilesUpload(filesWithDescriptions); 
-            setShowModal(false);
+            try {
+                for (const file of validFiles) {
+                    if (uploadType === "image") {
+                        // Lógica para upload de imagem
+                        const payload = { file, description };
+                        await onFilesUpload([{ file, description }]); // Função passada via props
+                    } else if (uploadType === "document" && orderServiceId) {
+                        // Lógica para upload de documento
+                        const response = await uploadDocument(file, orderServiceId);
+                        console.log("Documento carregado com sucesso:", response);
+                        setUploadedFiles((prevFiles) => [
+                            ...prevFiles,
+                            { file, description, id: response.id },
+                        ]);
+                    } else {
+                        console.error("Tipo de upload ou ID inválido.");
+                    }
+                }
+                setShowModal(false);
+            } catch (error) {
+                console.error("Erro no upload:", error);
+            }
         }
     };
        
@@ -55,6 +61,14 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
     };
 
     const handlePreviewFile = (file) => {
+        if (file?.content) {
+            const fileBlob = new Blob([Uint8Array.from(atob.content), (c) => c.charCodeAt(0)]);
+            const fileUrl = URL.createObjectURL(fileBlob);
+
+            window.open(fileUrl, "_blank");
+        } else {
+            alert("Conteúdo do arquivo não disponível para visualização.");
+        }
         setPreviewFile(file);
         setShowPreview(true);
     };
@@ -140,7 +154,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                     setShowModal(false);
                     setFileToEdit(null);
                 }}
-                onUpload={(files, description) => handleUpload(files, description, fileToEdit?.index)}
+                onUpload={handleUpload}
                 initialFiles={fileToEdit ? [fileToEdit.file] : []}
                 initialDescription={fileToEdit ? fileToEdit.description : ""}
                 editIndex={fileToEdit ? fileToEdit.index : null}

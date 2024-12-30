@@ -14,7 +14,7 @@ import Loading from "../../components/modal/loading";
 import MessageCard from "../../components/cards/menssegeCard";
 
 import { calcularValorRisco, calcularPrioridade } from "../../utils/matriz";
-import { createOrder, updateOrder, uploadDocument, getOrderById } from "../../utils/api/api";
+import { createOrder, updateOrder, uploadDocument, getOrderById, getDocumentsByOrderServiceId } from "../../utils/api/api";
 
 export default function Form() {
     const { id } = useParams();
@@ -117,7 +117,8 @@ export default function Form() {
     };
 
     const handleFileChange = (files) => {
-        setSelectedFiles(files); // Atualiza o estado com os arquivos recebidos
+        setSelectedFiles(files);
+        setUploadedDocuments((prev) => [...prev, ...files]);
     };
 
     useEffect(() => {
@@ -127,6 +128,14 @@ export default function Form() {
             fetchOrderData(id);
         }
     }, [id]);
+
+    useEffect(() => {
+        document.body.classList.add("bg-form-page");
+    
+        return () => {
+            document.body.classList.remove("bg-form-page");
+        };
+    }, []);
 
     const fetchOrderData = async (id) => {
         try {
@@ -151,14 +160,17 @@ export default function Form() {
                 documento: { ...prevData.documento, value: response.documents }
                 
             }));
+            const documents = await getDocumentsByOrderServiceId(id);
             setUploadedDocuments(
-                response.documents.map((doc) => ({
-                    name: doc.name,
-                    size: doc.size,
-                    description: doc.description || "Sem descrição", 
+                documents.map((doc) => ({
+                    file: { 
+                        name: doc.nameFile, 
+                        size: doc.size,
+                        content: doc.content 
+                    },
+                    description: doc.description || "Sem descrição",
                 }))
-            );
-
+            );           
             setEmptyFields({});
         } catch (error) {
             console.error("Erro ao carregar os dados da ordem de serviço:", error);
@@ -385,9 +397,9 @@ export default function Form() {
                 />
                 </div>
 
-                <div className="flex flex-col bg-white border mt-2 mb-2 px-8 mx-2 md:mx-32 rounded">
+                <div className="flex flex-col bg-white border border-gray-300 mt-2 mb-2 px-8 md:px-16 mx-2 md:mx-32 rounded-xl">
                     <div className="flex-1 mb-2">
-                        <p className="text-sm font-medium text-primary-dark my-6">1. Dados da ordem de serviço</p>
+                        <p className="text-sm md:text-base font-medium text-gray-800 my-6">1. Dados da ordem de serviço</p>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6">
                             <InputSelect
                                 label="Origem *"
@@ -417,7 +429,7 @@ export default function Form() {
                     </div>
 
                     <div className="flex-1 mb-2">
-                        <p className="text-sm font-medium text-primary-dark mt-3 mb-6">3. Dados do solicitante</p>
+                        <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">3. Dados do solicitante</p>
                         <div className="grid grid-cols-1 md:grid-cols-1 gap-x-6">
                             <InputPrimary
                                 label="Solicitante *"
@@ -449,7 +461,7 @@ export default function Form() {
                     </div>
 
                     <div className="flex-1 mb-4">
-                        <p className="text-sm font-medium text-primary-dark mt-3 mb-6">3. Dados da manutenção</p>
+                        <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">3. Dados da manutenção</p>
                         <div className="grid grid-cols-1 md:grid-cols-1">
                             <InputPrimary
                                 label="Objeto de preparo *"
@@ -529,10 +541,7 @@ export default function Form() {
                                 label="Anexar documento(s)"
                                 disabled={!isEditing}
                                 onFilesUpload={handleFileChange}
-                                initialFiles={uploadedDocuments.map((doc) => ({
-                                    file: { name: doc.name, size: doc.size }, // Simula um arquivo
-                                    description: doc.description || "Sem descrição", // Adicione descrição se existir
-                                }))}
+                                initialFiles={uploadedDocuments}
                             />
                         </div>
                     </div>

@@ -26,7 +26,7 @@ const List = ({ filteredData, onDeleteItem }) => {
     const statusClasses = {
         'A atender': 'font-medium text-orange-500 bg-orange-100 rounded-md p-1 text-xs',
         'Em atendimento': 'font-medium text-status-prog bg-status-bgProg rounded-md p-1 text-xs',
-        'Resolvido': 'font-medium text-status-resp bg-green-100 rounded-md p-1 text-xs',
+        'Atendida': 'font-medium text-status-resp bg-green-100 rounded-md p-1 text-xs',
         'Finalizado': 'font-medium text-status-finish bg-status-bgFinish rounded-md p-1 text-xs',
         'Negada': 'font-medium text-red-600 bg-red-100 rounded-md p-1 text-xs'
     };
@@ -161,7 +161,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                         return (
                             <div
                                 key={item.id}
-                                className={`flex flex-col mt-2 md:flex-row p-4 rounded shadow-sm border border-gray-300 hover:border hover:border-primary-light space-y-1 md:space-y-0 bg-white`}
+                                className={`flex flex-col mt-2 md:flex-row p-4 rounded-xl shadow-sm border border-gray-300 hover:border hover:border-primary-light space-y-1 md:space-y-1 bg-white`}
                             >
                                 <div className="flex flex-col md:flex-row w-full justify-between">
                                     <div className="flex flex-col md:w-1/2 space-y-1 pb-2 md:pb-0 text-primary-dark text-xs ">
@@ -207,7 +207,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                                             onClick={() => handleProgramClick(item.id)}
                                             className="flex flex-col items-center justify-center hover:underline"
                                         >
-                                            {(item.status === "Resolvido" || item.status === "Finalizado" || item.status === "Negada") ? (
+                                            {(item.status === "Atendida" || item.status === "Finalizado" || item.status === "Negada") ? (
                                                 <>
                                                     <span className="text-primary-light">Ver atendimento</span>
                                                     <div>

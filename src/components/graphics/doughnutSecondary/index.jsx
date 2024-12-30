@@ -70,7 +70,8 @@ const DoughnutSystem = ({ year }) => {
                 display: true,
                 text: 'Manutenções abertas por tipo de sistema',
                 font: {
-                    size: 16, // Aumenta o tamanho do título
+                    size: 16,
+                    weight: 'normal'
                 },
             },
             tooltip: {

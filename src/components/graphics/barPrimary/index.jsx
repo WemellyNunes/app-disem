@@ -78,6 +78,7 @@ const BarGraphic = ({year, month}) => {
                 text: title,
                 font: {
                     size: 16,
+                    weight: 'normal'
                  } // Torna o título em negrito (opcional)
             },
             datalabels: {
@@ -85,7 +86,7 @@ const BarGraphic = ({year, month}) => {
                 align: 'end',
                 color: 'gray',
                 font: {
-                    weight: 'bold',
+                    weight: 'ligther',
                 },
                 formatter: (value) => value, // Exibe o valor numérico do quantitativo
             },

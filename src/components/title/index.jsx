@@ -1,29 +1,64 @@
 import { useNavigate } from 'react-router-dom';
 import { RiArrowLeftSLine } from "react-icons/ri";
+import ConfirmationModal from "../modal/confirmation";
+import { RiLogoutCircleRLine } from "react-icons/ri";
+import { useState } from 'react';
 
 
 
-const PageTitle = ({ icon: Icon, text, backgroundColor, textColor, children }) => {
+const PageTitle = ({ text, backgroundColor, children }) => {
+  
+  const [showModal, setShowModal] = useState(false); // Controla a exibição do modal
   const navigate = useNavigate();
+  
+  const handleLogoutClick = () => {
+    setShowModal(true); // Mostra o modal quando o usuário clica em "Sair"
+  };
+
+  const handleConfirmLogout = () => {
+    setShowModal(false); // Esconde o modal
+    navigate("/"); // Redireciona para a página de login
+  };
+
+  const handleCancelLogout = () => {
+    setShowModal(false); // Apenas fecha o modal
+  };
 
   return (
-    <div className={`w-full ${backgroundColor} ${textColor} flex items-center px-2 md:px-6 h-8 md:h-10 border-b border-gray-30 mt-10 md:mt-0 gap-x-2`}>
-      <button 
-        onClick={() => navigate(-1)} 
-        className="flex flex-row items-center text-primary-dark p-1 rounded hover:bg-gray-200 focus:outline-none gap-x-1"
-        aria-label="Voltar"
-      >
-        <RiArrowLeftSLine />
-        <span className='text-sm' >Voltar</span>
-      </button>
-      <span className='flex flex-row items-center text-gray-300' >|</span>
+    <div className={`w-full ${backgroundColor} text-gray-800 flex items-center justify-between px-2 md:px-6 h-8 md:h-10 border-b border-gray-30 mt-10 md:mt-0`}>
 
-      <div className='flex flex-row items-center'>
-        <Icon className="h-4 w-4 mr-2" />
-        <h1 className="text-sm md:text-base font-normal">{text}</h1>
-        <div className="ml-auto">{children}</div>
+      <div className='flex flex-row gap-x-2'>
+        <button 
+          onClick={() => navigate(-1)} 
+          className="flex flex-row items-center text-primary-dark p-1 rounded hover:bg-gray-200 focus:outline-none gap-x-1"
+          aria-label="Voltar"
+        >
+          <RiArrowLeftSLine />
+          <span className='text-sm' >Voltar</span>
+        </button>
+        <span className='flex flex-row items-center text-gray-300' >|</span>
+
+        <div className='flex flex-row items-center'>
+          <h1 className="text-sm md:text-base font-normal">{text}</h1>
+          <div className="ml-auto">{children}</div>
+        </div>
       </div>
+
+      <div className="flex items-center justify-center" onClick={handleLogoutClick}>
+        <RiLogoutCircleRLine className="text-gray-700 md:h-5 md:w-5 cursor-pointer hover:text-primary-light" title="Sair" /> {/* Ícone com tamanho fixo */}
+      </div>
+      {
+        showModal && (
+          <ConfirmationModal
+            title="Confirmação de saida"
+            message="Tem certeza que deseja sair?"
+            onConfirm={handleConfirmLogout}
+            onCancel={handleCancelLogout}
+          />
+        )
+      }
     </div>
+    
   );
 };
 

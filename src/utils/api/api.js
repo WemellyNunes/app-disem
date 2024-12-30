@@ -118,6 +118,19 @@ export const uploadDocument = async (file, orderServiceId) => {
   }
 };
 
+export const getDocumentsByOrderServiceId = async (orderServiceId) => {
+  try {
+      const response = await api.get(`/documents`, {
+          params: { orderServiceId }
+      });
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar documentos:", error);
+      throw error;
+  }
+};
+
+
 export const getClassStatistics = async (year, month) => {
   try {
     const response = await api.get('/statistics/classification', {

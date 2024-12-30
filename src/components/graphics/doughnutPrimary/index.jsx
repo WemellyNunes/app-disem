@@ -77,6 +77,7 @@ const DoughnutChart = ({year, month}) => {
                 text: title,
                 font: {
                     size: 16,
+                    weight: 'normal'
                 },
             },
             tooltip: {

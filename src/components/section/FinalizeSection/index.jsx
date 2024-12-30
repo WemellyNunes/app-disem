@@ -138,13 +138,16 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
   }
 
   return (
-    <div className="flex flex-col bg-white border border-gray-300 rounded mb-2 mt-2 shadow">
+    <div className="flex flex-col bg-white border border-gray-300 rounded-xl mb-4 mt-1.5">
       <div className="px-4 md:px-6 py-4">
-        <h3 className="text-sm font-medium text-primary-light">Finalização da OS</h3>
-        <div className="mt-4">
+        <div className="flex flex-col gap-y-1">
+          <h3 className="text-sm md:text-base font-medium text-gray-800">Finalização da OS</h3>
+          <p className="text-sm text-primary-dark">Inclua uma observação sobre a manutenção realizada para concluir a ordem de serviço e exportar o relatório.</p>
+        </div>
+        <div className="mt-7">
           <InputPrimary
             label="Observação final *"
-            placeholder="Escreva uma observação para finalizar a ordem de serviço"
+            placeholder="Escrever uma observação"
             value={formData.observation.value}
             onChange={handleFieldChange("observation")}
             disabled={isSaved || isSaving}

@@ -138,7 +138,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
             }
     
             // Atualiza o status da Ordem de Serviço
-            await updateOrderServiceStatus(orderServiceData.id, "Resolvido");
+            await updateOrderServiceStatus(orderServiceData.id, "Atendida");
     
             setIsEditing(false);
             setIsSaved(true);
@@ -194,9 +194,12 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     };
 
     return (
-        <div className="flex flex-col bg-white rounded border border-gray-300 px-6 mb-2 mt-1.5 shadow-sm">
-            <div className="flex justify-between rounded items-center py-4 cursor-pointer bg-white" onClick={toggleSection}>
-                <h3 className="text-sm font-medium text-primary-light">Manutenção</h3>
+        <div className="flex flex-col bg-white rounded-xl border border-gray-300 px-6 mb-4 mt-1.5 shadow-sm">
+            <div className="flex justify-between rounded  py-4 cursor-pointer bg-white mb-3" onClick={toggleSection}>
+                <div className="flex flex-col gap-y-1">
+                    <h3 className="text-sm md:text-base font-medium text-gray-800">Manutenção</h3>
+                    <p className="text-sm text-primary-dark">Adicione as imagens da manutenção realizada nos campos indicados abaixo.</p>
+                </div>
                 <span className="text-primary-light">{isOpen ? <IoIosRemoveCircleOutline size={25} /> : <IoIosAddCircleOutline size={25} />}</span>
             </div>
 

@@ -11,7 +11,7 @@ export default function Listing() {
                  <div className="flex justify-center pb-2">
                     <PageTitle
                         icon={FaRegListAlt}
-                        text="Listas "
+                        text="Filas "
                         backgroundColor="bg-white"
                         textColor="text-primary-dark"
                     />
