@@ -5,7 +5,7 @@ import ButtonSecondary from "../../buttons/buttonSecondary";
 import MessageBox from "../../box/message";
 import { IoIosRemoveCircleOutline, IoIosAddCircleOutline } from "react-icons/io";
 import { useUser } from "../../../contexts/user";
-import {updateOrderServiceStatus, uploadFiles, getAllImages } from "../../../utils/api/api";
+import { updateOrderServiceStatus, uploadFiles, getAllImages } from "../../../utils/api/api";
 
 
 const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanceSave }) => {
@@ -16,6 +16,8 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(true);
     const [isSaved, setIsSaved] = useState(false);
+    const [isAdvancing, setIsAdvancing] = useState(false);
+
 
     const { user, setUser } = useUser();
 
@@ -38,6 +40,18 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
         onMaintenanceClose();
     };
 
+    const handleAdvance = () => {
+        setIsEditing(false);     // Desabilita os campos
+        setIsAdvancing(false);  // Sai do modo avançar
+    };
+
+    const handleEdit = () => {
+        setIsEditing(true);     // Habilita edição
+        setIsAdvancing(true);   // Ativa o modo avançar
+    };
+
+    
+
     const [formData, setFormData] = useState({
         filesBefore: { value: [], required: true },
         filesAfter: { value: [], required: true },
@@ -52,11 +66,11 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                     value: filesWithDescriptions, // Atualiza o estado com arquivos e descrições
                 },
             };
-    
+
             // Atualizar emptyFields para remover o campo do estado se ele for preenchido
             setEmptyFields((prevEmptyFields) => {
                 const updatedEmptyFields = { ...prevEmptyFields };
-    
+
                 if (updatedData[field].required) {
                     if (Array.isArray(filesWithDescriptions)) {
                         // Verifica se o array de arquivos com descrições está vazio
@@ -67,20 +81,20 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                         delete updatedEmptyFields[field];
                     }
                 }
-    
+
                 return updatedEmptyFields;
             });
-    
+
             return updatedData;
         });
     };
-    
+
 
     const validateFields = () => {
         const newEmptyFields = {};
         Object.keys(formData).forEach((field) => {
             const { value, required } = formData[field];
-    
+
             if (required) {
                 if (Array.isArray(value)) {
                     if (value.length === 0) {
@@ -91,10 +105,10 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 }
             }
         });
-    
+
         setEmptyFields(newEmptyFields);
         return Object.keys(newEmptyFields).length === 0;
-    };    
+    };
 
     const handleSave = async () => {
         if (!validateFields()) {
@@ -107,39 +121,66 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
             setTimeout(() => setShowMessageBox(false), 1500);
             return;
         }
-    
+
         try {
             // Upload dos arquivos "antes da manutenção"
             if (formData.filesBefore.value.length > 0) {
-                await Promise.all(
-                    formData.filesBefore.value.map((fileObj) =>
-                        uploadFiles(
-                            [fileObj], // Passa o array com o objeto { file, description }
+                const uploadedFilesBefore = await Promise.all(
+                    formData.filesBefore.value.map(async (fileObj) => {
+                        const response = await uploadFiles(
+                            [fileObj], // Envia o arquivo
                             programingId,
                             "antes",
-                            fileObj.description // Envia a descrição
-                        )
-                    )
+                            fileObj.description
+                        );
+
+                        return {
+                            id: response.id, // Captura o ID retornado
+                            file: fileObj.file,
+                            description: fileObj.description,
+                        };
+                    })
                 );
+                setFormData((prevData) => ({
+                    ...prevData,
+                    filesBefore: {
+                        ...prevData.filesBefore,
+                        value: uploadedFilesBefore, // Atualiza o estado com IDs
+                    },
+                }));
             }
-    
+
             // Upload dos arquivos "após a manutenção"
             if (formData.filesAfter.value.length > 0) {
-                await Promise.all(
-                    formData.filesAfter.value.map((fileObj) =>
-                        uploadFiles(
-                            [fileObj], // Passa o array com o objeto { file, description }
+                const uploadedFilesAfter = await Promise.all(
+                    formData.filesAfter.value.map(async (fileObj) => {
+                        const response = await uploadFiles(
+                            [fileObj], // Envia o arquivo
                             programingId,
                             "depois",
-                            fileObj.description // Envia a descrição
-                        )
-                    )
+                            fileObj.description
+                        );
+
+                        return {
+                            id: response.id, // Captura o ID retornado
+                            file: fileObj.file,
+                            description: fileObj.description,
+                        };
+                    })
                 );
+                setFormData((prevData) => ({
+                    ...prevData,
+                    filesAfter: {
+                        ...prevData.filesAfter,
+                        value: uploadedFilesAfter, // Atualiza o estado com IDs
+                    },
+                }));
             }
-    
+
+
             // Atualiza o status da Ordem de Serviço
             await updateOrderServiceStatus(orderServiceData.id, "Atendida");
-    
+
             setIsEditing(false);
             setIsSaved(true);
             setMessageContent({
@@ -148,7 +189,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 message: "Dados da manutenção salvos com sucesso!",
             });
             setShowMessageBox(true);
-    
+
             onMaintenanceSave(); // Notifica o componente pai que a manutenção foi salva
             setTimeout(() => setShowMessageBox(false), 1200);
         } catch (error) {
@@ -165,17 +206,39 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     useEffect(() => {
         const fetchFiles = async () => {
             if (!programingId) return;
-    
+
             try {
                 const files = await getAllImages(programingId);
-    
+
                 // Separar arquivos "antes" e "depois" com base no `type`
                 const filesBefore = files.filter((file) => file.type === "antes");
                 const filesAfter = files.filter((file) => file.type === "depois");
-    
+
                 setFormData({
-                    filesBefore: { value: filesBefore.map((f) => ({ file: f, description: f.description })), required: true },
-                    filesAfter: { value: filesAfter.map((f) => ({ file: f, description: f.description })), required: true },
+                    filesBefore: {
+                        value: filesBefore.map((f) => ({
+                            id: f.id,
+                            file: {
+                                name: f.nameFile,
+                                content: f.content, // Adiciona o conteúdo Base64
+                                description: f.description
+                            },
+                            description: f.description,
+                        })),
+                        required: true
+                    },
+                    filesAfter: {
+                        value: filesAfter.map((f) => ({
+                            id: f.id,
+                            file: {
+                                name: f.nameFile,
+                                content: f.content, // Adiciona o conteúdo Base64
+                                description: f.description
+                            },
+                            description: f.description,
+                        })),
+                        required: true
+                    }
                 });
 
                 setIsEditing(false);
@@ -183,12 +246,12 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 console.error("Erro ao buscar arquivos:", error);
             }
         };
-    
+
         fetchFiles();
     }, [programingId]);
-    
-    
-    
+
+
+
     const toggleSection = () => {
         setIsOpen(!isOpen);
     };
@@ -204,7 +267,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
             </div>
 
 
-            <div className="mb-4">
+            <div className="mb-4 w-full">
                 <p className="text-xs md:text-sm text-primary-dark mb-2">Imagens - antes da manutenção *</p>
                 <InputUpload
                     label="Anexar arquivo(s)"
@@ -214,7 +277,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                     disabled={!isEditing}
                 />
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-full">
                 <p className="text-xs md:text-sm text-primary-dark mb-2">Imagens - pós manutenção *</p>
                 <InputUpload
                     label="Anexar arquivo(s)"
@@ -228,18 +291,23 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 {isSaved && <p className="mt-2 text-sm mb-3 text-gray-400">Enviado por: {user.name}</p>}
             </div>
             <div className="flex flex-col md:flex-row justify-end">
-                <div className="flex flex-col pb-4 md:flex-row gap-y-1.5">
-                    {orderServiceData.status !== "Finalizado" && isEditing && !isMaintenanceClosed ? (
+                <div className="flex flex-col md:flex-row justify-end pb-4 gap-y-1.5">
+                    {isEditing && !isAdvancing ? (
                         <>
                             <ButtonSecondary onClick={() => setIsOpen(false)}>Cancelar</ButtonSecondary>
                             <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
                         </>
-                    ) : orderServiceData.status !== "Finalizado" && !isMaintenanceClosed ? (
+                    ) : isAdvancing ? (
                         <>
-                            <ButtonSecondary onClick={() => setIsEditing(true)}>Editar</ButtonSecondary>
+                            <ButtonSecondary onClick={() => setIsEditing(false)}>Cancelar</ButtonSecondary>
+                            <ButtonPrimary onClick={handleAdvance}>Avançar</ButtonPrimary>
+                        </>
+                    ) : (
+                        <>
+                            <ButtonSecondary onClick={handleEdit}>Editar</ButtonSecondary>
                             <ButtonPrimary onClick={handleClose}>Encerrar</ButtonPrimary>
                         </>
-                    ) : null}
+                    )}
                 </div>
             </div>
             {showMessageBox && (

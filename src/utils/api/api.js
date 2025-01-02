@@ -309,6 +309,16 @@ export const getAllImages = async (programingId) => {
   }
 };
 
+export const deleteImage = async (id) => {
+  try {
+      const response = await api.delete(`/file/${id}`);
+      return response.data;
+  } catch (error) {
+      throw error;
+  }
+};
+
+
 export const updateImage = async (id, payload) => {
   try {
     const response = await api.put(`/file/${id}`, payload);

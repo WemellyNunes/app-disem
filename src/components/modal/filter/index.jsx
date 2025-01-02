@@ -7,10 +7,13 @@ import ButtonSecondary from "../../buttons/buttonSecondary";
 
 const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
   const options = [
-    { label: 'IGE', value: 'IGE' },
-    { label: 'ICE', value: 'ICE' },
-    { label: 'ICH', value: 'ICH' },
-    { label: 'CTIC', value: 'CTIC' },
+    { label: 'UNIDADE I - MARABÁ', value: 'UNIDADE I - MARABÁ' },
+    { label: 'UNIDADE II - MARABÁ', value: 'UNIDADE II - MARABÁ' },
+    { label: 'UNIDADE III - MARABÁ', value: 'UNIDADE III - MARABÁ' },
+    { label: 'UNIDADE SANTANA DO ARAGUAIA', value: 'UNIDADE SANTANA DO ARAGUAIA' },
+    { label: 'UNIDADE SÃO FELIX DO XINGU', value: 'UNIDADE SÃO FELIX DO XINGU' },
+    { label: 'UNIDADE RONDON', value: 'UNIDADE RONDON' },
+    { label: 'UNIDADE XINGUARA', value: 'UNIDADE XINGUARA' },
   ];
 
   const system = [
@@ -34,11 +37,11 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
   const [filters, setFilters] = useState({
     requisition: '',
     date: '',
-    maintenanceUnit: [],
     requester: '',
     typeMaintenance: [],
     system: [],
     origin: [],
+    campus: []
   });
 
   const inputRef = useRef(null);
@@ -106,8 +109,8 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
           <MultiSelect
             label="Unidade"
             options={options}
-            onChange={(selectedOptions) => handleMultiSelectChange('maintenanceUnit', selectedOptions)}
-            selectedValues={filters.maintenanceUnit}
+            onChange={(selectedOptions) => handleMultiSelectChange('campus', selectedOptions)}
+            selectedValues={filters.campus}
           />
           <MultiSelect
             label="Sistemas"

@@ -141,8 +141,8 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
     <div className="flex flex-col bg-white border border-gray-300 rounded-xl mb-4 mt-1.5">
       <div className="px-4 md:px-6 py-4">
         <div className="flex flex-col gap-y-1">
-          <h3 className="text-sm md:text-base font-medium text-gray-800">Finalização da OS</h3>
-          <p className="text-sm text-primary-dark">Inclua uma observação sobre a manutenção realizada para concluir a ordem de serviço e exportar o relatório.</p>
+          <h3 className="text-sm md:text-base font-medium text-gray-800">Finalização</h3>
+          <p className="text-sm text-primary-dark">Inclua uma observação sobre a manutenção realizada para concluir a ordem de serviço.</p>
         </div>
         <div className="mt-7">
           <InputPrimary

@@ -115,6 +115,7 @@ const TabsAndList = () => {
                 item.requester.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.typeMaintenance.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.maintenanceUnit.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.campus.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.system.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.date.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -127,9 +128,9 @@ const TabsAndList = () => {
                 filtered = filtered.filter(item => item.date === appliedFilters.date);
             }
         
-            if (appliedFilters.maintenanceUnit && appliedFilters.maintenanceUnit.length > 0) {
+            if (appliedFilters.campus && appliedFilters.campus.length > 0) {
                 filtered = filtered.filter(item =>
-                    appliedFilters.maintenanceUnit.some(unit =>
+                    appliedFilters.campus.some(unit =>
                         item.maintenanceUnit.toLowerCase().includes(unit.value.toLowerCase())
                     )
                 );
@@ -211,7 +212,7 @@ const TabsAndList = () => {
                     <span className='hidden md:block text-sm'>Nova OS</span>
                 </button>
             </div>
-            <div className="flex flex-wrap gap-2 mb-1.5 px-2 md:px-6">
+            <div className="flex flex-wrap mb-1.5 px-0 md:px-6">
                 {Object.keys(appliedFilters).map((filterKey) => {
                     const filterValue = appliedFilters[filterKey];
 

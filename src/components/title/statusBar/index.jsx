@@ -1,6 +1,8 @@
 import { GiBackwardTime } from "react-icons/gi";
-import { AiOutlinePlus, AiOutlineFileText } from "react-icons/ai";
-import { CiCirclePlus } from "react-icons/ci";
+import { MdEditNote } from "react-icons/md";
+import { GoNote } from "react-icons/go";
+
+
 
  // ícones para adicionar e visualizar relatos
 
@@ -34,17 +36,17 @@ const StatusBar = ({ requisitionNumber, origin, situation, reopening, onHistoryC
         {/* Botão para Adicionar Relato */}
         <button
           onClick={onAddReportClick}
-          className=" focus:outline-none" title="Adicionar relato"
+          className="flex focus:outline-none items-center justify-center w-5 h-5 md:w-6 md:h-6 border border-primary-light hover:border-blue-400 text-white rounded-full relative " title="Acicionar relatos"
         >
-          <span><CiCirclePlus className="w-5 h-5 md:w-7 md:h-7 text-primary-light hover:text-green-500" /></span>
+          <span><MdEditNote className="w-4 h-4 text-primary-light  hover:text-blue-400" /></span>
         </button>
 
         {/* Botão para Ver Relatos */}
         <button
           onClick={onViewReportsClick}
-          className="flex  items-center justify-center w-5 h-5 md:w-6 md:h-6  bg-blue-500 hover:bg-blue-700 text-white rounded-full focus:outline-none relative " title="Ver relatos"
+          className="flex  items-center justify-center w-5 h-5 md:w-6 md:h-6 border  border-primary-light hover:border-blue-400 text-white rounded-full focus:outline-none relative " title="Ver relatos"
         >
-          <span><AiOutlineFileText className="h-4 w-4" /></span>
+          <span><GoNote className="w-4 h-4  text-primary-light hover:text-blue-400" /></span>
           {reportsCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">
               {reportsCount}
@@ -55,9 +57,9 @@ const StatusBar = ({ requisitionNumber, origin, situation, reopening, onHistoryC
         {/* Botão de Histórico */}
         <button
           onClick={onHistoryClick}
-          className="md:flex hidden items-center justify-center w-4 h-4 md:w-6 md:h-6  bg-orange-400 hover:bg-orange-700 text-white rounded-full focus:outline-none" title="Histórico"
+          className="md:flex hidden items-center justify-center w-5 h-5 md:w-6 md:h-6  border border-primary-light hover:border-blue-400 text-white rounded-full focus:outline-none" title="Histórico"
         >
-          <span><GiBackwardTime className="h-4 w-4" /></span>
+          <span><GiBackwardTime className="w-4 h-4 text-primary-light hover:text-blue-400" /></span>
         </button>
       </div>
     </div>
