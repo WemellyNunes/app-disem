@@ -5,8 +5,8 @@ import ButtonSecondary from "../../buttons/buttonSecondary";
 import MessageBox from "../../box/message";
 import { IoIosRemoveCircleOutline, IoIosAddCircleOutline } from "react-icons/io";
 import { useUser } from "../../../contexts/user";
-import { updateOrderServiceStatus, uploadFiles, getAllImages } from "../../../utils/api/api";
 
+import { updateOrderServiceStatus, uploadFiles, getAllImages } from "../../../utils/api/api";
 
 const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanceSave }) => {
     const [emptyFields, setEmptyFields] = useState({});
@@ -41,16 +41,13 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     };
 
     const handleAdvance = () => {
-        setIsEditing(false);     // Desabilita os campos
-        setIsAdvancing(false);  // Sai do modo avançar
+        window.location.reload();  
     };
 
     const handleEdit = () => {
-        setIsEditing(true);     // Habilita edição
-        setIsAdvancing(true);   // Ativa o modo avançar
+        setIsEditing(true);    
+        setIsAdvancing(true);   
     };
-
-    
 
     const [formData, setFormData] = useState({
         filesBefore: { value: [], required: true },
@@ -63,17 +60,15 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 ...prevData,
                 [field]: {
                     ...prevData[field],
-                    value: filesWithDescriptions, // Atualiza o estado com arquivos e descrições
+                    value: filesWithDescriptions, 
                 },
             };
-
-            // Atualizar emptyFields para remover o campo do estado se ele for preenchido
             setEmptyFields((prevEmptyFields) => {
                 const updatedEmptyFields = { ...prevEmptyFields };
 
                 if (updatedData[field].required) {
                     if (Array.isArray(filesWithDescriptions)) {
-                        // Verifica se o array de arquivos com descrições está vazio
+                       
                         if (filesWithDescriptions.length > 0) {
                             delete updatedEmptyFields[field];
                         }
@@ -135,7 +130,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                         );
 
                         return {
-                            id: response.id, // Captura o ID retornado
+                            id: response.id, 
                             file: fileObj.file,
                             description: fileObj.description,
                         };
@@ -145,7 +140,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                     ...prevData,
                     filesBefore: {
                         ...prevData.filesBefore,
-                        value: uploadedFilesBefore, // Atualiza o estado com IDs
+                        value: uploadedFilesBefore, 
                     },
                 }));
             }
@@ -162,7 +157,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                         );
 
                         return {
-                            id: response.id, // Captura o ID retornado
+                            id: response.id, 
                             file: fileObj.file,
                             description: fileObj.description,
                         };
@@ -172,13 +167,10 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                     ...prevData,
                     filesAfter: {
                         ...prevData.filesAfter,
-                        value: uploadedFilesAfter, // Atualiza o estado com IDs
+                        value: uploadedFilesAfter, 
                     },
                 }));
             }
-
-
-            // Atualiza o status da Ordem de Serviço
             await updateOrderServiceStatus(orderServiceData.id, "Atendida");
 
             setIsEditing(false);
@@ -251,7 +243,6 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     }, [programingId]);
 
 
-
     const toggleSection = () => {
         setIsOpen(!isOpen);
     };
@@ -304,7 +295,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                         </>
                     ) : (
                         <>
-                            <ButtonSecondary onClick={handleEdit}>Editar</ButtonSecondary>
+                            <ButtonSecondary onClick={handleEdit}>Ativar edição</ButtonSecondary>
                             <ButtonPrimary onClick={handleClose}>Encerrar</ButtonPrimary>
                         </>
                     )}

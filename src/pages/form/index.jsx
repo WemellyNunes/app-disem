@@ -89,7 +89,7 @@ export default function Form() {
         { label: 'CIVIL'},
         { label: 'ELETRICO'},
         { label: 'HIDROSANITARIO'},
-        { label: 'REFRIGERAÇÃO'},
+        { label: 'REFRIGERACAO'},
         { label: 'MISTO' }
     ];
 
@@ -111,7 +111,7 @@ export default function Form() {
         'UNIDADE II - MARABÁ': 'MARABA',
         'UNIDADE III - MARABÁ': 'MARABA',
         'UNIDADE SANTANA DO ARAGUAIA': 'SANTANA DO ARAGUAIA',
-        'UNIDADE SÃO FELIX DO XINGU': 'SÃO FELIX DO XINGU',
+        'UNIDADE SÃO FELIX DO XINGU': 'SAO FELIX DO XINGU',
         'UNIDADE RONDON': 'RONDON',
         'UNIDADE XINGUARA': 'XINGUARA',
     };
@@ -182,7 +182,6 @@ export default function Form() {
             handleUpload();
         }
     }, [orderId]);
-
 
     const handleUpload = async () => {
         try {

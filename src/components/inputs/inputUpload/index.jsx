@@ -5,7 +5,6 @@ import PreviewFile from '../../modal/preview';
 import ConfirmationModal from '../../modal/confirmation';
 import MessageBox from '../../box/message';
 
-
 import { updateImage, uploadDocument, deleteImage } from '../../../utils/api/api';
 
 const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, initialFiles, uploadType = "image", orderServiceId }) => {
@@ -22,17 +21,14 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
     
     useEffect(() => {
         const formattedFiles = initialFiles.map((item) => ({
-            id: item.id || item.file?.id, // Garante o ID correto
-            file: item.file || item,     // Normaliza o objeto
+            id: item.id || item.file?.id,
+            file: item.file || item, 
             description: item.description || "",
         }));
         console.log("Arquivos formatados corrigidos:", formattedFiles);
         setUploadedFiles(formattedFiles || []);
     }, [initialFiles]);
     
-    
-    
-
     const handleUpload = async (files, description) => {
         const validFiles = files.filter((file) => {
             if (file.size > 5 * 1024 * 1024) {
@@ -70,25 +66,19 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
             }
         }
     };
-    
 
     const handleDeleteFile = async () => {
-        console.log("Tentando deletar arquivo:", imageToDelete);
-    
         if (imageToDelete) {
             if (imageToDelete.id) {
-                // Caso o arquivo já tenha sido salvo (possui ID)
                 try {
-                    await deleteImage(imageToDelete.id); // Exclui no backend
+                    await deleteImage(imageToDelete.id); 
         
-                    // Atualiza a lista removendo o arquivo
                     const updatedFiles = uploadedFiles.filter(
                         (file) => file.id !== imageToDelete.id
                     );
                     setUploadedFiles(updatedFiles);
-                    onFilesUpload(updatedFiles); // Atualiza o componente pai
+                    onFilesUpload(updatedFiles);
     
-                    // Mostra mensagem de sucesso
                     setMessageContent({
                         type: "success",
                         title: "Sucesso!",
@@ -97,7 +87,6 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                 } catch (error) {
                     console.error("Erro ao deletar imagem:", error);
     
-                    // Mensagem de erro
                     setMessageContent({
                         type: "error",
                         title: "Erro!",
@@ -105,22 +94,18 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                     });
                 }
             } else {
-                // Caso o arquivo ainda não tenha sido salvo (sem ID)
                 const updatedFiles = uploadedFiles.filter(
                     (file) => file.file.name !== imageToDelete.file.name
                 );
                 setUploadedFiles(updatedFiles);
-                onFilesUpload(updatedFiles); // Atualiza o componente pai
+                onFilesUpload(updatedFiles); 
     
-                // Mensagem de sucesso para exclusão local
                 setMessageContent({
                     type: "info",
                     title: "Removido!",
                     message: "Imagem removida da lista."
                 });
             }
-    
-            // Fecha o modal e exibe a mensagem
             setShowConfirmModal(false);
             setShowMessageBox(true);
             setTimeout(() => setShowMessageBox(false), 1200);
@@ -128,22 +113,18 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         }
     };
     
-    
-
     const handlePreviewFile = (file) => {
         if (file?.content) {
             try {
-                // Decodifica Base64 para criar Blob
                 const byteCharacters = atob(file.content);
                 const byteNumbers = new Array(byteCharacters.length);
                 for (let i = 0; i < byteCharacters.length; i++) {
                     byteNumbers[i] = byteCharacters.charCodeAt(i);
                 }
                 const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], { type: "image/png" }); // Ajuste o tipo conforme necessário
+                const blob = new Blob([byteArray], { type: "image/png" });
                 const fileUrl = URL.createObjectURL(blob);
     
-                // Passa o URL e tipo para o modal
                 setPreviewFile({ url: fileUrl, type: "image/png" });
                 setShowPreview(true);
             } catch (error) {
@@ -162,13 +143,11 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
             console.log("id não encontrado");
             return;
         }
-    
         const payload = {
             nameFile: file.name,
             description: description || "",
             observation: "Observação atualizada", 
         };
-    
         try {
             await updateImage(fileId, payload);
             console.log("Imagem atualizada com sucesso!");
@@ -178,19 +157,17 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
     };
     
     const handleShowConfirmModal = (file) => {
-        console.log("Arquivo selecionado para deletar:", file); // Verifica o objeto clicado
-        setImageToDelete(file); // Armazena o arquivo para exclusão
-        setShowConfirmModal(true); // Abre o modal
+        console.log("Arquivo selecionado para deletar:", file); 
+        setImageToDelete(file); 
+        setShowConfirmModal(true); 
     };
     
-    
-    
-    
+
     return (
         <div className={`flex flex-col mb-4`}>
             <label
                 className={`flex items-center border border-dashed rounded-md p-4 cursor-pointer w-full 
-                h-9 md:h-10 transition-colors duration-200 ${disabled ? 'bg-primary-gray border-gray-50 text-gray-400' : 'border-primary-light hover:bg-blue-50'} ${className}`}
+                h-9 md:h-10 transition-colors duration-200 ${disabled ? ' border-gray-200 text-gray-400' : 'border-primary-light hover:bg-blue-50'} ${className}`}
                 onClick={() => {
                     if (!disabled) {
                         setFileToEdit(null);
@@ -210,26 +187,31 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                         <div key={index} className={`flex justify-between items-center border rounded-md p-1.5 mt-1 ${disabled ? 'bg-gray-50 border-none' : 'border'}`}>
                             <div className="flex flex-col">
                                 <span className={`text-xs md:text-sm font-light ${disabled ? 'text-gray-500' : 'text-primary-light'}`}>{item?.file?.name || "Arquivo não identificado"}</span>
-                                <span className="text-xs text-gray-500"> {(item?.file?.size / 1024 / 1024).toFixed(2) || "Tamanho não disponível"} MB</span>
+                                <span className="text-xs text-gray-500">
+                                    {item?.file?.size
+                                        ? (item.file.size / 1024 / 1024).toFixed(2) + " MB" // Arquivo local
+                                        : ((item?.file?.content.length * 3) / 4 / 1024 / 1024).toFixed(2) + " MB" // Arquivo salvo
+                                    }
+                                </span>
                                 <span className="text-xs text-gray-500">Descrição: {item?.description || "Sem descrição"}</span>
                             </div>
                             <div className="flex">
                                 <button
                                     onClick={() => handlePreviewFile(item?.file)}
-                                    className={`text-blue-500 text-xs md:text-sm mr-2`}
+                                    className={`text-primary-light text-xs md:text-sm mr-2`}
                                 >
                                     <FaEye size={18} />
                                 </button>
                                 <button
                                     onClick={() => handleEditFile(item.file, item.description, index)}
-                                    className={`text-green-500 text-xs md:text-sm mr-2 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    className={`text-primary-light text-xs md:text-sm mr-2 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     disabled={disabled}
                                 >
                                     <FaEdit size={16} />
                                 </button>
                                 <button
                                     onClick={() => handleShowConfirmModal(item)}
-                                    className={`text-red-500 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    className={`text-primary-light ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     disabled={disabled}
                                 >
                                     <FaTrash size={14} />

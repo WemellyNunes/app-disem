@@ -61,6 +61,8 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               </span>
             </NavLink>
 
+            <span className="text-xs text-gray-500  font-medium mt-6 mb-2 px-2 ">ORDEM DE SERVIÇO</span>
+
             <NavLink
               to="/form"
               className={({ isActive }) =>

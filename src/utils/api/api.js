@@ -100,6 +100,17 @@ export const updateOrderServiceStatus = async (id, statusDescricao) => {
   }
 };
 
+export const updateOpenDays = async (orderServiceId) => {
+  try {
+    const response = await api.put(`/serviceOrder/${orderServiceId}/openDays`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao atualizar os dias em aberto:", error);
+    throw error;
+  }
+};
+
+
 export const uploadDocument = async (file, orderServiceId) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -317,7 +328,6 @@ export const deleteImage = async (id) => {
       throw error;
   }
 };
-
 
 export const updateImage = async (id, payload) => {
   try {

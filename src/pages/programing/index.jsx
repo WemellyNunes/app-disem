@@ -23,7 +23,7 @@ import { GrHostMaintenance } from "react-icons/gr";
 import ConfirmationModal from "../../components/modal/confirmation";
 import NegationSection from "../../components/section/SectionNegation";
 
-import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport, updateOrderServiceStatus, createNote, getNotesByProgramingId } from "../../utils/api/api";
+import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport, updateOrderServiceStatus, createNote, getNotesByProgramingId, updateOpenDays } from "../../utils/api/api";
 
 
 export default function Programing() {
@@ -332,6 +332,9 @@ export default function Programing() {
             }
 
             setProgramingId(newProgramingId);
+
+            const updatedOrder = await updateOpenDays(id); // <-- Novo endpoint aqui!
+            setOrderServiceData(updatedOrder); 
 
             setOrderServiceData((prevData) => ({
                 ...prevData,
