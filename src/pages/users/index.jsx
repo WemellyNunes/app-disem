@@ -1,10 +1,10 @@
 import PageTitle from "../../components/title";
-import { FaUsers, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import ConfirmationModal from "../../components/modal/confirmation";
 import UserModal from "../../components/modal/user";
 import MessageBox from "../../components/box/message";
-import ButtonPrimary from "../../components/buttons/buttonPrimary";
+
 
 export default function UserPage() {
     const [emptyFields, setEmptyFields] = useState({});
@@ -61,7 +61,6 @@ export default function UserPage() {
             )}
             <div className="flex flex-col">
                 <PageTitle
-                    icon={FaUsers}
                     text="Usuários do sistema"
                     backgroundColor="bg-white"
                     textColor="text-primary-dark"
@@ -80,8 +79,8 @@ export default function UserPage() {
                     </button>
                     <p className="flex text-sm text-primary-dark mb-2">Total de usuários: {users.length}</p>
                 </div>
-                <div className="flex flex-col py-4 px-6 mx-2 md:mx-6 rounded-md bg-white border border-gray-300 shadow-sm mt-4">
-                    <div className="flex">
+                <div className="flex flex-col py-4 px-6 mx-2 rounded-md bg-white">
+                    <div className="flex mb-4">
                         <p className="text-sm py-2 font-medium text-primary-dark">Lista de usuários</p>
                     </div>
                     <div className="flex text-sm text-primary-dark justify-between mb-3 px-2.5 border-b border-gray-300 py-2">

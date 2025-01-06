@@ -6,7 +6,8 @@ import Programing from "../pages/programing";
 import Listing from "../pages/listing";
 import Sidebar from "../components/sideBar";
 import MobileMenu from "../components/sideBar/mobile";
-import UserPage from "../pages/users"; // Importe o componente Sidebar
+import UserPage from "../pages/users";
+import TeamPage from "../pages/team"; // Importe o componente Sidebar
 import { useState } from 'react';
 
 function AppRoutes() {
@@ -50,6 +51,7 @@ function AppRoutes() {
             <Route path="/programing/:id" element={<Programing />} />
             <Route path="/listing" element={<Listing />} />
             <Route path="/users" element={<UserPage />} />
+            <Route path="/team" element={<TeamPage />} />
           </Routes>
         </div>
       </div>

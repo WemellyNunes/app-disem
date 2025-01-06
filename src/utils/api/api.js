@@ -419,5 +419,15 @@ export const getHistoryByOrderId = async (orderId) => {
   }
 };
 
+export const createTeam = async (teamData) => {
+  try {
+    const response = await api.post('/teams', teamData); // Faz o POST para o endpoint /teams
+    return response.data; // Retorna os dados da equipe salva
+  } catch (error) {
+    console.error("Erro ao salvar equipe:", error); // Log de erro no console
+    throw error; // Lança o erro para ser tratado
+  }
+};
+
 
 export default api;

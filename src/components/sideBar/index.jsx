@@ -1,33 +1,32 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { MdOutlineDashboard } from "react-icons/md";
 import { FaFilePen } from "react-icons/fa6";
-import { FaRegListAlt, FaBars, FaUsers } from "react-icons/fa";
+import { FaRegListAlt, FaBars, FaUsers, FaTools  } from "react-icons/fa";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { useState } from "react";
 import ConfirmationModal from "../modal/confirmation";
 
 const Sidebar = ({ isCollapsed, toggleSidebar }) => {
 
-  const [showModal, setShowModal] = useState(false); // Controla a exibição do modal
+  const [showModal, setShowModal] = useState(false); 
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
-    setShowModal(true); // Mostra o modal quando o usuário clica em "Sair"
+    setShowModal(true); 
   };
 
   const handleConfirmLogout = () => {
-    setShowModal(false); // Esconde o modal
-    navigate("/"); // Redireciona para a página de login
+    setShowModal(false); 
+    navigate("/"); 
   };
 
   const handleCancelLogout = () => {
-    setShowModal(false); // Apenas fecha o modal
+    setShowModal(false); 
   };
 
   return (
-
     <>
-      <div className={`hidden md:flex flex-col h-1/2 md:h-full bg-gray-100 border-r border-gray-300 md:fixed transition-all duration-300 ${isCollapsed ? 'w-12 md:w-14' : 'w-60'} transform`}>
+      <div className={`hidden md:flex flex-col h-1/2 md:h-full bg-gray-50 border-r border-gray-300 md:fixed transition-all duration-300 ${isCollapsed ? 'w-12 md:w-14' : 'w-60'} transform`}>
         <div className="flex flex-col p-4">
           <div className="flex flex-col">
             <div className="flex items-center justify-start  text-primary-dark mt-2">
@@ -105,6 +104,20 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
                   }`}
               >
                 Usuários
+              </span>
+            </NavLink>
+
+            <NavLink
+              to="/team"
+              className={({ isActive }) =>
+                `flex items-center text-primary-dark border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-primary-light text-white hover:text-primary-light' : ''}`
+              }>
+              <FaTools className='h-4 w-3.5' /> {/* Ícone com tamanho fixo */}
+              <span
+                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
+                  }`}
+              >
+                Equipe
               </span>
             </NavLink>
           </div>
