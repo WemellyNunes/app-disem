@@ -27,7 +27,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
   return (
 
     <>
-      <div className={`hidden md:flex flex-col h-1/2 md:h-full bg-gray-100 border-r md:fixed transition-all duration-300 ${isCollapsed ? 'w-12 md:w-14' : 'w-60'} transform`}>
+      <div className={`hidden md:flex flex-col h-1/2 md:h-full bg-gray-100 border-r border-gray-300 md:fixed transition-all duration-300 ${isCollapsed ? 'w-12 md:w-14' : 'w-60'} transform`}>
         <div className="flex flex-col p-4">
           <div className="flex flex-col">
             <div className="flex items-center justify-start  text-primary-dark mt-2">
@@ -61,7 +61,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               </span>
             </NavLink>
 
-            <span className="text-xs text-gray-500  font-medium mt-6 mb-2 px-2 ">ORDEM DE SERVIÇO</span>
+            <span className={`text-xs text-gray-500  font-medium mt-6 mb-2 px-2 ${isCollapsed? 'opacity-0 translate-x-[-10px] hidden': ''} `}>SERVIÇO</span>
 
             <NavLink
               to="/form"
@@ -90,6 +90,9 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
                 Filas
               </span>
             </NavLink>
+
+            <span className={`text-xs text-gray-500  font-medium mt-6 mb-2 px-2 ${isCollapsed? 'opacity-0 translate-x-[-10px] hidden' : 'opacity-100 translate-x-0 w-auto'} `}>PESSOAS</span>
+
 
             <NavLink
               to="/users"
