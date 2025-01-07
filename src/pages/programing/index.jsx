@@ -23,7 +23,7 @@ import { GrHostMaintenance } from "react-icons/gr";
 import ConfirmationModal from "../../components/modal/confirmation";
 import NegationSection from "../../components/section/SectionNegation";
 
-import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport, updateOrderServiceStatus, createNote, getNotesByProgramingId, updateOpenDays } from "../../utils/api/api";
+import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport, updateOrderServiceStatus, createNote, getNotesByProgramingId, updateOpenDays, getAllTeams } from "../../utils/api/api";
 
 
 export default function Programing() {
@@ -59,6 +59,9 @@ export default function Programing() {
     const [reports, setReports] = useState([])
     const [status, setStatus] = useState("A atender");
     const [programingId, setProgramingId] = useState(null);
+    const [professionals, setProfessionals] = useState([]);
+    const [overseers, setOverseers] = useState([]);
+
     const [confirmationModal, setConfirmationModal] = useState({
         show: false,
         action: null, // "edit" ou "delete"
@@ -100,10 +103,6 @@ export default function Programing() {
         handleCloseModal(); // Fecha o modal
     };
 
-    const overseer = [
-        { label: 'Almir Lima', value: 'encarregado1' },
-        { label: 'Lucas', value: 'encarregado2' },
-    ];
 
     const options = [
         { label: '08h às 12h', value: '08h às 12h' },
@@ -112,12 +111,6 @@ export default function Programing() {
         { label: '08h às 18h', value: '08h às 18h' }
     ];
 
-    const professionals = [
-        { label: 'FULANO', value: 'fulano' },
-        { label: 'CICLANO', value: 'ciclano' },
-        { label: 'BELTRANO', value: 'beltrano' },
-        { label: 'CABOCLO', value: 'caboclo' }
-    ];
 
     const handleDownloadReport = async (id) => {
         try {
@@ -132,7 +125,6 @@ export default function Programing() {
         }
     };
     
-
     useEffect(() => {
         const fetchReports = async () => {
             if (!programingId) return;
@@ -220,6 +212,33 @@ export default function Programing() {
     };
 
     useEffect(() => {
+        // Primeiro, carrega os profissionais
+        const fetchProfessionals = async () => {
+            try {
+                const data = await getAllTeams();
+                const formattedProfessionals = data.map((team) => ({
+                    label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
+                    value: team.id
+                }));
+                setProfessionals(formattedProfessionals);
+
+                const formattedOverseers = data
+                    .filter((team) => team.role.toLowerCase().startsWith("líder")) // Filtra quem tem papel iniciando com "líder"
+                    .map((team) => ({
+                        label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
+                        value: team.id
+                    }));
+                setOverseers(formattedOverseers);
+
+            } catch (error) {
+                console.error("Erro ao buscar profissionais:", error);
+            }
+        };
+    
+        fetchProfessionals();
+    }, []);
+
+    useEffect(() => {
         const fetchOrderData = async () => {
             try {
                 const orderData = await getOrderById(id); // Busca a OS
@@ -235,18 +254,17 @@ export default function Programing() {
                         .reverse()
                         .join('/');
 
+                    const selectedProfessionals = programingData.worker.split(', ').map(worker => {
+                        const professional = professionals.find(prof => prof.label === worker.trim());
+                        return professional ? { label: professional.label, value: professional.value } : null;
+                    }).filter(Boolean); // Remove valores nulos
+
                     setFormData((prevData) => ({
                         ...prevData,
                         data: { ...prevData.data, value: formattedDate },
                         turno: { ...prevData.turno, value: programingData.time },
                         encarregado: { ...prevData.encarregado, value: programingData.overseer },
-                        profissionais: {
-                            ...prevData.profissionais,
-                            value: programingData.worker.split(', ').map(label => ({
-                                label: label.trim(),
-                                value: label.toLowerCase().replace(/\s/g, ''),
-                            })),
-                        },
+                        profissionais: { ...prevData.profissionais, value: selectedProfessionals },
                         custo: { ...prevData.custo, value: programingData.cost },
                         observacao: { ...prevData.observacao, value: programingData.observation },
                     }));
@@ -268,8 +286,11 @@ export default function Programing() {
             }
         };
 
-        fetchOrderData();
-    }, [id, programingId]);
+        if (professionals.length > 0) {
+            fetchOrderData();
+        }
+        
+    }, [id, programingId, professionals]);
 
     const validateFields = () => {
         const newEmptyFields = {};
@@ -351,6 +372,18 @@ export default function Programing() {
             });
             setShowMessageBox(true);
             setTimeout(() => setShowMessageBox(false), 1000);
+
+            const programingDataReloaded = await getProgramingById(newProgramingId);
+            const selectedProfessionals = programingDataReloaded.worker.split(', ').map(worker => {
+                const professional = professionals.find(prof => prof.label === worker.trim());
+                return professional ? { label: professional.label, value: professional.value } : null;
+            }).filter(Boolean);
+
+            setFormData((prevData) => ({
+                ...prevData,
+                profissionais: { ...prevData.profissionais, value: selectedProfessionals },
+            }));
+
         } catch (error) {
             console.error("Erro ao salvar programação:", error);
             setMessageContent({
@@ -587,7 +620,7 @@ export default function Programing() {
                                     />
                                     <InputSelect
                                         label="Encarregado *"
-                                        options={overseer}
+                                        options={overseers}
                                         onChange={handleFieldChange('encarregado')}
                                         value={formData.encarregado.value}
                                         disabled={!isEditing}

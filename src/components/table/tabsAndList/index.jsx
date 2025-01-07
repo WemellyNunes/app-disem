@@ -190,18 +190,10 @@ const TabsAndList = () => {
     };
 
     return (
-        <div className="flex w-full flex-col mt-1">
+        <div className="flex w-full flex-col">
             <div className='flex flex-row gap-x-2 px-2 md:px-6'>
                 <SearchInput placeholder="Buscar..." onSearch={handleSearch} />
-                <button
-                    onClick={() => setIsFilterModalOpen(true)}
-                    className="flex items-center gap-2 bg-white text-primary-light border border-gray-400 px-3 md:px-4 h-8 rounded hover:bg-blue-100 hover:border-primary-light"
-                >
-                    <span>
-                        <FaSlidersH className='h-3 w-3' />
-                    </span>
-                    <span className='hidden md:block text-sm'>Filtrar</span>
-                </button>
+                
                 <button
                     onClick={() => navigate("../form")}
                     className="flex items-center gap-2 bg-primary-light text-white px-3 md:px-4 h-8 rounded hover:bg-blue-700"
@@ -210,6 +202,15 @@ const TabsAndList = () => {
                         <FaPlus className='h-3 w-3' />
                     </span>
                     <span className='hidden md:block text-sm'>Nova OS</span>
+                </button>
+                <button
+                    onClick={() => setIsFilterModalOpen(true)}
+                    className="flex items-center gap-2 bg-white text-primary-light border border-primary-light px-3 md:px-4 h-8 rounded hover:bg-blue-100 hover:border-primary-light"
+                >
+                    <span>
+                        <FaSlidersH className='h-3 w-3' />
+                    </span>
+                    <span className='hidden md:block text-sm'>Filtrar</span>
                 </button>
             </div>
             <div className="flex flex-wrap mb-1.5 px-0 md:px-6">

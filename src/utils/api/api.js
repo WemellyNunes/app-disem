@@ -429,5 +429,48 @@ export const createTeam = async (teamData) => {
   }
 };
 
+export const getAllTeams = async () => {
+  try {
+      const response = await api.get('/teams');
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar profissionais:", error);
+      throw error;
+  }
+};
+
+export const deleteTeam = async (id) => {
+  try {
+      const response = await api.delete(`/team/${id}`); // Endpoint de exclusão
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao excluir profissional:", error);
+      throw error;
+  }
+};
+
+export const updateTeam = async (id, teamData) => {
+  try {
+      const response = await api.put(`/team/${id}`, teamData);
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao atualizar profissional:", error);
+      throw error;
+  }
+};
+
+export const uploadTeams = async (formData) => {
+  const response = await api.post("/teams/upload", {
+      method: "POST",
+      body: formData,
+  });
+
+  if (!response.ok) {
+      throw new Error("Erro ao enviar planilha.");
+  }
+
+  return await response.json();
+};
+
 
 export default api;

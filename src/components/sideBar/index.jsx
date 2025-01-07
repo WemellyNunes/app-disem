@@ -92,6 +92,20 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
 
             <span className={`text-xs text-gray-500  font-medium mt-6 mb-2 px-2 ${isCollapsed? 'opacity-0 translate-x-[-10px] hidden' : 'opacity-100 translate-x-0 w-auto'} `}>PESSOAS</span>
 
+            <NavLink
+              to="/team"
+              className={({ isActive }) =>
+                `flex items-center text-primary-dark border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-primary-light text-white hover:text-primary-light' : ''}`
+              }>
+              <FaTools className='h-4 w-3.5' /> {/* Ícone com tamanho fixo */}
+              <span
+                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
+                  }`}
+              >
+                Equipe
+              </span>
+            </NavLink>
+
 
             <NavLink
               to="/users"
@@ -107,19 +121,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               </span>
             </NavLink>
 
-            <NavLink
-              to="/team"
-              className={({ isActive }) =>
-                `flex items-center text-primary-dark border-b px-4 py-4 hover:bg-blue-200 ${isActive ? 'bg-primary-light text-white hover:text-primary-light' : ''}`
-              }>
-              <FaTools className='h-4 w-3.5' /> {/* Ícone com tamanho fixo */}
-              <span
-                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
-                  }`}
-              >
-                Equipe
-              </span>
-            </NavLink>
+            
           </div>
 
         </div>

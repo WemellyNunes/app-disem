@@ -8,7 +8,7 @@ export default function Listing() {
         <>
             <div className="flex flex-col w-full">
                  {/* w-full garante que ocupe 100% da largura disponível */}
-                 <div className="flex justify-center pb-2">
+                 <div className="flex justify-center">
                     <PageTitle
                         icon={FaRegListAlt}
                         text="Filas "
@@ -17,7 +17,7 @@ export default function Listing() {
                     />
                 </div>
 
-                <div className="flex flex-grow"> {/* flex-grow para ocupar espaço */}
+                <div className="flex flex-grow pt-3"> {/* flex-grow para ocupar espaço */}
                     <TabsAndList />
                 </div>
             </div>
