@@ -22,14 +22,13 @@ import PageTitle from "../../components/title";
 import { GrHostMaintenance } from "react-icons/gr";
 import ConfirmationModal from "../../components/modal/confirmation";
 import NegationSection from "../../components/section/SectionNegation";
+import OrderServiceDetails from "../../components/section/sectionOS";
 
 import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport, updateOrderServiceStatus, createNote, getNotesByProgramingId, updateOpenDays, getAllTeams } from "../../utils/api/api";
 
 
 export default function Programing() {
     const { user, setUser } = useUser();
-
-    const navigate = useNavigate();
 
     const { id } = useParams();
 
@@ -64,7 +63,7 @@ export default function Programing() {
 
     const [confirmationModal, setConfirmationModal] = useState({
         show: false,
-        action: null, // "edit" ou "delete"
+        action: null, 
     });
 
     const handleFinalization = (observation) => {
@@ -103,14 +102,12 @@ export default function Programing() {
         handleCloseModal(); // Fecha o modal
     };
 
-
     const options = [
         { label: '08h às 12h', value: '08h às 12h' },
         { label: '14h às 18h', value: '14h às 18h' },
         { label: '19h às 22h', value: '19h às 22h' },
         { label: '08h às 18h', value: '08h às 18h' }
     ];
-
 
     const handleDownloadReport = async (id) => {
         try {
@@ -176,7 +173,6 @@ export default function Programing() {
         }
     };
 
-
     const handleMultiSelectChange = (selectedOptions) => {
         setFormData((prevData) => {
             const updatedData = { ...prevData, profissionais: { ...prevData.profissionais, value: selectedOptions } };
@@ -212,18 +208,22 @@ export default function Programing() {
     };
 
     useEffect(() => {
-        // Primeiro, carrega os profissionais
         const fetchProfessionals = async () => {
             try {
                 const data = await getAllTeams();
-                const formattedProfessionals = data.map((team) => ({
+
+                const activeProfessionals = data
+                    .filter((team) => team.status.toUpperCase() === "ATIVO")
+                    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+
+                const formattedProfessionals = activeProfessionals.map((team) => ({
                     label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
                     value: team.id
                 }));
                 setProfessionals(formattedProfessionals);
 
                 const formattedOverseers = data
-                    .filter((team) => team.role.toLowerCase().startsWith("líder")) // Filtra quem tem papel iniciando com "líder"
+                    .filter((team) => team.role.toLowerCase().startsWith("líder"))
                     .map((team) => ({
                         label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
                         value: team.id
@@ -257,7 +257,7 @@ export default function Programing() {
                     const selectedProfessionals = programingData.worker.split(', ').map(worker => {
                         const professional = professionals.find(prof => prof.label === worker.trim());
                         return professional ? { label: professional.label, value: professional.value } : null;
-                    }).filter(Boolean); // Remove valores nulos
+                    }).filter(Boolean); 
 
                     setFormData((prevData) => ({
                         ...prevData,
@@ -402,7 +402,6 @@ export default function Programing() {
             await deletePrograming(programingId);
             const updatedOrderService = await updateOrderServiceStatus(orderServiceId, "A atender");
 
-            // Atualiza o estado local com os novos dados da OS
             setOrderServiceData((prevData) => ({
                 ...prevData,
                 status: updatedOrderService.status,
@@ -522,56 +521,10 @@ export default function Programing() {
 
                 <div className="flex flex-col gap-x-4 md:flex-row mx-2 md:mx-6 mt-2">
                     <div className="w-full md:w-5/12">
-                        <SectionCard background="bg-gray-50" title="Ordem de serviço" placeholder="Informações cadastradas da ordem de serviço.">
-                            <div className="grid grid-cols-1 md:grid-cols-1 gap-y-4 text-sm text-gray-500 mb-8">
-                                <div className="flex flex-row items-center gap-x-2">
-                                    <p className="font-medium ">Clasificação:</p>
-                                    <p className="uppercase">{orderServiceData.classification}</p>
-                                </div>
-                                <div className="flex flex-row items-center gap-x-2 uppercase">
-                                    <p className="font-medium">Socilitante:</p>
-                                    <p>{orderServiceData.requester}</p>
-                                </div>
-                                <div className="flex flex-row items-center gap-x-2">
-                                    <p className="font-medium">Contato:</p>
-                                    <p className="uppercase">{orderServiceData.contact}</p>
-                                </div>
-                                <div className="flex flex-row items-center gap-x-2">
-                                    <p className="font-medium">Unidade do solicitante:</p>
-                                    <p className="uppercase">{orderServiceData.unit}</p>
-                                </div>
-                                <div className="flex items-center gap-x-2 flex-wrap">
-                                    <p className="font-medium">Descrição:</p>
-                                    <p className="uppercase">{orderServiceData.preparationObject}</p>
-                                </div>
-                                <div className="flex flex-row items-center gap-x-2">
-                                    <p className="font-medium">Tipo de manutenção:</p>
-                                    <p>{orderServiceData.typeMaintenance}</p>
-                                </div>
-                                <div className="flex flex-row items-center gap-x-2">
-                                    <p className="font-medium">Sistema:</p>
-                                    <p>{orderServiceData.system}</p>
-                                </div>
-                                <div className="flex flex-row items-center gap-x-2">
-                                    <p className="font-medium">Unidade da manutenção:</p>
-                                    <p>{orderServiceData.maintenanceUnit}</p>
-                                </div>
-                                <div className="flex flex-row items-center gap-x-2">
-                                    <p className="mr-1 font-medium">Campus:</p>
-                                    <p>{orderServiceData.campus}</p>
-                                </div>
-                                <div className="flex flex-row items-center gap-x-2">
-                                    <p className="mr-1 font-medium">Data do cadastro:</p>
-                                    <p>{orderServiceData.date}</p>
-                                </div>
-                                <div className="flex flex-row items-center gap-x-2">
-                                    <p className="mr-1 font-medium">Dias em aberto:</p>
-                                    <p>{orderServiceData.openDays}</p>
-                                </div>
-                            </div>
-
-                            <p className="mt-2 text-sm text-gray-400">Cadastrado por: {user.name}</p>
-                        </SectionCard>
+                        <OrderServiceDetails
+                            orderServiceData={orderServiceData}
+                            user={user} 
+                        />
                     </div>
 
                     <div className="flex-1 mb-2">

@@ -15,7 +15,7 @@ const TabsAndList = () => {
     const [osData, setOsData] = useState([]);
     const [activeTab, setActiveTab] = useState('Abertas');
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [itemsPerPage, setItemsPerPage] = useState(20);
     const [searchTerm, setSearchTerm] = useState('');
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const [appliedFilters, setAppliedFilters] = useState({});
@@ -241,17 +241,8 @@ const TabsAndList = () => {
                 <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
 
-            <div className="w-full px-2 md:px-6">
-                <List 
-                filteredData={currentItems} 
-                setFilteredData={setFilteredData} 
-                onProgramClick={handleProgramClick} 
-                onDeleteItem={handleDeleteItem}
-                />
-            </div>
-
             <div className='flex items-center justify-center'>
-                <div className="flex fixed bottom-0 w-full md:w-1/2 justify-between bg-white text-center items-center shadow-md mt-6 px-4 text-xs text-primary-dark mx-40">
+                <div className="flex w-full justify-between bg-white text-center items-center mt-1 px-4 text-xs text-primary-dark mx-4">
                     <div>{filteredData.length} itens de {filteredData.length}</div>
                     <div>
                         <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
@@ -270,6 +261,17 @@ const TabsAndList = () => {
                     </div>
                 </div>
             </div>
+
+            <div className="w-full px-2 md:px-6">
+                <List 
+                filteredData={currentItems} 
+                setFilteredData={setFilteredData} 
+                onProgramClick={handleProgramClick} 
+                onDeleteItem={handleDeleteItem}
+                />
+            </div>
+
+            
 
             <FilterModal
                 isOpen={isFilterModalOpen}

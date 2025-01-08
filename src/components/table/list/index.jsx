@@ -8,6 +8,8 @@ import ConfirmationModal from "../../modal/confirmation";
 import MessageBox from "../../box/message";
 import { TbClipboardOff } from "react-icons/tb";
 import { MdEngineering, MdHistory } from "react-icons/md";
+import { FiTool } from "react-icons/fi";
+
 
 import { updateOrderServiceStatus, deleteOrder, getHistoryByOrderId } from "../../../utils/api/api";
 
@@ -166,7 +168,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                                 <div className="flex flex-col md:flex-row w-full justify-between">
                                     <div className="flex flex-col md:w-1/2 space-y-1 pb-2 md:pb-0 text-primary-dark text-xs ">
                                         <span className="flex flex-row flex-wrap">
-                                            <p className="font-semibold mr-1 ">Requisição:</p>
+                                            <p className="font-medium mr-1 ">Requisição:</p>
                                             <p>{item.requisition}</p>
                                         </span>
                                         <span className="hidden md:flex flex-row flex-wrap">
@@ -174,30 +176,31 @@ const List = ({ filteredData, onDeleteItem }) => {
                                             <p>{item.date}</p>
                                         </span>
                                         <span className="hidden md:flex flex-row flex-wrap">
-                                            <p className="font-semibold mr-1">Origem:</p>
+                                            <p className="font-medium mr-1">Origem:</p>
                                             <p>{item.origin}</p>
                                         </span>
                                         <span className="hidden md:flex flex-row flex-wrap">
-                                            <p className="font-semibold mr-1">Manutenção:</p>
+                                            <p className="font-medium mr-1">Manutenção:</p>
                                             <p>{item.typeMaintenance}</p>
+                                        </span>
+                                        <span className="flex flex-row flex-wrap">
+                                            <p className="font-medium mr-1">Sistema:</p>
+                                            <p>{item.system}</p>
                                         </span>
                                     </div>
 
                                     <div className="flex flex-col md:w-1/3 space-y-1 text-primary-dark text-xs ">
+                                        
                                         <span className="flex flex-row flex-wrap">
-                                            <p className="font-semibold mr-1">Sistema:</p>
-                                            <p>{item.system}</p>
-                                        </span>
-                                        <span className="flex flex-row flex-wrap">
-                                            <p className="font-semibold mr-1">Unidade da manutenção:</p>
+                                            <p className="font-medium mr-1">Unidade da manutenção:</p>
                                             <p className="uppercase" >{item.maintenanceUnit}</p>
                                         </span>
                                         <span className="flex flex-row flex-wrap">
-                                            <p className="font-semibold mr-1">Solicitante:</p>
+                                            <p className="font-medium mr-1">Solicitante:</p>
                                             <p className="uppercase">{item.requester}</p>
                                         </span>
                                         <span className="hidden md:flex flex-row flex-wrap">
-                                            <p className="font-semibold mr-0 md:mr-1">Descrição:</p>
+                                            <p className="font-medium mr-0 md:mr-1">Descrição:</p>
                                             <p className="uppercase">{item.preparationObject}</p>
                                         </span>
                                     </div>
@@ -216,9 +219,9 @@ const List = ({ filteredData, onDeleteItem }) => {
                                                 </>
                                             ) : item.programingId ? (
                                                 <>
-                                                    <span className="text-primary-light">Programação</span>
+                                                    <span className="text-primary-light">Atender</span>
                                                     <div>
-                                                        <FaRegClock className="text-primary-light h-4 w-4" />
+                                                        <FiTool className="text-primary-light h-4 w-4" />
                                                     </div>
                                                 </>
                                             ) : (

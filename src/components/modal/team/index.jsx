@@ -9,12 +9,10 @@ import RadioInput from '../../inputs/radioInput';
 import { createTeam, updateTeam } from '../../../utils/api/api'
 
 const TeamModal = ({ onClose, teamData = null }) => {
-
     const [emptyFields, setEmptyFields] = useState({});
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: "", title: "", message: "" });
     const [isDisabled, setIsDisabled] = useState(false);
-
 
     const [formData, setFormData] = useState({
         nome: { value: '', required: true },
@@ -26,11 +24,10 @@ const TeamModal = ({ onClose, teamData = null }) => {
 
     const options = [
         { label: 'ATIVO', value: 'ATIVO' },
-        { label: 'FERIAS', value: 'FERIAS' },
+        { label: 'FÉRIAS', value: 'FÉRIAS' },
     ];
 
     useEffect(() => {
-        // Preenche os campos ao editar
         if (teamData) {
             setIsEditing(true);
             setFormData({
@@ -148,7 +145,6 @@ const TeamModal = ({ onClose, teamData = null }) => {
                             disabled={isDisabled}
                             errorMessage={emptyFields.nome ? "Este campo é obrigatório" : ""}
                         />
-
                         <InputPrimary
                             label="Cargo"
                             placeholder="Escreva o cargo"
@@ -169,9 +165,7 @@ const TeamModal = ({ onClose, teamData = null }) => {
                         <ButtonSecondary onClick={onClose}>Cancelar</ButtonSecondary>
                         <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
                     </div>
-
                 </div>
-
             </div>
 
             {showMessageBox && (

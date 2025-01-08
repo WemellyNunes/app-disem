@@ -26,6 +26,7 @@ export default {
               light: '#2783ED',
               back: '#D9D9D9',
               border: '#CAD8F6',
+              bluGreen: '#4bc0c0'
             },
             status: {
               open: '#FF9900',

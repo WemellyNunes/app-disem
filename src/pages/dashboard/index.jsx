@@ -16,6 +16,14 @@ export default function Dashboard() {
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
 
+    useEffect(() => {
+        document.body.classList.add("bg-dashboard-page");
+
+        return () => {
+            document.body.classList.remove("bg-dashboard-page");
+        };
+    }, []);
+
     const [loading, setLoading] = useState(false);
     const [stats, setStats] = useState({
         sipac: { approved: 0, finalized: 0 },
@@ -82,7 +90,7 @@ export default function Dashboard() {
                         textColor="text-primary-dark"
                     />
                 </div>
-                <div className="flex gap-x-2 md:gap-x-4 items-center justify-center md:justify-between py-1 md:px-6 border-b">
+                <div className="flex gap-x-2 bg-white md:gap-x-4 mx-2 md:mx-6 items-center justify-center md:justify-between py-1 md:px-6 border border-gray-300 rounded-md mt-2">
                     <div>
                         <p className="hidden md:flex text-primary-dark text-sm">Dados das Ordem de Serviços no sitema</p>
                     </div>
@@ -103,46 +111,46 @@ export default function Dashboard() {
                     </div>
                 </div>
                 <div className="px-2 md:px-6">
-                    <div className="flex flex-row justify-between mt-2 gap-x-1 overflow-x-auto">
+                    <div className="flex flex-row justify-between mt-3 gap-x-1 overflow-x-auto">
                         <StatCard
                             title="Sipac"
                             approved={stats.sipac.approved}
                             finalized={stats.sipac.finalized}
-                            backgroundColor="bg-primary-light"
+                            borderColor="border-r-secondary-light"
                             percentage={stats.sipac.percentage}
-                            hover="hover:bg-primary-hover"
+                            hover="hover:bg-blue-50"
                         />
 
                         <StatCard
                             title="Mensal"
                             approved={stats.monthly.approved}
                             finalized={stats.monthly.finalized}
-                            backgroundColor="bg-secondary-light"
-                            hover="hover:bg-primary-hover"
+                            borderColor="border-r-tertiary-light"
+                            hover="hover:bg-blue-50"
                         />
 
                         <StatCard
                             title="Semanal"
                             approved={stats.weekly.approved}
                             finalized={stats.weekly.finalized}
-                            backgroundColor="bg-tertiary-light"
-                            hover="hover:bg-primary-hover"
+                            borderColor="border-r-blue-400"
+                            hover="hover:bg-blue-50"
                         />
 
                         <StatCard
                             title="Hoje"
                             approved={stats.today.approved}
                             finalized={stats.today.finalized}
-                            backgroundColor="bg-secondary-light"
-                            hover="hover:bg-primary-hover"
+                            borderColor="border-r-status-bgResp"
+                            hover="hover:bg-blue-50"
                         />
 
                         <StatCard
                             title="Anual"
                             approved={stats.yearly.approved}
                             finalized={stats.yearly.finalized}
-                            backgroundColor="bg-primary-light"
-                            hover="hover:bg-primary-hover"
+                            borderColor="border-r-tertiary-bluGreen"
+                            hover="hover:bg-blue-50"
                         />
                     </div>
                     <div className="flex flex-col  mb-2">

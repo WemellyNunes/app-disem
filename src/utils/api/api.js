@@ -460,17 +460,18 @@ export const updateTeam = async (id, teamData) => {
 };
 
 export const uploadTeams = async (formData) => {
-  const response = await api.post("/teams/upload", {
-      method: "POST",
-      body: formData,
-  });
-
-  if (!response.ok) {
-      throw new Error("Erro ao enviar planilha.");
+  try {
+      const response = await api.post("/teams/upload", formData, {
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+      return response.data; // Retorna os dados da resposta
+  } catch (error) {
+      throw new Error(error.response?.data || "Erro ao enviar planilha.");
   }
-
-  return await response.json();
 };
+
 
 
 export default api;

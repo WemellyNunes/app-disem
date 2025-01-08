@@ -7,6 +7,7 @@ import ConfirmationModal from '../../components/modal/confirmation';
 import MessageBox from '../../components/box/message';
 
 import { getAllTeams, deleteTeam, uploadTeams  } from '../../utils/api/api';
+import { parseExcelFile } from '../../utils/parseExcel';
 
 
 export default function TeamPage() {
@@ -22,7 +23,7 @@ export default function TeamPage() {
 
     const statusClasses = {
         'ATIVO': 'font-medium text-primary-light text-xs',
-        'FERIAS': 'font-medium text-orange-700  text-xs',
+        'FÉRIAS': 'font-medium text-orange-700  text-xs',
     };
 
     const handleOpenModal = () => {
@@ -32,7 +33,6 @@ export default function TeamPage() {
     const handleCloseModal = () => {
         setShowModal(false);
         fetchTeams();
-
     };
 
     const handleEditClick = (team) => {
@@ -70,7 +70,6 @@ export default function TeamPage() {
                 team.role.toLowerCase().includes(term.toLowerCase()) ||
                 team.status.toLowerCase().includes(term.toLowerCase())
 
-
             );
             setFilteredData(filtered); // Atualiza a lista filtrada
         }
@@ -86,31 +85,49 @@ export default function TeamPage() {
         setShowConfirmationModal(true); // Abre o modal
     };
 
+    
     const handleFileUpload = async (event) => {
-        const file = event.target.files[0]; // Obtém o arquivo selecionado
+        const file = event.target.files[0];
         if (!file) return;
     
-        const formData = new FormData();
-        formData.append("file", file);
-    
         try {
-            await uploadTeams(formData); // Envia o arquivo para o backend
+            // Converte o arquivo para JSON
+            const formattedData = await parseExcelFile(file);
+            console.log('Dados convertidos:', formattedData);
+    
+            // Envia para o backend como ARRAY
+            await uploadTeams(formattedData);
+    
+            // Exibe mensagem de sucesso
             setMessageContent({
                 type: "success",
                 title: "Sucesso.",
                 message: "Profissionais cadastrados com sucesso!"
             });
             setShowMessageBox(true);
-            fetchTeams(); // Atualiza a lista
+    
+            setTimeout(() => {
+                setShowMessageBox(false); // Esconde o MessageBox após 1.5s
+                window.location.reload(); // Atualiza a página
+            }, 1000);
+    
         } catch (error) {
+            console.error('Erro ao enviar planilha:', error);
+    
+            // Exibe mensagem de erro
             setMessageContent({
                 type: "error",
                 title: "Erro.",
-                message: "Erro ao processar a planilha."
+                message: "Erro ao enviar planilha. Verifique o formato ou os campos."
             });
             setShowMessageBox(true);
+    
+            setTimeout(() => {
+                setShowMessageBox(false); // Esconde o MessageBox após 1.5s
+            }, 1500);
         }
     };
+    
     
 
 
@@ -123,9 +140,9 @@ export default function TeamPage() {
                     title: "Sucesso.",
                     message: "Profissional deletado com sucesso!"
                 });
-                setShowMessageBox(true); // Mostra mensagem de sucesso
+                setShowMessageBox(true); 
                 fetchTeams();
-                setTimeout(() => setShowMessageBox(false), 1000); // Atualiza a lista após exclusão
+                setTimeout(() => setShowMessageBox(false), 1000); 
             } catch (error) {
                 setMessageContent({
                     type: "error",
@@ -133,9 +150,9 @@ export default function TeamPage() {
                     message: "Erro ao deletar profissional."
                 });
                 setShowMessageBox(true);
-                setTimeout(() => setShowMessageBox(false), 1500); // Mostra mensagem de erro
+                setTimeout(() => setShowMessageBox(false), 1500); 
             } finally {
-                setShowConfirmationModal(false); // Fecha o modal de confirmação
+                setShowConfirmationModal(false); 
             }
         }
     };
@@ -173,19 +190,20 @@ export default function TeamPage() {
                                     accept=".xlsx, .xls"
                                     className="hidden"
                                     onChange={handleFileUpload}
+                                    style={{display: 'none'}}
+                                    id='fileUpload'
                                 />
                             </label>
                             <span className='flex text-xs md:text-sm text-primary-dark flex-wrap'>Envie uma planilha com profissionais</span>
                         </div>
                     </div>
 
-                    {/* Lista de profissionais */}
                     <div className="flex flex-col py-4 rounded-md bg-white">
                         <div className="flex justify-between items-center mb-1">
                             <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">Lista de profissionais</p>
                             <p className="flex text-sm text-primary-dark mb-2">Total de profissionais: {filteredData.length}</p>
                         </div>
-                        <div className="flex text-sm font-medium text-primary-dark md:justify-none justify-between  px-3 border-b border-gray-400 py-2">
+                        <div className="flex text-sm font-medium text-primary-dark md:justify-none justify-between  px-3 border-b border-gray-300 py-2">
                             <p className="flex flex-col md:w-1/2" >Nome</p>
                             <p className="flex flex-col md:w-1/2">Cargo</p>
                             <p className='flex flex-col md:w-1/3'>Status</p>
@@ -197,10 +215,10 @@ export default function TeamPage() {
                                 filteredData.map((team) => (
                                     <div
                                         key={team.id}
-                                        className="flex flex-col md:flex-row px-2 py-3.5  text-primary-dark text-sm bg-white border-b border-gray-400 hover:bg-blue-50 uppercase"
+                                        className="flex flex-col md:flex-row px-2 py-3.5  text-primary-dark text-sm bg-white border-b border-gray-300 hover:bg-blue-50 uppercase"
                                     >
                                         <div className="flex flex-col md:w-1/2">
-                                            <span className='uppercase'>{team.name}</span>
+                                            <span>{team.name}</span>
                                         </div>
                                         <div className="flex flex-col md:w-1/2">
                                             <span>{team.role}</span>
@@ -225,7 +243,6 @@ export default function TeamPage() {
                                     </div>
                                 ))
                             ) : (
-                                // Caso não encontre registros
                                 <div className="text-center text-sm text-primary-dark py-4">
                                     Nenhum registro encontrado.
                                 </div>

@@ -9,6 +9,10 @@ body {
     @apply bg-white;
 }
 
-/*body.bg-form-page {
-    @apply bg-gray-50; /* Exemplo: define um fundo cinza claro 
-}*/
+body.bg-dashboard-page {
+    @apply bg-gray-50; 
+}
+
+body.bg-form-page {
+    @apply bg-gray-50; 
+}

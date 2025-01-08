@@ -4,6 +4,7 @@ import { useState } from "react";
 import ConfirmationModal from "../../components/modal/confirmation";
 import UserModal from "../../components/modal/user";
 import MessageBox from "../../components/box/message";
+import SearchInput from '../../components/inputs/searchInput';
 
 
 export default function UserPage() {
@@ -59,53 +60,63 @@ export default function UserPage() {
                     onClose={() => setShowMessageBox(false)}
                 />
             )}
-            <div className="flex flex-col">
+            <div className="flex flex-col w-full">
                 <PageTitle
                     text="Usuários do sistema"
                     backgroundColor="bg-white"
                     textColor="text-primary-dark"
                 />
-                <div className="flex justify-between items-center gap-x-2 px-2 md:px-6 mt-4">
+                <div className="flex items-center w-full gap-x-2 px-2 md:px-6 pt-3 mb-3">
+                    <SearchInput
+                        placeholder="Buscar..."
+                        
+
+                    />
+
                     <button
                         onClick={() => {
                             setUserToEdit(null);
                             setShowModal(true);
                         }}
-                        className="flex items-center gap-2 px-4 py-1 text-base bg-primary-light text-white rounded-md shadow-sm"
+                        className="flex items-center bg-primary-light text-sm text-white px-3 h-8 rounded hover:bg-blue-700 gap-2"
                     >
 
                         <FaPlus className="h-3 w-3"/> 
                         <span className="text-sm">Adicionar Usuário</span>
                     </button>
-                    <p className="flex text-sm text-primary-dark mb-2">Total de usuários: {users.length}</p>
                 </div>
-                <div className="flex flex-col py-4 px-6 mx-2 rounded-md bg-white">
-                    <div className="flex mb-4">
-                        <p className="text-sm py-2 font-medium text-primary-dark">Lista de usuários</p>
+
+                <div className="flex flex-col py-4 rounded-md bg-white px-2 md:px-6">
+                    <div className="flex justify-between items-center mb-1">
+                        <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">Lista de usuários</p>
+                        <p className="flex text-sm text-primary-dark mb-2">Total de usuários: {users.length}</p>
                     </div>
-                    <div className="flex text-sm text-primary-dark justify-between mb-3 px-2.5 border-b border-gray-300 py-2">
-                        <p>Nome/Email</p>
-                        <p>Papel</p>
+                    <div className="flex text-sm font-medium text-primary-dark md:justify-none justify-between  px-3 border-b border-gray-300 py-2">
+                        <p className="flex flex-col md:w-1/2">Nome</p>
+                        <p className="flex flex-col md:w-1/2">Email</p>
+                        <p className="flex flex-col md:w-1/3">Papel</p>
                         <p>Ações</p>
                     </div>
-                    <div className="flex flex-col space-y-2">
+                    <div className="flex flex-col">
                         {users.map((user) => (
                             <div
                                 key={user.id}
-                                className="flex flex-col md:flex-row px-4 py-2 rounded shadow-sm text-primary-dark text-sm bg-white border border-gray-300 hover:border-primary-light"
+                                className="flex flex-col md:flex-row px-2 py-3.5  text-primary-dark text-sm bg-white border-b border-gray-300 hover:bg-blue-50 uppercase"
                             >
                                 <div className="flex flex-col md:w-1/2">
                                     <span>{user.name}</span>
+                                </div>
+                                <div className="flex flex-col md:w-1/2">
                                     <span>{user.email}</span>
                                 </div>
                                 <div className="flex flex-col md:w-1/3">
                                     <span>{user.role}</span>
                                 </div>
-                                <div className="flex items-center space-x-2 md:w-1/6 justify-end">
-                                    <button onClick={() => handleAction(user, 'edit')} className="text-primary-light">
+                                <div className="flex items-center space-x-2 justify-end">
+                                    <button onClick={() => handleAction(user, 'edit')} className="text-primary-light hover:text-blue-500">
                                         <FaEdit />
                                     </button>
-                                    <button onClick={() => handleAction(user, 'delete')} className="text-red-600">
+                                    <button onClick={() => handleAction(user, 'delete')} className="text-primary-light hover:text-blue-500">
                                         <FaTrash />
                                     </button>
                                 </div>

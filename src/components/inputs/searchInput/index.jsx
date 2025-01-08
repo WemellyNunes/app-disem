@@ -25,7 +25,7 @@ const SearchInput = ({ placeholder, onSearch }) => {
                 placeholder={placeholder}
                 value={searchTerm}
                 onChange={handleInputChange}
-                className={` text-xs md:text-md font-light text-primary-dark w-full placeholder-primary-dark rounded-md px-2 focus:outline-none transition-all duration-300 ease-in-out ${isExpanded ? 'ml-2 block' : 'hidden'} md:block w-full' `}
+                className={` text-sm md:text-md font-light text-primary-dark w-full placeholder-primary-dark rounded-md px-2 focus:outline-none transition-all duration-300 ease-in-out ${isExpanded ? 'ml-2 block' : 'hidden'} md:block w-full' `}
             />
         </div>
     );

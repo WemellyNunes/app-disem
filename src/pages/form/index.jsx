@@ -86,10 +86,10 @@ export default function Form() {
     ];
 
     const system = [
-        { label: 'CIVIL'},
-        { label: 'ELETRICO'},
-        { label: 'HIDROSANITARIO'},
-        { label: 'REFRIGERACAO'},
+        { label: 'CIVIL' },
+        { label: 'ELETRICO' },
+        { label: 'HIDROSANITARIO' },
+        { label: 'REFRIGERACAO' },
         { label: 'MISTO' }
     ];
 
@@ -131,7 +131,7 @@ export default function Form() {
 
     useEffect(() => {
         document.body.classList.add("bg-form-page");
-    
+
         return () => {
             document.body.classList.remove("bg-form-page");
         };
@@ -139,7 +139,7 @@ export default function Form() {
 
     const fetchOrderData = async (id) => {
         try {
-            const response = await getOrderById(id); 
+            const response = await getOrderById(id);
             setOrderId(id);
 
             setFormData((prevData) => ({
@@ -158,19 +158,19 @@ export default function Form() {
                 objetoPreparo: { ...prevData.objetoPreparo, value: response.preparationObject },
                 indiceRisco: { ...prevData.indiceRisco, value: response.maintenanceIndicators },
                 documento: { ...prevData.documento, value: response.documents }
-                
+
             }));
             const documents = await getDocumentsByOrderServiceId(id);
             setUploadedDocuments(
                 documents.map((doc) => ({
-                    file: { 
-                        name: doc.nameFile, 
+                    file: {
+                        name: doc.nameFile,
                         size: doc.size,
-                        content: doc.content 
+                        content: doc.content
                     },
                     description: doc.description || "Sem descrição",
                 }))
-            );           
+            );
             setEmptyFields({});
         } catch (error) {
             console.error("Erro ao carregar os dados da ordem de serviço:", error);
@@ -341,9 +341,9 @@ export default function Form() {
                 setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Ordem de serviço atualizada com sucesso.' });
                 setShowMessageBox(true);
                 setTimeout(() => setShowMessageBox(false), 1000);
-                setIsSaved(true); 
+                setIsSaved(true);
                 setIsEditing(false);
-                await handleUpload(); 
+                await handleUpload();
             }
         } catch (error) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Não foi possível atualizar a ordem de serviço.' });
@@ -371,9 +371,9 @@ export default function Form() {
                     onClose={() => setShowMessageBox(false)}
                 />
             )}
-            
+
             <div className={` flex flex-col px-0  ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
-                <div className="flex justify-center">
+                <div className="">
                     <PageTitle
                         icon={FaFilePen}
                         text={isCreating ? "Cadastro de Ordem de Serviço" : "Pré-visualização Ordem de Serviço"}
@@ -381,193 +381,197 @@ export default function Form() {
                         textColor="text-primary-dark"
                     />
                 </div>
-                <div className="flex flex-col gap-y-1 px-0 md:px-32">
-                <MessageCard
-                    type="info"
-                    title="Info."
-                    message="Os campos com '*' no final são obrigatórios."
-                    storageKey="showMandatoryMessage"
-                />
-                <MessageCard
-                    type="info"
-                    title="Info."
-                    message="O campo 'Índice de manutenção' indica o impacto e a prioridade da manutenção."
-                    storageKey="showIndexExplanationMessage"
-                />
+                <div className="flex flex-col py-1 gap-y-1 ">
+                    <MessageCard
+                        type="info"
+                        title="Info."
+                        message="Os campos com '*' no final são obrigatórios."
+                        storageKey="showMandatoryMessage"
+                    />
+                    <MessageCard
+                        type="info"
+                        title="Info."
+                        message="O campo 'Índice de manutenção' indica o impacto e a prioridade da manutenção."
+                        storageKey="showIndexExplanationMessage"
+                    />
+                </div>
+                <div className="flex justify-center items-center">
+                    <div className="flex flex-col items-center bg-white border border-gray-300 mt-2 mb-2 px-8 py-4 md:px-16  w-full md:w-[850px] rounded-xl">
+                        <div className="flex-1 mb-2 w-full">
+                            <p className="text-sm md:text-base font-medium text-gray-800 my-6">Formulário de cadastro</p>
+                            <p className="text-sm md:text-base font-medium text-gray-800 my-6">1. Dados da ordem de serviço</p>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6">
+                                <InputSelect
+                                    label="Origem *"
+                                    options={origin}
+                                    onChange={handleFieldChange('origem')}
+                                    value={formData.origem.value}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.origem ? "Este campo é obrigatório" : ""}
+                                />
+                                <InputPrimary
+                                    label="N° da requisição *"
+                                    placeholder="Informe"
+                                    value={formData.requisicao.value}
+                                    onChange={handleFieldChange('requisicao')}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.requisicao ? "Este campo é obrigatório" : ""}
+                                />
+                                <InputSelect
+                                    label="Classificação *"
+                                    options={classification}
+                                    onChange={handleFieldChange('classe')}
+                                    value={formData.classe.value}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.classe ? "Este campo é obrigatório" : ""}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex-1 mb-2 w-full">
+                            <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">3. Dados do solicitante</p>
+                            <div className="grid grid-cols-1 md:grid-cols-1 gap-x-6">
+                                <InputPrimary
+                                    label="Solicitante *"
+                                    placeholder="Informe o nome do solicitante"
+                                    value={formData.solicitante.value}
+                                    onChange={handleFieldChange('solicitante')}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.solicitante ? "Este campo é obrigatório" : ""}
+                                />
+
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                                <InputSelect
+                                    label="Unidade *"
+                                    options={unit}
+                                    onChange={handleFieldChange('unidade')}
+                                    value={formData.unidade.value}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.unidade ? "Este campo é obrigatório" : ""}
+                                />
+                                <InputPrimary
+                                    label="Contato (ramal, telefone, email)"
+                                    placeholder="Informe o contato (opcional)"
+                                    value={formData.contato.value}
+                                    onChange={handleFieldChange('contato')}
+                                    disabled={!isEditing}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex-1 mb-4 w-full">
+                            <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">3. Dados da manutenção</p>
+                            <div className="grid grid-cols-1 md:grid-cols-1">
+                                <InputPrimary
+                                    label="Objeto de preparo *"
+                                    placeholder="Informe a descrição da manutenção"
+                                    onChange={handleFieldChange('objetoPreparo')}
+                                    value={formData.objetoPreparo.value}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.objetoPreparo ? "Este campo é obrigatório" : ""}
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                                <InputSelect
+                                    label="Tipo de manutenção *"
+                                    options={maintence}
+                                    onChange={handleFieldChange('manutencao')}
+                                    value={formData.manutencao.value}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.manutencao ? "Este campo é obrigatório" : ""}
+                                />
+                                <InputSelect
+                                    label="Sistema *"
+                                    options={system}
+                                    onChange={handleFieldChange('sistema')}
+                                    value={formData.sistema.value}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.sistema ? "Este campo é obrigatório" : ""}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-1 gap-x-6">
+                                <InputSelect
+                                    label="Índice de manutenção *"
+                                    options={indicesRisco}
+                                    onChange={handleFieldChange('indiceRisco')}
+                                    value={formData.indiceRisco.value}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.indiceRisco ? "Este campo é obrigatório" : ""}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                                <InputSelect
+                                    label="Unidade da manutenção *"
+                                    options={unitMaintence}
+                                    onChange={handleFieldChange('unidadeManutencao')}
+                                    value={formData.unidadeManutencao.value}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.unidadeManutencao ? "Este campo é obrigatório" : ""}
+                                />
+                                <InputPrimary
+                                    label="Campus *"
+                                    placeholder="Informe o campus (automático)"
+                                    value={formData.campus.value}
+                                    onChange={handleFieldChange('campus')}
+                                    disabled={!isEditing}
+                                    errorMessage={emptyFields.campus ? "Este campo é obrigatório" : ""}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-1">
+                                <InputPrimary
+                                    label="Observação"
+                                    placeholder="Escreva uma observação (opcional)"
+                                    onChange={handleFieldChange('observacao')}
+                                    value={formData.observacao.value}
+                                    disabled={!isEditing}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                                <RadioInput
+                                    title="Tipo de tratamento"
+                                    name="tipoTratamento"
+                                    options={options}
+                                    selectedValue={formData.selectedOption.value}
+                                    onChange={handleFieldChange('selectedOption')}
+                                    disabled={!isEditing}
+                                />
+                                <InputUpload
+                                    label="Anexar documento(s)"
+                                    disabled={!isEditing}
+                                    onFilesUpload={handleFileChange}
+                                    initialFiles={uploadedDocuments}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center justify-center mt-4 md:flex-row h-14 md:h-16 gap-y-2 bottom-0 z-10">
+                            <div className="flex pr-0 md:pr-6">
+                                {isCreating ? (
+                                    <>
+                                        <ButtonSecondary onClick={() => navigate("../Listing")}>Cancelar</ButtonSecondary>
+                                        <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
+                                    </>
+                                ) : isEditing ? (
+                                    <>
+                                        <ButtonSecondary onClick={() => {
+                                            setIsEditing(false);
+                                            setShowMessageBox(false);
+                                        }}>Cancelar</ButtonSecondary>
+                                        <ButtonPrimary onClick={handleUpdate}>Atualizar</ButtonPrimary>
+                                    </>
+                                ) : (
+                                    <>
+                                        <ButtonSecondary onClick={handleEdit}>Editar</ButtonSecondary>
+                                        <ButtonPrimary onClick={handleContinue}>Continuar</ButtonPrimary>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div className="flex flex-col bg-white border border-gray-300 mt-2 mb-2 px-8 md:px-16 mx-2 md:mx-32 rounded-xl">
-                    <div className="flex-1 mb-2">
-                        <p className="text-sm md:text-base font-medium text-gray-800 my-6">1. Dados da ordem de serviço</p>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6">
-                            <InputSelect
-                                label="Origem *"
-                                options={origin}
-                                onChange={handleFieldChange('origem')}
-                                value={formData.origem.value}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.origem ? "Este campo é obrigatório" : ""}
-                            />
-                            <InputPrimary
-                                label="N° da requisição *"
-                                placeholder="Informe"
-                                value={formData.requisicao.value}
-                                onChange={handleFieldChange('requisicao')}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.requisicao ? "Este campo é obrigatório" : ""}
-                            />
-                            <InputSelect
-                                label="Classificação *"
-                                options={classification}
-                                onChange={handleFieldChange('classe')}
-                                value={formData.classe.value}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.classe ? "Este campo é obrigatório" : ""}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex-1 mb-2">
-                        <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">3. Dados do solicitante</p>
-                        <div className="grid grid-cols-1 md:grid-cols-1 gap-x-6">
-                            <InputPrimary
-                                label="Solicitante *"
-                                placeholder="Informe o nome do solicitante"
-                                value={formData.solicitante.value}
-                                onChange={handleFieldChange('solicitante')}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.solicitante ? "Este campo é obrigatório" : ""}
-                            />
-
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                            <InputSelect
-                                label="Unidade *"
-                                options={unit}
-                                onChange={handleFieldChange('unidade')}
-                                value={formData.unidade.value}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.unidade ? "Este campo é obrigatório" : ""}
-                            />
-                            <InputPrimary
-                                label="Contato (ramal, telefone, email)"
-                                placeholder="Informe o contato (opcional)"
-                                value={formData.contato.value}
-                                onChange={handleFieldChange('contato')}
-                                disabled={!isEditing}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex-1 mb-4">
-                        <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">3. Dados da manutenção</p>
-                        <div className="grid grid-cols-1 md:grid-cols-1">
-                            <InputPrimary
-                                label="Objeto de preparo *"
-                                placeholder="Informe a descrição da manutenção"
-                                onChange={handleFieldChange('objetoPreparo')}
-                                value={formData.objetoPreparo.value}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.objetoPreparo ? "Este campo é obrigatório" : ""}
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                            <InputSelect
-                                label="Tipo de manutenção *"
-                                options={maintence}
-                                onChange={handleFieldChange('manutencao')}
-                                value={formData.manutencao.value}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.manutencao ? "Este campo é obrigatório" : ""}
-                            />
-                            <InputSelect
-                                label="Sistema *"
-                                options={system}
-                                onChange={handleFieldChange('sistema')}
-                                value={formData.sistema.value}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.sistema ? "Este campo é obrigatório" : ""}
-                            />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-1 gap-x-6">
-                            <InputSelect
-                                label="Índice de manutenção *"
-                                options={indicesRisco}
-                                onChange={handleFieldChange('indiceRisco')}
-                                value={formData.indiceRisco.value}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.indiceRisco ? "Este campo é obrigatório" : ""}
-                            />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                            <InputSelect
-                                label="Unidade da manutenção *"
-                                options={unitMaintence}
-                                onChange={handleFieldChange('unidadeManutencao')}
-                                value={formData.unidadeManutencao.value}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.unidadeManutencao ? "Este campo é obrigatório" : ""}
-                            />
-                            <InputPrimary
-                                label="Campus *"
-                                placeholder="Informe o campus (automático)"
-                                value={formData.campus.value}
-                                onChange={handleFieldChange('campus')}
-                                disabled={!isEditing}
-                                errorMessage={emptyFields.campus ? "Este campo é obrigatório" : ""}
-                            />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-1">
-                            <InputPrimary
-                                label="Observação"
-                                placeholder="Escreva uma observação (opcional)"
-                                onChange={handleFieldChange('observacao')}
-                                value={formData.observacao.value}
-                                disabled={!isEditing}
-                            />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                            <RadioInput
-                                title="Tipo de tratamento"
-                                name="tipoTratamento"
-                                options={options}
-                                selectedValue={formData.selectedOption.value}
-                                onChange={handleFieldChange('selectedOption')}
-                                disabled={!isEditing}
-                            />
-                            <InputUpload
-                                label="Anexar documento(s)"
-                                disabled={!isEditing}
-                                onFilesUpload={handleFileChange}
-                                initialFiles={uploadedDocuments}
-                            />
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-center justify-center mt-4 md:flex-row h-14 md:h-16 gap-y-2 bottom-0 z-10">
-                        <div className="flex pr-0 md:pr-6">
-                            {isCreating ? (
-                                <>
-                                    <ButtonSecondary onClick={() => navigate("../Listing")}>Cancelar</ButtonSecondary>
-                                    <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
-                                </>
-                            ) : isEditing ? (
-                                <>
-                                    <ButtonSecondary onClick={() => {
-                                        setIsEditing(false);
-                                        setShowMessageBox(false);
-                                    }}>Cancelar</ButtonSecondary>
-                                    <ButtonPrimary onClick={handleUpdate}>Atualizar</ButtonPrimary>
-                                </>
-                            ) : (
-                                <>
-                                    <ButtonSecondary onClick={handleEdit}>Editar</ButtonSecondary>
-                                    <ButtonPrimary onClick={handleContinue}>Continuar</ButtonPrimary>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </div>
 
             </div>
 

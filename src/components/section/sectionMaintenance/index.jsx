@@ -283,22 +283,26 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
             </div>
             <div className="flex flex-col md:flex-row justify-end">
                 <div className="flex flex-col md:flex-row justify-end pb-4 gap-y-1.5">
-                    {isEditing && !isAdvancing ? (
-                        <>
-                            <ButtonSecondary onClick={() => setIsOpen(false)}>Cancelar</ButtonSecondary>
-                            <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
-                        </>
-                    ) : isAdvancing ? (
-                        <>
-                            <ButtonSecondary onClick={() => setIsEditing(false)}>Cancelar</ButtonSecondary>
-                            <ButtonPrimary onClick={handleAdvance}>Avançar</ButtonPrimary>
-                        </>
-                    ) : (
-                        <>
-                            <ButtonSecondary onClick={handleEdit}>Ativar edição</ButtonSecondary>
-                            <ButtonPrimary onClick={handleClose}>Encerrar</ButtonPrimary>
-                        </>
-                    )}
+                    {!isMaintenanceClosed && orderServiceData.status !== "Finalizado" ? (
+                        isEditing && !isAdvancing ? (
+                            <>
+                                <ButtonSecondary onClick={() => setIsOpen(false)}>Cancelar</ButtonSecondary>
+                                <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
+                            </>
+                        ) : isAdvancing ? (
+                            <>
+                                <ButtonSecondary onClick={() => setIsEditing(false)}>Cancelar</ButtonSecondary>
+                                <ButtonPrimary onClick={handleAdvance}>Avançar</ButtonPrimary>
+                            </>
+                        ) : (
+                            <>
+                                <ButtonSecondary onClick={handleEdit}>Ativar edição</ButtonSecondary>
+                                <ButtonPrimary onClick={handleClose}>Encerrar</ButtonPrimary>
+                            </>
+                        )
+                    ) : null}
+
+
                 </div>
             </div>
             {showMessageBox && (
