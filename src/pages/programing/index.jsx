@@ -95,11 +95,11 @@ export default function Programing() {
 
     const handleConfirmAction = () => {
         if (confirmationModal.action === "edit") {
-            handleEdit(); // Habilita a edição
+            handleEdit(); 
         } else if (confirmationModal.action === "delete") {
-            handleConfirmDelete(); // Confirma a exclusão
+            handleConfirmDelete(); 
         }
-        handleCloseModal(); // Fecha o modal
+        handleCloseModal(); 
     };
 
     const options = [
@@ -207,41 +207,43 @@ export default function Programing() {
         });
     };
 
-    useEffect(() => {
-        const fetchProfessionals = async () => {
-            try {
-                const data = await getAllTeams();
+    const fetchProfessionals = async () => {
+        try {
+            const data = await getAllTeams();
 
-                const activeProfessionals = data
-                    .filter((team) => team.status.toUpperCase() === "ATIVO")
-                    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+            const activeProfessionals = data
+                .filter((team) => team.status.toUpperCase() === "ATIVO")
+                .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 
-                const formattedProfessionals = activeProfessionals.map((team) => ({
+            const formattedProfessionals = activeProfessionals.map((team) => ({
+                label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
+                value: team.id
+            }));
+            setProfessionals(formattedProfessionals);
+
+            const formattedOverseers = data
+                .filter((team) => team.role.toLowerCase().startsWith("líder"))
+                .map((team) => ({
                     label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
                     value: team.id
                 }));
-                setProfessionals(formattedProfessionals);
+            setOverseers(formattedOverseers);
 
-                const formattedOverseers = data
-                    .filter((team) => team.role.toLowerCase().startsWith("líder"))
-                    .map((team) => ({
-                        label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
-                        value: team.id
-                    }));
-                setOverseers(formattedOverseers);
-
-            } catch (error) {
-                console.error("Erro ao buscar profissionais:", error);
-            }
-        };
-    
-        fetchProfessionals();
-    }, []);
+        } catch (error) {
+            console.error("Erro ao buscar profissionais:", error);
+        }
+    };
 
     useEffect(() => {
         const fetchOrderData = async () => {
             try {
-                const orderData = await getOrderById(id); // Busca a OS
+
+                if (professionals.length === 0) {
+                    await fetchProfessionals();
+                }
+
+                const orderData = await getOrderById(id); 
+                console.log("Dados da OS carregados:", orderData);// Busca a OS
                 setOrderServiceData(orderData);
 
                 setStatus(orderData.status);
@@ -285,12 +287,9 @@ export default function Programing() {
                 setTimeout(() => setShowMessageBox(false), 1000);
             }
         };
+        fetchOrderData();
 
-        if (professionals.length > 0) {
-            fetchOrderData();
-        }
-        
-    }, [id, programingId, professionals]);
+    }, [id]);
 
     const validateFields = () => {
         const newEmptyFields = {};

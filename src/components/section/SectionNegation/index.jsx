@@ -92,7 +92,7 @@ const NegationSection = ({orderServiceId}) => {
         try {
           setIsSaving(true);
           const negationData = {
-            orderService_id: orderServiceId,
+            orderService_id: id,
             content: formData.conteudo.value,
             date: new Date().toISOString().split("T")[0],
           };

@@ -60,7 +60,7 @@ function AppRoutes() {
 
 export default function AppWrapper() {
     return (
-      <Router basename="/app-disem">
+      <Router basename="/">
         <AppRoutes />
       </Router>
     );

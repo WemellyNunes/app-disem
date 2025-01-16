@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'http://18.230.17.37:8080/api',
 });
 
 export const createOrder = async (orderData) => {
