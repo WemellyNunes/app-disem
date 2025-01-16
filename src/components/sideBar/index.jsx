@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { MdOutlineDashboard } from "react-icons/md";
 import { FaFilePen } from "react-icons/fa6";
 import { FaRegListAlt, FaBars, FaUsers, FaTools, FaSolarPanel   } from "react-icons/fa";
+import { ImOffice } from "react-icons/im";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { BsCart4 } from "react-icons/bs";
 
@@ -152,16 +153,32 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
                 Equipamentos
               </span>
             </NavLink>
+            
+            <span className={`text-xs text-gray-300  font-medium mt-6 mb-2 px-2 ${isCollapsed? 'opacity-0 translate-x-[-10px] hidden' : 'opacity-100 translate-x-0 w-auto'} `}>INFRAESTRUTURA</span>
+
+            <NavLink
+              to="/instituteAndUnit"
+              className={({ isActive }) =>
+                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+              }>
+              <ImOffice className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
+              <span
+                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
+                  }`}
+              >
+                Unidades/institutos 
+              </span>
+            </NavLink>
 
             
           </div>
 
         </div>
 
-        <div className="flex items-center justify-center p-4 mt-auto cursor-pointer hover:bg-gray-200" onClick={handleLogoutClick}>
-          <RiLogoutCircleRLine className="text-gray-700 h-5 w-5" /> {/* Ícone com tamanho fixo */}
+        <div className="flex items-center justify-center p-4 mt-auto cursor-pointer text-white hover:bg-gray-300 hover:text-gray-700" onClick={handleLogoutClick}>
+          <RiLogoutCircleRLine className="h-5 w-5" /> {/* Ícone com tamanho fixo */}
           <span
-            className={`text-gray-700 font-medium transition-all duration-300 ease-in-out transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] text-sm w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto ml-2'
+            className={`font-medium transition-all duration-300 ease-in-out transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] text-sm w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto ml-2'
               }`}
           >
             Sair

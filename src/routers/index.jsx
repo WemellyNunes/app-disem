@@ -7,7 +7,8 @@ import Listing from "../pages/listing";
 import Sidebar from "../components/sideBar";
 import MobileMenu from "../components/sideBar/mobile";
 import UserPage from "../pages/users";
-import TeamPage from "../pages/team"; // Importe o componente Sidebar
+import TeamPage from "../pages/team";
+import InstitutePage from "../pages/institute";
 import { useState } from 'react';
 
 function AppRoutes() {
@@ -52,6 +53,7 @@ function AppRoutes() {
             <Route path="/listing" element={<Listing />} />
             <Route path="/users" element={<UserPage />} />
             <Route path="/team" element={<TeamPage />} />
+            <Route path="/instituteAndUnit" element={<InstitutePage />} />
           </Routes>
         </div>
       </div>

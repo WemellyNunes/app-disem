@@ -469,6 +469,48 @@ export const uploadTeams = async (formData) => {
       return response.data; // Retorna os dados da resposta
   } catch (error) {
       throw new Error(error.response?.data || "Erro ao enviar planilha.");
+  };
+
+};
+
+export const createInstitute = async (instituteData) => {
+  try {
+    const response = await api.post('/institute', instituteData); 
+    return response.data;
+
+  } catch (error) {
+    console.error("Erro ao salvar equipe:", error); 
+    throw error; 
+  }
+};
+
+export const updateInstitute = async (id, instituteData) => {
+  try {
+      const response = await api.put(`/institute/${id}`, instituteData);
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao atualizar profissional:", error);
+      throw error;
+  }
+};
+
+export const getAllInstitutes = async () => {
+  try {
+      const response = await api.get('/institutes');
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar os institutos:", error);
+      throw error;
+  }
+};
+
+export const deleteInstitute = async (id) => {
+  try {
+      const response = await api.delete(`/institute/${id}`); // Endpoint de exclusão
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao excluir profissional:", error);
+      throw error;
   }
 };
 

@@ -17,7 +17,7 @@ const TeamModal = ({ onClose, teamData = null }) => {
     const [formData, setFormData] = useState({
         nome: { value: '', required: true },
         cargo: { value: '', required: true },
-        status: { value: 'ATIVO', required: false}
+        status: { value: 'ATIVO', required: false }
     })
 
     const [isEditing, setIsEditing] = useState(false);
@@ -133,7 +133,7 @@ const TeamModal = ({ onClose, teamData = null }) => {
                             {isEditing ? "Editar Profissional" : "Cadastrar Profissional"}
                         </h2>
                         <button onClick={onClose}>
-                                    <FaTimes className="text-gray-500 hover:text-red-500" />
+                            <FaTimes className="text-gray-500 hover:text-red-500" />
                         </button>
                     </div>
                     <div>
