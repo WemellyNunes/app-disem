@@ -46,8 +46,11 @@ const NegationSection = ({orderServiceId}) => {
     
   
     useEffect(() => {
-      fetchNegationData();
+      if (orderServiceId) {
+        fetchNegationData();
+      }
     }, [orderServiceId]);
+    
 
 
     const handleFieldChange = (field) => (value) => {
@@ -92,7 +95,7 @@ const NegationSection = ({orderServiceId}) => {
         try {
           setIsSaving(true);
           const negationData = {
-            orderService_id: id,
+            orderService_id: orderServiceId,
             content: formData.conteudo.value,
             date: new Date().toISOString().split("T")[0],
           };

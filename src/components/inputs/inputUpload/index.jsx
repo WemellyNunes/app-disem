@@ -138,23 +138,33 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
     
 
     const handleEditFile = async (file, description, index) => {
-        const fileId = uploadedFiles[index]?.id;
+        const fileId = uploadedFiles[index]?.id; // Recupera o ID da imagem para atualização
         if (!fileId) {
-            console.log("id não encontrado");
+            console.error("ID da imagem não encontrado.");
             return;
         }
+    
         const payload = {
-            nameFile: file.name,
-            description: description || "",
-            observation: "Observação atualizada", 
+            nameFile: file.name, // Nome do arquivo
+            description: description || "", // Descrição atualizada
+            observation: "Observação atualizada", // Qualquer outra informação relevante
         };
+    
         try {
-            await updateImage(fileId, payload);
+            await updateImage(fileId, payload); // Envia apenas os dados necessários para a atualização
             console.log("Imagem atualizada com sucesso!");
+    
+            // Atualiza o estado local com a nova descrição
+            setUploadedFiles((prevFiles) =>
+                prevFiles.map((item, i) =>
+                    i === index ? { ...item, description } : item
+                )
+            );
         } catch (error) {
             console.error("Erro ao atualizar a imagem:", error);
         }
     };
+    
     
     const handleShowConfirmModal = (file) => {
         console.log("Arquivo selecionado para deletar:", file); 

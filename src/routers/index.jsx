@@ -8,7 +8,8 @@ import Sidebar from "../components/sideBar";
 import MobileMenu from "../components/sideBar/mobile";
 import UserPage from "../pages/users";
 import TeamPage from "../pages/team";
-import InstitutePage from "../pages/institute";
+import InfraPage from "../pages/infra";
+import ServiceError from "../pages/statusHTTP/503";
 import { useState } from 'react';
 
 function AppRoutes() {
@@ -53,7 +54,8 @@ function AppRoutes() {
             <Route path="/listing" element={<Listing />} />
             <Route path="/users" element={<UserPage />} />
             <Route path="/team" element={<TeamPage />} />
-            <Route path="/instituteAndUnit" element={<InstitutePage />} />
+            <Route path="/infraestrutura" element={<InfraPage />} />
+            <Route path="/503" element={<ServiceError />} />
           </Routes>
         </div>
       </div>

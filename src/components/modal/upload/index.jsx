@@ -10,8 +10,11 @@ const UploadModal = ({ isOpen, onClose, onUpload, initialFiles = [], initialDesc
         if (isOpen) {
             setFiles(initialFiles);
             setDescription(initialDescription);
+        } else {
+            setFiles([]);
+            setDescription("");
         }
-    }, [isOpen, initialFiles, initialDescription]);
+    }, [isOpen, initialFiles, initialDescription]);    
 
     const handleFileChange = (event) => {
         const selectedFiles = Array.from(event.target.files).filter(file =>
@@ -23,13 +26,25 @@ const UploadModal = ({ isOpen, onClose, onUpload, initialFiles = [], initialDesc
     };
 
     const handleUpload = () => {
-        if (files.length > 0) {
-            onUpload(files, description, editIndex);
-            setFiles([]);
-            setDescription("");
-            onClose();
+        if (editIndex !== null) {
+            // Edição de arquivo existente
+            if (description.trim() === "") {
+                alert("A descrição é obrigatória para editar um arquivo.");
+                return;
+            }
+        } else if (files.length === 0) {
+            // Novo upload exige arquivos
+            alert("Selecione ao menos um arquivo para fazer o upload.");
+            return;
         }
+    
+        onUpload(files, description, editIndex);
+        setFiles([]);
+        setDescription("");
+        onClose();
     };
+    
+    
 
     if (!isOpen) return null;
 

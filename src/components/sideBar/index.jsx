@@ -124,12 +124,14 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               </span>
             </NavLink>
 
+
             <span className={`text-xs text-gray-300  font-medium mt-6 mb-2 px-2 ${isCollapsed? 'opacity-0 translate-x-[-10px] hidden' : 'opacity-100 translate-x-0 w-auto'} `}>MATERIAL</span>
 
             <NavLink
-              to="/"
+              to="/503"
+              onClick={(e) => e.preventDefault()} 
               className={({ isActive }) =>
-                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 cursor-not-allowed ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <BsCart4 className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -140,10 +142,12 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               </span>
             </NavLink>
 
+
             <NavLink
-              to=""
+              to="/503"
+              onClick={(e) => e.preventDefault()} 
               className={({ isActive }) =>
-                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 cursor-not-allowed ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <FaSolarPanel className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -157,7 +161,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <span className={`text-xs text-gray-300  font-medium mt-6 mb-2 px-2 ${isCollapsed? 'opacity-0 translate-x-[-10px] hidden' : 'opacity-100 translate-x-0 w-auto'} `}>INFRAESTRUTURA</span>
 
             <NavLink
-              to="/instituteAndUnit"
+              to="/infraestrutura"
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>

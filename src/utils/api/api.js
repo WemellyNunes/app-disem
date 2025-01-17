@@ -509,7 +509,48 @@ export const deleteInstitute = async (id) => {
       const response = await api.delete(`/institute/${id}`); // Endpoint de exclusão
       return response.data;
   } catch (error) {
-      console.error("Erro ao excluir profissional:", error);
+      console.error("Erro ao excluir a instituição:", error);
+      throw error;
+  }
+};
+
+export const deleteUnit = async (id) => {
+  try {
+      const response = await api.delete(`/unit/${id}`); // Endpoint de exclusão
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao excluir a unidade:", error);
+      throw error;
+  }
+};
+
+export const getAllUnits = async () => {
+  try {
+      const response = await api.get('/units');
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar as unidades:", error);
+      throw error;
+  }
+};
+
+export const createUnit = async (uniData) => {
+  try {
+    const response = await api.post('/unit', uniData); 
+    return response.data;
+
+  } catch (error) {
+    console.error("Erro ao salvar equipe:", error); 
+    throw error; 
+  }
+};
+
+export const updateUnit = async (id, uniData) => {
+  try {
+      const response = await api.put(`/unit/${id}`, uniData);
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao atualizar profissional:", error);
       throw error;
   }
 };
