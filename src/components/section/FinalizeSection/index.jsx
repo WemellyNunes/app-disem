@@ -148,7 +148,7 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
           <InputPrimary
             label="Observação final *"
             placeholder="Escrever uma observação"
-            value={formData.observation.value}
+            value={formData.observation.value.toUpperCase()}
             onChange={handleFieldChange("observation")}
             disabled={isSaved || isSaving}
             errorMessage={emptyFields.observation ? "Este campo é obrigatório" : ""}

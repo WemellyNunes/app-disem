@@ -39,8 +39,8 @@ const BarGraphic = ({year, month}) => {
                         {
                             data: values,
                             backgroundColor: [
-                                '#00a8e8', 
-                                '#4bc0c0',
+                                '#FFC300', 
+                                '#FF7B00',
                                 '#00B2CA',  
                             ],
                             borderWidth: 0,

@@ -23,7 +23,7 @@ const NegationSection = ({orderServiceId}) => {
       if (!orderServiceId) return;
     
       try {
-        const negation = await getNegationByOrderServiceId(orderServiceId); // Ajuste para buscar apenas um objeto
+        const negation = await getNegationByOrderServiceId(orderServiceId); 
     
         if (negation) {
           setFormData({

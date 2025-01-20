@@ -1,95 +1,154 @@
 import { useState, useEffect } from "react";
 import PageTitle from "../../components/title";
-import SearchInput from "../../components/inputs/searchInput";
-import MessageBox from "../../components/box/message";
 import InfraModal from "../../components/modal/infra";
 import ListInstitute from "../../components/list/listInstitute";
 import ListUnit from "../../components/list/listUnit";
 import Tabs from "../../components/list/tabs";
+import SearchInput from "../../components/inputs/searchInput";
+import MessageBox from "../../components/box/message";
+import { FaPlus } from "react-icons/fa";
+import ConfirmationModal from "../../components/modal/confirmation";
 
-import { FaPlus, FaUpload } from "react-icons/fa";
-import { getAllInstitutes, getAllUnits, deleteInstitute, deleteUnit } from "../../utils/api/api"; // Funções para unidades e institutos
+import { getAllInstitutes, getAllUnits, deleteInstitute, deleteUnit } from "../../utils/api/api";
 
 export default function InfraPage() {
     const [showModal, setShowModal] = useState(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: "", title: "", message: "" });
-    const [activeTab, setActiveTab] = useState(0); // 0 = Unidades, 1 = Institutos
+    const [activeTab, setActiveTab] = useState(0); 
     const [institutes, setInstitutes] = useState([]);
     const [units, setUnits] = useState([]);
     const [filteredInstitutes, setFilteredInstitutes] = useState([]);
     const [filteredUnits, setFilteredUnits] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedData, setSelectedData] = useState(null);
+    const [dataToDelete, setDataToDelete] = useState(null);
 
     const tabs = [
         { label: "Unidades" },
         { label: "Institutos" },
     ];
 
-    // Fetch de Institutos
-    const fetchInstitutes = async () => {
+    const fetchData = async () => {
         try {
-            const data = await getAllInstitutes();
-            const sortedInstitutes = data.sort((a, b) =>
+            const [instituteData, unitData] = await Promise.all([getAllInstitutes(), getAllUnits()]);
+
+            const sortedInstitutes = instituteData.sort((a, b) =>
                 a.name.toLowerCase().localeCompare(b.name.toLowerCase())
             );
             setInstitutes(sortedInstitutes);
             setFilteredInstitutes(sortedInstitutes);
-        } catch (error) {
-            console.error("Erro ao buscar os institutos:", error);
-        }
-    };
 
-    // Fetch de Unidades
-    const fetchUnits = async () => {
-        try {
-            const data = await getAllUnits();
-            const sortedUnits = data.sort((a, b) =>
+            const sortedUnits = unitData.sort((a, b) =>
                 a.unit.toLowerCase().localeCompare(b.unit.toLowerCase())
             );
             setUnits(sortedUnits);
             setFilteredUnits(sortedUnits);
         } catch (error) {
-            console.error("Erro ao buscar as unidades:", error);
+            console.error("Erro ao buscar dados:", error);
         }
     };
 
-    // Fetch inicial
     useEffect(() => {
-        fetchInstitutes();
-        fetchUnits();
+        fetchData();
     }, []);
-
-    // Filtrar dados com base na aba ativa
-    const filterData = (term) => {
-        if (activeTab === 0) {
-            // Filtrar Unidades
-            if (!term) {
-                setFilteredUnits(units);
-            } else {
-                const filtered = units.filter((item) =>
-                    item.unit.toLowerCase().includes(term.toLowerCase()) ||
-                    item.campus.toLowerCase().includes(term.toLowerCase())
-                );
-                setFilteredUnits(filtered);
-            }
-        } else {
-            if (!term) {
-                setFilteredInstitutes(institutes);
-            } else {
-                const filtered = institutes.filter((item) =>
-                    item.name.toLowerCase().includes(term.toLowerCase()) ||
-                    item.acronym.toLowerCase().includes(term.toLowerCase()) ||
-                    item.campus.toLowerCase().includes(term.toLowerCase()) 
-                );
-                setFilteredInstitutes(filtered);
-            }
-        }
-    };
 
     const handleSearch = (term) => {
         setSearchTerm(term);
-        filterData(term);
+        if (activeTab === 0) {
+            setFilteredUnits(
+                term
+                    ? units.filter((unit) =>
+                          unit.unit.toLowerCase().includes(term.toLowerCase())
+                      )
+                    : units
+            );
+        } else {
+            setFilteredInstitutes(
+                term
+                    ? institutes.filter((institute) =>
+                          institute.name.toLowerCase().includes(term.toLowerCase())
+                      )
+                    : institutes
+            );
+        }
+    };
+
+    const handleModalClose = (updatedData, type) => {
+        setShowModal(false);
+    
+        if (updatedData) {
+            if (type === "unidade") {
+                // Atualiza ou adiciona uma unidade na lista
+                setUnits((prev) => {
+                    const exists = prev.some((unit) => unit.id === updatedData.id);
+                    return exists
+                        ? prev.map((unit) => (unit.id === updatedData.id ? updatedData : unit))
+                        : [updatedData, ...prev];
+                });
+                setFilteredUnits((prev) => {
+                    const exists = prev.some((unit) => unit.id === updatedData.id);
+                    return exists
+                        ? prev.map((unit) => (unit.id === updatedData.id ? updatedData : unit))
+                        : [updatedData, ...prev];
+                });
+            } else if (type === "instituto") {
+                // Atualiza ou adiciona um instituto na lista
+                setInstitutes((prev) => {
+                    const exists = prev.some((institute) => institute.id === updatedData.id);
+                    return exists
+                        ? prev.map((institute) => (institute.id === updatedData.id ? updatedData : institute))
+                        : [updatedData, ...prev];
+                });
+                setFilteredInstitutes((prev) => {
+                    const exists = prev.some((institute) => institute.id === updatedData.id);
+                    return exists
+                        ? prev.map((institute) => (institute.id === updatedData.id ? updatedData : institute))
+                        : [updatedData, ...prev];
+                });
+            }
+    
+        }
+    };
+    
+    
+    
+
+    const handleDeleteClick = (item) => {
+        setDataToDelete(item); // Define o item a ser deletado
+        setShowConfirmationModal(true); // Abre o modal de confirmação
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            if (activeTab === 0) {
+                // Exclui unidade
+                await deleteUnit(dataToDelete.id);
+                setUnits((prev) => prev.filter((unit) => unit.id !== dataToDelete.id));
+                setFilteredUnits((prev) => prev.filter((unit) => unit.id !== dataToDelete.id));
+            } else {
+                // Exclui instituto
+                await deleteInstitute(dataToDelete.id);
+                setInstitutes((prev) => prev.filter((institute) => institute.id !== dataToDelete.id));
+                setFilteredInstitutes((prev) =>
+                    prev.filter((institute) => institute.id !== dataToDelete.id)
+                );
+            }
+
+            setMessageContent({
+                type: "success",
+                title: "Sucesso",
+                message: `${activeTab === 0 ? "Unidade" : "Instituto"} excluído com sucesso.`,
+            });
+            setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 1000); 
+
+            setDataToDelete(null);
+            setShowConfirmationModal(false);
+        } catch (error) {
+            console.error("Erro ao deletar item:", error);
+        }
     };
 
     return (
@@ -109,23 +168,24 @@ export default function InfraPage() {
                         />
                         <button
                             className="flex items-center bg-primary-light text-sm text-white px-3 h-8 rounded hover:bg-blue-700 gap-2"
-                            onClick={() => setShowModal(true)}
+                            onClick={() => {
+                                setShowModal(true);
+                                setSelectedData(null); 
+                            }}
                         >
                             <FaPlus className="h-3 w-3" />
                             <span className="hidden md:flex flex-wrap">
-                                {activeTab === 0 ? "Nova Unidade" : "Novo Instituto"}
+                                Cadastrar
                             </span>
                         </button>
-                       
                     </div>
 
-                    {/* Tabs */}
                     <Tabs
                         tabs={tabs}
                         activeTab={activeTab}
                         onTabChange={(index) => {
                             setActiveTab(index);
-                            setSearchTerm(""); 
+                            setSearchTerm("");
                         }}
                     />
 
@@ -133,22 +193,42 @@ export default function InfraPage() {
                         {activeTab === 0 && (
                             <ListUnit
                                 filteredData={filteredUnits}
-                                handleEditClick={(unit) => console.log("Edit Unit:", unit)}
-                                handleDeleteClick={(unit) => console.log("Delete Unit:", unit)}
+                                handleEditClick={(unit) => {
+                                    setSelectedData({ ...unit, type: "unidade" });
+                                    setShowModal(true);
+                                }}
+                                handleDeleteClick={handleDeleteClick}
                             />
                         )}
                         {activeTab === 1 && (
                             <ListInstitute
                                 filteredData={filteredInstitutes}
-                                handleEditClick={(institute) => console.log("Edit Institute:", institute)}
-                                handleDeleteClick={(institute) => console.log("Delete Institute:", institute)}
+                                handleEditClick={(institute) => {
+                                    setSelectedData({ ...institute, type: "instituto" });
+                                    setShowModal(true);
+                                }}
+                                handleDeleteClick={handleDeleteClick}
                             />
                         )}
                     </div>
                 </div>
 
                 {showModal && (
-                    <InfraModal onClose={() => setShowModal(false)} />
+                    <InfraModal
+                        onClose={handleModalClose}
+                        data={selectedData}
+                        isEditing={!!selectedData}
+                    />
+                )}
+
+                {showConfirmationModal && (
+                    <ConfirmationModal
+                        title="Excluir Item"
+                        message={`Tem certeza que deseja excluir este ${activeTab === 0 ? "unidade" : "instituto"
+                            }?`}
+                        onConfirm={handleConfirmDelete}
+                        onCancel={() => setShowConfirmationModal(false)}
+                    />
                 )}
 
                 {showMessageBox && (

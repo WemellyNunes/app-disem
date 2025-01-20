@@ -49,8 +49,7 @@ const DoughnutChart = ({year, month}) => {
                     datasets: [
                         {
                             data: values,
-                            backgroundColor: ['#4bc0c0', '#05668D', '#59A5D8'],
-                            hoverBackgroundColor: ['#4bc0c0', '#05668D', '#59A5D8'],
+                            backgroundColor: ['#FB8500', '#05668D', '#F02D3A'],
                             borderWidth: 3,
                         },
                     ],

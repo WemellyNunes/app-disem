@@ -116,7 +116,7 @@ export default function Dashboard() {
                             title="Sipac"
                             approved={stats.sipac.approved}
                             finalized={stats.sipac.finalized}
-                            borderColor="border-r-secondary-light"
+                            borderColor="border-r-blue-500"
                             percentage={stats.sipac.percentage}
                             hover="hover:bg-blue-50"
                         />
@@ -125,7 +125,7 @@ export default function Dashboard() {
                             title="Mensal"
                             approved={stats.monthly.approved}
                             finalized={stats.monthly.finalized}
-                            borderColor="border-r-tertiary-light"
+                            borderColor="border-r-purple-500"
                             hover="hover:bg-blue-50"
                         />
 
@@ -133,7 +133,7 @@ export default function Dashboard() {
                             title="Semanal"
                             approved={stats.weekly.approved}
                             finalized={stats.weekly.finalized}
-                            borderColor="border-r-blue-400"
+                            borderColor="border-r-red-500"
                             hover="hover:bg-blue-50"
                         />
 
@@ -141,7 +141,7 @@ export default function Dashboard() {
                             title="Hoje"
                             approved={stats.today.approved}
                             finalized={stats.today.finalized}
-                            borderColor="border-r-status-bgResp"
+                            borderColor="border-r-orange-500"
                             hover="hover:bg-blue-50"
                         />
 
@@ -149,7 +149,7 @@ export default function Dashboard() {
                             title="Anual"
                             approved={stats.yearly.approved}
                             finalized={stats.yearly.finalized}
-                            borderColor="border-r-tertiary-bluGreen"
+                            borderColor="border-r-yellow-500"
                             hover="hover:bg-blue-50"
                         />
                     </div>

@@ -27,13 +27,13 @@ const ListUnit = ({ filteredData, handleEditClick, handleDeleteClick }) => {
                             </div>
                             <div className="flex items-center space-x-2 justify-end">
                                 <button
-                                    onClick={() => handleEditClick(unit)} // Corrigido para `unit`
+                                    onClick={() => handleEditClick(unit)} 
                                     className="text-primary-light hover:text-blue-500"
                                 >
                                     <FaEdit />
                                 </button>
                                 <button
-                                    onClick={() => handleDeleteClick(unit)} // Corrigido para `unit`
+                                    onClick={() => handleDeleteClick(unit)} 
                                     className="text-primary-light hover:text-blue-500"
                                 >
                                     <FaTrash />

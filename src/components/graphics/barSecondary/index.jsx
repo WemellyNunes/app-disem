@@ -45,7 +45,7 @@ const LocationBarChart = ({ year }) => {
                         {
                             label: 'OS Abertas',
                             data: values,
-                            backgroundColor: ['#13BFD7', '#2783ED', '#59A5D8', '#386FA4', '#133C55'], // Ajuste as cores conforme o número de labels
+                            backgroundColor: ['#13BFD7', '#2783ED', '#FFC300', '#F02D3A', '#FB8500'], // Ajuste as cores conforme o número de labels
                             borderWidth: 0,
                         },
                     ],

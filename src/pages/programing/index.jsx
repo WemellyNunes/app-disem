@@ -24,6 +24,7 @@ import ConfirmationModal from "../../components/modal/confirmation";
 import NegationSection from "../../components/section/SectionNegation";
 import OrderServiceDetails from "../../components/section/sectionOS";
 
+import { hours } from "../../utils/constants/selectOptions";
 import { getOrderById, createPrograming, getProgramingById, updatePrograming, deletePrograming, downloadReport, updateOrderServiceStatus, createNote, getNotesByProgramingId, updateOpenDays, getAllTeams } from "../../utils/api/api";
 
 
@@ -63,22 +64,22 @@ export default function Programing() {
 
     const [confirmationModal, setConfirmationModal] = useState({
         show: false,
-        action: null, 
+        action: null,
     });
 
     const handleFinalization = (observation) => {
-        setIsFinalized(true); // Atualiza o estado
+        setIsFinalized(true);
         console.log("Observação finalizada:", observation);
-      };
+    };
 
     const handleMaintenanceClose = () => {
-        setIsMaintenanceClosed(true); 
-    }; 
-      
+        setIsMaintenanceClosed(true);
+    };
+
     const handleMaintenanceSave = async () => {
         try {
-            await updateOrderServiceStatus(orderServiceData.id, "Atendida"); // Atualiza o status no backend
-            setIsMaintenanceSaved(true); // Atualiza no frontend
+            await updateOrderServiceStatus(orderServiceData.id, "Atendida");
+            setIsMaintenanceSaved(true);
             setStatus("Atendida");
         } catch (error) {
             console.error("Erro ao atualizar status da OS:", error);
@@ -95,19 +96,13 @@ export default function Programing() {
 
     const handleConfirmAction = () => {
         if (confirmationModal.action === "edit") {
-            handleEdit(); 
+            handleEdit();
         } else if (confirmationModal.action === "delete") {
-            handleConfirmDelete(); 
+            handleConfirmDelete();
         }
-        handleCloseModal(); 
+        handleCloseModal();
     };
 
-    const options = [
-        { label: '08h às 12h', value: '08h às 12h' },
-        { label: '14h às 18h', value: '14h às 18h' },
-        { label: '19h às 22h', value: '19h às 22h' },
-        { label: '08h às 18h', value: '08h às 18h' }
-    ];
 
     const handleDownloadReport = async (id) => {
         try {
@@ -121,11 +116,11 @@ export default function Programing() {
             setShowMessageBox(true);
         }
     };
-    
+
     useEffect(() => {
         const fetchReports = async () => {
             if (!programingId) return;
-    
+
             try {
                 const notes = await getNotesByProgramingId(programingId); // Certifique-se de que este endpoint retorna os relatos corretos
                 console.log("Relatos carregados:", notes); // Log para verificar o retorno do backend
@@ -140,36 +135,36 @@ export default function Programing() {
                 console.error("Erro ao buscar relatos:", error);
             }
         };
-    
+
         fetchReports();
     }, [programingId]);
-    
+
 
     const handleAddReport = async (newReport) => {
-        if (!programingId) { return;}
-      
-        const noteData = {
-          programing_id: programingId,
-          content: newReport, 
-        };
-      
-        try {
-          const createdNote = await createNote(noteData);
+        if (!programingId) { return; }
 
-          console.log("relato:", noteData)
-      
-          const reportWithUser = {
-            usuario: user.name, 
-            texto: createdNote.content, 
-            data: `${createdNote.date} ${createdNote.time}`,
-          };
-      
-          setReports((prevReports) => [...prevReports, reportWithUser]);
-          setShowAddReport(false);
-          
+        const noteData = {
+            programing_id: programingId,
+            content: newReport,
+        };
+
+        try {
+            const createdNote = await createNote(noteData);
+
+            console.log("relato:", noteData)
+
+            const reportWithUser = {
+                usuario: user.name,
+                texto: createdNote.content,
+                data: `${createdNote.date} ${createdNote.time}`,
+            };
+
+            setReports((prevReports) => [...prevReports, reportWithUser]);
+            setShowAddReport(false);
+
         } catch (error) {
-        
-          console.error("Erro ao adicionar relato:", error);
+
+            console.error("Erro ao adicionar relato:", error);
         }
     };
 
@@ -217,7 +212,7 @@ export default function Programing() {
 
             const formattedProfessionals = activeProfessionals.map((team) => ({
                 label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
-                value: team.id
+                value: team.name
             }));
             setProfessionals(formattedProfessionals);
 
@@ -225,7 +220,7 @@ export default function Programing() {
                 .filter((team) => team.role.toLowerCase().startsWith("líder"))
                 .map((team) => ({
                     label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
-                    value: team.id
+                    value: team.name
                 }));
             setOverseers(formattedOverseers);
 
@@ -242,8 +237,8 @@ export default function Programing() {
                     await fetchProfessionals();
                 }
 
-                const orderData = await getOrderById(id); 
-                console.log("Dados da OS carregados:", orderData);// Busca a OS
+                const orderData = await getOrderById(id);
+                console.log("Dados da OS carregados:", orderData);
                 setOrderServiceData(orderData);
 
                 setStatus(orderData.status);
@@ -255,11 +250,16 @@ export default function Programing() {
                         .split('-')
                         .reverse()
                         .join('/');
+                    
+                    
 
-                    const selectedProfessionals = programingData.worker.split(', ').map(worker => {
-                        const professional = professionals.find(prof => prof.label === worker.trim());
-                        return professional ? { label: professional.label, value: professional.value } : null;
-                    }).filter(Boolean); 
+                    const selectedProfessionals = programingData.worker
+                        .split(', ')
+                        .map(worker => {
+                            const professional = professionals.find(prof => prof.label === worker.trim());
+                            return professional ? { label: professional.label, value: professional.value } : null;
+                        })
+                        .filter(Boolean);
 
                     setFormData((prevData) => ({
                         ...prevData,
@@ -289,7 +289,7 @@ export default function Programing() {
         };
         fetchOrderData();
 
-    }, [id]);
+    }, [id, professionals]);
 
     const validateFields = () => {
         const newEmptyFields = {};
@@ -326,6 +326,8 @@ export default function Programing() {
         try {
             const formattedDate = formData.data.value.split('/').reverse().join('-');
 
+           
+
             const programingData = {
                 orderService_id: id,
                 datePrograming: formattedDate,
@@ -353,8 +355,8 @@ export default function Programing() {
 
             setProgramingId(newProgramingId);
 
-            const updatedOrder = await updateOpenDays(id); // <-- Novo endpoint aqui!
-            setOrderServiceData(updatedOrder); 
+            const updatedOrder = await updateOpenDays(id); 
+            setOrderServiceData(updatedOrder);
 
             setOrderServiceData((prevData) => ({
                 ...prevData,
@@ -522,21 +524,21 @@ export default function Programing() {
                     <div className="w-full md:w-5/12">
                         <OrderServiceDetails
                             orderServiceData={orderServiceData}
-                            user={user} 
+                            user={user}
                         />
                     </div>
 
                     <div className="flex-1 mb-2">
 
-                        { status === "Negada" && (
-                            <NegationSection orderServiceId={orderServiceId}/>
+                        {status === "Negada" && (
+                            <NegationSection orderServiceId={orderServiceId} />
                         )}
 
                         {isMaintenanceClosed && programingId && (
                             <FinalizeSection
                                 orderServiceData={{ ...orderServiceData, programingId }}
-                                onFinalize={isFinalized ? () => { } : handleFinalization} 
-                                isFinalized={isFinalized} 
+                                onFinalize={isFinalized ? () => { } : handleFinalization}
+                                isFinalized={isFinalized}
                             />
                         )}
 
@@ -564,7 +566,7 @@ export default function Programing() {
                                     />
                                     <InputSelect
                                         label="Turno *"
-                                        options={options}
+                                        options={hours}
                                         onChange={handleFieldChange('turno')}
                                         value={formData.turno.value}
                                         disabled={!isEditing}

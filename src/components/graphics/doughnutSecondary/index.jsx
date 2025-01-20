@@ -39,11 +39,11 @@ const DoughnutSystem = ({ year }) => {
                             label: 'Manutenções',
                             data: values,
                             backgroundColor: [
-                                '#247B7B', // Civil
-                                '#78CDD7', // Hidrosanitário
-                                '#0C7489', // Refrigeração
+                                '#F02D3A', // Civil
+                                '#538D22', // Hidrosanitário
+                                '#FB8500', // Refrigeração
                                 '#00B2CA', // Elétrico
-                                '#09BC8A', // Misto
+                                '#FFC300', // Misto
                             ],
                             borderWidth: 3,
                         },

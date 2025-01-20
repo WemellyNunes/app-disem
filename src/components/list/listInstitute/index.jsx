@@ -8,7 +8,7 @@ const ListInstitute = ({ filteredData, handleEditClick, handleDeleteClick }) => 
             </div>
             <div className="flex text-sm font-medium text-primary-dark md:justify-none justify-between  px-3 border-b border-gray-300 py-2 mt-4">
                 <p className="flex flex-col md:w-1/2" >Nome</p>
-                <p className="flex flex-col md:w-1/2">Sigla</p>
+                <p className="flex flex-col md:w-1/3">Sigla</p>
                 <p className='flex flex-col md:w-1/2'>Unidade</p>
                 <p className='flex flex-col md:w-1/2'>Campus</p>
                 <p>Ações</p>
@@ -23,7 +23,7 @@ const ListInstitute = ({ filteredData, handleEditClick, handleDeleteClick }) => 
                             <div className="flex flex-col md:w-1/2">
                                 <span>{institute.name}</span>
                             </div>
-                            <div className="flex flex-col md:w-1/2">
+                            <div className="flex flex-col md:w-1/3">
                                 <span>{institute.acronym}</span>
                             </div>
                             <div className="flex flex-col md:w-1/2">

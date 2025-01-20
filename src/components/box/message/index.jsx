@@ -18,8 +18,8 @@ const MessageBox = ({ type, title, message, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 flex justify-center items-start z-50 md:mx-24">
-            <div className={`relative w-full py-6 px-2 md:px-6  shadow-lg ${backgroundTypes[type]} flex items-center justify-between`}>
+        <div className="fixed inset-0 flex justify-center  mt-2 items-start z-50 md:mx-24">
+            <div className={`relative w-full py-6 px-2 md:px-6  shadow-lg ${backgroundTypes[type]} flex items-center justify-between rounded-xl`}>
                 <div className="flex items-center space-x-3">
                     {iconTypes[type]}
                     <div className="flex items-center space-x-1">

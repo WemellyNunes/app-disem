@@ -7,7 +7,7 @@ import MessageBox from "../../box/message";
 import RadioInput from "../../inputs/radioInput";
 import InputSelect from "../../inputs/inputSelect";
 
-import { createInstitute, updateInstitute, createUnit, getAllUnits } from "../../../utils/api/api";
+import { createInstitute, updateInstitute, createUnit, getAllUnits, updateUnit} from "../../../utils/api/api";
 
 
 const InfraModal = ({ onClose, data = null, isEditing = false }) => {
@@ -52,10 +52,10 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
 
     const fetchUnits = async () => {
         try {
-            const response = await getAllUnits(); // Supondo que o endpoint retorna as unidades
+            const response = await getAllUnits(); 
             const formattedUnits = response.map((unit) => ({
-                label: unit.unit.toUpperCase(), // O que será exibido no `select`
-                value: unit.unit, 
+                label: unit.unit.toUpperCase(), 
+                value: unit.unit,
                 campus: unit.campus.toUpperCase(),
             }));
             setUnits(formattedUnits);
@@ -118,10 +118,12 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
             setTimeout(() => setShowMessageBox(false), 2000);
             return;
         }
-
+    
         setIsDisabled(true);
-
+    
         try {
+            let updatedItem = null;
+    
             if (selectedType === "instituto") {
                 const institutePayload = {
                     name: formDataInstituto.nome.value,
@@ -129,32 +131,38 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
                     unit: formDataInstituto.unidade.value,
                     campus: formDataInstituto.campus.value,
                 };
-
+    
                 if (isEditing) {
                     await updateInstitute(data.id, institutePayload);
+                    updatedItem = { id: data.id, ...institutePayload };
                 } else {
-                    await createInstitute(institutePayload);
+                    updatedItem = await createInstitute(institutePayload);
                 }
             } else if (selectedType === "unidade") {
                 const unitPayload = {
                     unit: formDataUnidade.unidade.value,
                     campus: formDataUnidade.campus.value,
                 };
-
-                await createUnit(unitPayload);
+    
+                if (isEditing) {
+                    await updateUnit(data.id, unitPayload);
+                    updatedItem = { id: data.id, ...unitPayload };
+                } else {
+                    updatedItem = await createUnit(unitPayload);
+                }
             }
-
+    
             setMessageContent({
                 type: "success",
                 title: "Sucesso.",
                 message: `${selectedType === "instituto" ? "Instituto" : "Unidade"} salvo com sucesso!`,
             });
             setShowMessageBox(true);
-
+    
             setTimeout(() => {
                 setShowMessageBox(false);
-                onClose(); // Fecha o modal
-            }, 2000);
+                onClose(updatedItem, selectedType); // Passa o item atualizado ao pai
+            }, 1000);
         } catch (error) {
             setMessageContent({
                 type: "error",
@@ -166,6 +174,10 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
             console.error(error);
         }
     };
+    
+    
+    
+
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -182,7 +194,7 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
                 </div>
 
                 <RadioInput
-                    title="Tipo de Cadastro"
+                    title="Selecione "
                     options={[
                         { label: "Instituto", value: "instituto" },
                         { label: "Unidade", value: "unidade" },
@@ -234,7 +246,7 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
                             <InputPrimary
                                 label="Unidade"
                                 placeholder="Unidade"
-                                value={formDataUnidade.unidade.value}
+                                value={formDataUnidade.unidade.value.toUpperCase()}
                                 onChange={handleFieldChange("unidade", "unidade")}
                                 disabled={isDisabled}
                                 errorMessage={emptyFields.unidade ? "Este campo é obrigatório" : ""}
@@ -242,7 +254,7 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
                             <InputPrimary
                                 label="Campus"
                                 placeholder="Campus"
-                                value={formDataUnidade.campus.value}
+                                value={formDataUnidade.campus.value.toUpperCase()}
                                 onChange={handleFieldChange("campus", "unidade")}
                                 disabled={isDisabled}
                                 errorMessage={emptyFields.campus ? "Este campo é obrigatório" : ""}

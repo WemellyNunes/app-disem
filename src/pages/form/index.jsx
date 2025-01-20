@@ -13,8 +13,9 @@ import PageTitle from "../../components/title";
 import Loading from "../../components/modal/loading";
 import MessageCard from "../../components/cards/menssegeCard";
 
+import { origin, classification, options, system, indicesRisco, maintence } from "../../utils/constants/selectOptions";
 import { calcularValorRisco, calcularPrioridade } from "../../utils/matriz";
-import { createOrder, updateOrder, uploadDocument, getOrderById, getDocumentsByOrderServiceId } from "../../utils/api/api";
+import { createOrder, updateOrder, uploadDocument, getOrderById, getDocumentsByOrderServiceId, getAllInstitutes, getAllUnits } from "../../utils/api/api";
 
 export default function Form() {
     const { id } = useParams();
@@ -32,6 +33,8 @@ export default function Form() {
     const [status, setStatus] = useState("A atender");
     const [isLoading, setIsLoading] = useState(false);
     const [uploadedDocuments, setUploadedDocuments] = useState([]);
+    const [institutes, setInstitutes] = useState([]);
+    const [units, setUnits] = useState([]);
 
     const [formData, setFormData] = useState({
         selectedOption: { value: 'comum', required: false },
@@ -52,69 +55,43 @@ export default function Form() {
         objetoPreparo: { value: '', required: true },
     });
 
-    const options = [
-        { label: 'Comum', value: 'comum' },
-        { label: 'ADM', value: 'adm' },
-    ];
+    useEffect(() => {
+        const fetchInstitutes = async () => {
+            try {
+                const response = await getAllInstitutes(); 
+                const formattedInstitutes = response.map((institute) => ({
+                    label: `${institute.name.toUpperCase()} - ${institute.acronym.toUpperCase()}`,
+                    value: institute.name, 
+                }))
+                .sort((a, b) => a.label.localeCompare(b.label));
+                setInstitutes(formattedInstitutes);
+            } catch (error) {
+                console.error("Erro ao buscar institutos:", error);
+            }
+        };
+    
+        fetchInstitutes();
+    }, []);
 
-    const origin = [
-        { label: 'DISEM', value: 'DISEM' },
-        { label: 'SIPAC', value: 'SIPAC' },
-    ];
+    useEffect(() => {
+        const fetchUnits = async () => {
+            try {
+                const response = await getAllUnits(); 
+                const formattedUnits = response.map((unit) => ({
+                    label: unit.unit.toUpperCase(),
+                    value: unit.unit,
+                    campus: unit.campus.toUpperCase(),
+                }))
+                .sort((a, b) => a.label.localeCompare(b.label));
+                setUnits(formattedUnits);
+            } catch (error) {
+                console.error("Erro ao buscar unidades:", error);
+            }
+        };
+    
+        fetchUnits();
+    }, []);
 
-    const classification = [
-        { label: 'Classe A', value: 'A' },
-        { label: 'Classe B', value: 'B' },
-        { label: 'Classe C', value: 'C' }
-    ];
-
-    const unit = [
-        { label: 'Instituto de Geociências e Engenharias', value: 'geo' },
-        { label: 'Instituto de Ciências e Exatas', value: 'ciex' },
-        { label: 'Instituto de Ciências Humanas', value: 'cih' },
-        { label: 'Centro de Tecnologia e Comunicação', value: 'tec' },
-    ];
-
-    const unitMaintence = [
-        { label: 'UNIDADE I - MARABÁ', value: 'UNIDADE I - MARABÁ' },
-        { label: 'UNIDADE II - MARABÁ', value: 'UNIDADE II - MARABÁ' },
-        { label: 'UNIDADE III - MARABÁ', value: 'UNIDADE III - MARABÁ' },
-        { label: 'UNIDADE SANTANA DO ARAGUAIA', value: 'UNIDADE SANTANA DO ARAGUAIA' },
-        { label: 'UNIDADE SÃO FELIX DO XINGU', value: 'UNIDADE SÃO FELIX DO XINGU' },
-        { label: 'UNIDADE RONDON', value: 'UNIDADE RONDON' },
-        { label: 'UNIDADE XINGUARA', value: 'UNIDADE XINGUARA' },
-    ];
-
-    const system = [
-        { label: 'CIVIL' },
-        { label: 'ELETRICO' },
-        { label: 'HIDROSANITARIO' },
-        { label: 'REFRIGERACAO' },
-        { label: 'MISTO' }
-    ];
-
-    const maintence = [
-        { label: 'CORRETIVA' },
-        { label: 'PREVENTIVA' },
-    ];
-
-    const indicesRisco = [
-        { label: 'Ação de sustentabilidade', value: 'sustentabilidade' },
-        { label: 'Estetica interna', value: 'estetica' },
-        { label: 'Conforto do usuario', value: 'confortoUsuario' },
-        { label: 'Danos maiores', value: 'danosMaiores' },
-        { label: 'Risco de acidentes', value: 'riscoAcidentes' }
-    ];
-
-    const campusMapping = {
-        'UNIDADE I - MARABÁ': 'MARABA',
-        'UNIDADE II - MARABÁ': 'MARABA',
-        'UNIDADE III - MARABÁ': 'MARABA',
-        'UNIDADE SANTANA DO ARAGUAIA': 'SANTANA DO ARAGUAIA',
-        'UNIDADE SÃO FELIX DO XINGU': 'SAO FELIX DO XINGU',
-        'UNIDADE RONDON': 'RONDON',
-        'UNIDADE XINGUARA': 'XINGUARA',
-    };
 
     const handleFileChange = (files) => {
         setSelectedFiles(files);
@@ -216,17 +193,12 @@ export default function Form() {
             }
 
             if (field === 'unidadeManutencao') {
-                const campus = campusMapping[value] || '';
-                updatedData.campus = { ...prevData.campus, value: campus };
-
-                if (campus) {
-                    setEmptyFields((prevEmptyFields) => {
-                        const updatedEmptyFields = { ...prevEmptyFields };
-                        delete updatedEmptyFields.campus;
-                        return updatedEmptyFields;
-                    });
+                const selectedUnit = units.find((unit) => unit.value === value); 
+                if (selectedUnit) {
+                    updatedData.campus = { ...prevData.campus, value: selectedUnit.campus }; 
                 }
             }
+
             if (updatedData[field].required && value.trim()) {
                 setEmptyFields((prevEmptyFields) => {
                     const updatedEmptyFields = { ...prevEmptyFields };
@@ -444,7 +416,7 @@ export default function Form() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                                 <InputSelect
                                     label="Unidade *"
-                                    options={unit}
+                                    options={institutes}
                                     onChange={handleFieldChange('unidade')}
                                     value={formData.unidade.value}
                                     disabled={!isEditing}
@@ -504,7 +476,7 @@ export default function Form() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                                 <InputSelect
                                     label="Unidade da manutenção *"
-                                    options={unitMaintence}
+                                    options={units}
                                     onChange={handleFieldChange('unidadeManutencao')}
                                     value={formData.unidadeManutencao.value}
                                     disabled={!isEditing}
@@ -512,7 +484,7 @@ export default function Form() {
                                 />
                                 <InputPrimary
                                     label="Campus *"
-                                    placeholder="Informe o campus (automático)"
+                                    placeholder="Automático"
                                     value={formData.campus.value}
                                     onChange={handleFieldChange('campus')}
                                     disabled={!isEditing}
