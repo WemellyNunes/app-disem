@@ -126,13 +126,15 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                             [fileObj], // Envia o arquivo
                             programingId,
                             "antes",
-                            fileObj.description
+                            fileObj.description,
+                            new Date().toISOString()
                         );
 
                         return {
                             id: response.id, 
                             file: fileObj.file,
                             description: fileObj.description,
+                            createdAt: new Date().toISOString().split("T")[0]
                         };
                     })
                 );
@@ -153,13 +155,15 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                             [fileObj], // Envia o arquivo
                             programingId,
                             "depois",
-                            fileObj.description
+                            fileObj.description,
+                            new Date().toISOString()
                         );
 
                         return {
                             id: response.id, 
                             file: fileObj.file,
                             description: fileObj.description,
+                            createdAt: new Date().toISOString().split("T")[0]
                         };
                     })
                 );

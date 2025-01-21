@@ -1,10 +1,11 @@
 import SectionCard from "../sectionPrimary";
+import Circle from "../../table/circle";
 
 export default function OrderServiceDetails({ orderServiceData, user }) {
     return (
-        <SectionCard 
-            background="bg-gray-50" 
-            title="Ordem de serviço" 
+        <SectionCard
+            background="bg-gray-50"
+            title="Ordem de serviço"
             placeholder="Informações cadastradas da ordem de serviço."
         >
             <div className="grid grid-cols-1 md:grid-cols-1 gap-y-4 text-sm text-gray-500 mb-8">

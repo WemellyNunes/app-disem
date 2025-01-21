@@ -282,7 +282,7 @@ export const deletePrograming = async (id) => {
   }
 };
 
-export const uploadFiles = async (files, programingId, type, description) => {
+export const uploadFiles = async (files, programingId, type, description, createdAt) => {
   const formData = new FormData();
 
  
@@ -292,7 +292,8 @@ export const uploadFiles = async (files, programingId, type, description) => {
 
   formData.append("programingId", programingId); // Adiciona o ID da programação
   formData.append("type", type); // Tipo (antes/depois)
-  formData.append("description", description); // Descrição
+  formData.append("description", description);
+  formData.append("createdAt", createdAt);
 
   try {
     const response = await api.post("/uploadFile", formData, {

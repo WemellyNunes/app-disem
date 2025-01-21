@@ -36,7 +36,8 @@ export default function Programing() {
     const { id: orderServiceId } = useParams();
 
     const [formData, setFormData] = useState({
-        data: { value: '', required: true },
+        startData: { value: '', required: true },
+        endData: { value: '', required: false},
         turno: { value: '', required: true },
         encarregado: { value: '', required: true },
         profissionais: { value: [], required: true },
@@ -87,11 +88,11 @@ export default function Programing() {
     };
 
     const handleOpenModal = (action) => {
-        setConfirmationModal({ show: true, action }); // Define a ação ("edit" ou "delete")
+        setConfirmationModal({ show: true, action }); 
     };
 
     const handleCloseModal = () => {
-        setConfirmationModal({ show: false, action: null }); // Reseta o modal
+        setConfirmationModal({ show: false, action: null }); 
     };
 
     const handleConfirmAction = () => {
@@ -106,7 +107,7 @@ export default function Programing() {
 
     const handleDownloadReport = async (id) => {
         try {
-            await downloadReport(id); // ID da OS passado corretamente
+            await downloadReport(id); 
         } catch (error) {
             setMessageContent({
                 type: 'error',
@@ -122,8 +123,8 @@ export default function Programing() {
             if (!programingId) return;
 
             try {
-                const notes = await getNotesByProgramingId(programingId); // Certifique-se de que este endpoint retorna os relatos corretos
-                console.log("Relatos carregados:", notes); // Log para verificar o retorno do backend
+                const notes = await getNotesByProgramingId(programingId); 
+                console.log("Relatos carregados:", notes); 
                 const formattedReports = notes.map((note) => ({
                     id: note.id,
                     usuario: note.usuario || "Desconhecido",
@@ -246,12 +247,13 @@ export default function Programing() {
                 if (orderData.programingId) {
                     const programingData = await getProgramingById(orderData.programingId);
 
-                    const formattedDate = programingData.datePrograming
-                        .split('-')
-                        .reverse()
-                        .join('/');
-                    
-                    
+                    const formattedDate1 = programingData.startDate
+                        ? programingData.startDate.split('-').reverse().join('/')
+                        : '';
+
+                    const formattedDate2 = programingData.endDate
+                        ? programingData.endDate.split('-').reverse().join('/')
+                        : '';
 
                     const selectedProfessionals = programingData.worker
                         .split(', ')
@@ -263,7 +265,8 @@ export default function Programing() {
 
                     setFormData((prevData) => ({
                         ...prevData,
-                        data: { ...prevData.data, value: formattedDate },
+                        startData: { ...prevData.startData, value: formattedDate1 },
+                        endData: { ...prevData.endData, value: formattedDate2 },
                         turno: { ...prevData.turno, value: programingData.time },
                         encarregado: { ...prevData.encarregado, value: programingData.overseer },
                         profissionais: { ...prevData.profissionais, value: selectedProfessionals },
@@ -324,13 +327,15 @@ export default function Programing() {
         }
 
         try {
-            const formattedDate = formData.data.value.split('/').reverse().join('-');
+            const formattedDate1 = formData.startData.value.split('/').reverse().join('-');
+            const formattedDate2 = formData.endData.value.split('/').reverse().join('-');
 
            
 
             const programingData = {
                 orderService_id: id,
-                datePrograming: formattedDate,
+                startDate: formattedDate1,
+                endDate: formattedDate2,
                 time: formData.turno.value,
                 overseer: formData.encarregado.value,
                 worker: formData.profissionais.value.map(prof => prof.label).join(', '),
@@ -410,7 +415,8 @@ export default function Programing() {
 
             setStatus("A atender");
             setFormData({
-                data: { value: '', required: true },
+                startData: { value: '', required: true },
+                endData: { value: '', required: false},
                 turno: { value: '', required: true },
                 encarregado: { value: '', required: true },
                 profissionais: { value: [], required: true },
@@ -452,21 +458,25 @@ export default function Programing() {
         setShowHistory(true);
     };
 
-    const handleDateChange = (date) => {
+    const handleDateChange = (field) => (date) => {
         setFormData((prevData) => {
-            const updatedData = { ...prevData, data: { ...prevData.data, value: date } };
-
+            const updatedData = { ...prevData, [field]: { ...prevData[field], value: date } };
+    
+            // Atualiza o estado dos campos obrigatórios
             setEmptyFields((prevEmptyFields) => {
                 const updatedEmptyFields = { ...prevEmptyFields };
                 if (date) {
-                    delete updatedEmptyFields.data;
+                    delete updatedEmptyFields[field];
+                } else if (formData[field]?.required) {
+                    updatedEmptyFields[field] = true;
                 }
                 return updatedEmptyFields;
             });
-
+    
             return updatedData;
         });
     };
+    
 
     useEffect(() => {
         if (isMaintenanceSaved) {
@@ -557,12 +567,20 @@ export default function Programing() {
                             <SectionCard title="Programação" placeholder="Agende a programação para a realização da manutenção.">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4">
                                     <DateTimePicker
-                                        label="Data programada *"
+                                        label="Data inicial *"
                                         placeholder="exemplo: 00/00/0000"
-                                        onDateChange={handleDateChange}
-                                        value={formData.data.value}
+                                        onDateChange={handleDateChange('startData')}
+                                        value={formData.startData.value}
                                         disabled={!isEditing}
-                                        errorMessage={emptyFields.data ? "Este campo é obrigatório" : ""}
+                                        errorMessage={emptyFields.startData ? "Este campo é obrigatório" : ""}
+                                    />
+                                    <DateTimePicker
+                                        label="Data final"
+                                        placeholder="exemplo: 00/00/0000"
+                                        onDateChange={handleDateChange('endData')}
+                                        value={formData.endData.value}
+                                        disabled={!isEditing}
+                                        errorMessage={emptyFields.endData ? "Este campo é obrigatório" : ""}
                                     />
                                     <InputSelect
                                         label="Turno *"
@@ -572,7 +590,10 @@ export default function Programing() {
                                         disabled={!isEditing}
                                         errorMessage={emptyFields.turno ? "Este campo é obrigatório" : ""}
                                     />
-                                    <InputSelect
+                                    
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-1">
+                                <InputSelect
                                         label="Encarregado *"
                                         options={overseers}
                                         onChange={handleFieldChange('encarregado')}
@@ -580,8 +601,6 @@ export default function Programing() {
                                         disabled={!isEditing}
                                         errorMessage={emptyFields.encarregado ? "Este campo é obrigatório" : ""}
                                     />
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-1">
                                     <MultiSelect
                                         label="Profissional(is) *"
                                         options={professionals}
