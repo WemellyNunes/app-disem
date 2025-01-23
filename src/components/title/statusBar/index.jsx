@@ -36,17 +36,17 @@ const StatusBar = ({ requisitionNumber, origin, situation, reopening, onHistoryC
         {/* Botão para Adicionar Relato */}
         <button
           onClick={onAddReportClick}
-          className="flex focus:outline-none items-center justify-center w-5 h-5 md:w-6 md:h-6 border border-primary-light hover:border-blue-400 text-white rounded-full relative " title="Acicionar relatos"
+          className="flex focus:outline-none items-center justify-center p-2 bg-gray-100 text-gray-700 hover:bg-blue-100 rounded-full " title="Acicionar relatos"
         >
-          <span><MdEditNote className="w-4 h-4 text-primary-light  hover:text-blue-400" /></span>
+          <span><MdEditNote className="w-4 h-4 " /></span>
         </button>
 
         {/* Botão para Ver Relatos */}
         <button
           onClick={onViewReportsClick}
-          className="flex  items-center justify-center w-5 h-5 md:w-6 md:h-6 border  border-primary-light hover:border-blue-400 text-white rounded-full focus:outline-none relative " title="Ver relatos"
+          className="flex focus:outline-none items-center justify-center p-2 bg-gray-100 text-gray-700 hover:bg-blue-100 rounded-full  " title="Ver relatos"
         >
-          <span><GoNote className="w-4 h-4  text-primary-light hover:text-blue-400" /></span>
+          <span><GoNote className="w-4 h-4" /></span>
           {reportsCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">
               {reportsCount}
@@ -57,9 +57,9 @@ const StatusBar = ({ requisitionNumber, origin, situation, reopening, onHistoryC
         {/* Botão de Histórico */}
         <button
           onClick={onHistoryClick}
-          className="md:flex hidden items-center justify-center w-5 h-5 md:w-6 md:h-6  border border-primary-light hover:border-blue-400 text-white rounded-full focus:outline-none" title="Histórico"
+          className="flex focus:outline-none items-center justify-center p-2 bg-gray-100 text-gray-700 hover:bg-blue-100 rounded-full " title="Histórico"
         >
-          <span><GiBackwardTime className="w-4 h-4 text-primary-light hover:text-blue-400" /></span>
+          <span><GiBackwardTime className="w-4 h-4" /></span>
         </button>
       </div>
     </div>

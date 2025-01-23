@@ -34,15 +34,11 @@ export default function InfraPage() {
         try {
             const [instituteData, unitData] = await Promise.all([getAllInstitutes(), getAllUnits()]);
 
-            const sortedInstitutes = instituteData.sort((a, b) =>
-                a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-            );
+            const sortedInstitutes = instituteData.sort((a, b) => a.id - b.id);
             setInstitutes(sortedInstitutes);
             setFilteredInstitutes(sortedInstitutes);
 
-            const sortedUnits = unitData.sort((a, b) =>
-                a.unit.toLowerCase().localeCompare(b.unit.toLowerCase())
-            );
+            const sortedUnits = unitData.sort((a, b) => a.id - b.id);
             setUnits(sortedUnits);
             setFilteredUnits(sortedUnits);
         } catch (error) {

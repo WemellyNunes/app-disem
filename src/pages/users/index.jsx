@@ -101,7 +101,7 @@ export default function UserPage() {
                         {users.map((user) => (
                             <div
                                 key={user.id}
-                                className="flex flex-col md:flex-row px-2 py-3.5  text-primary-dark text-sm bg-white border-b border-gray-300 hover:bg-gray-50 uppercase"
+                                className="flex flex-col md:flex-row px-2 py-2  text-primary-dark text-sm bg-white border-b border-gray-300 hover:bg-gray-50 uppercase"
                             >
                                 <div className="flex flex-col md:w-1/2">
                                     <span>{user.name}</span>
@@ -113,10 +113,10 @@ export default function UserPage() {
                                     <span>{user.role}</span>
                                 </div>
                                 <div className="flex items-center space-x-2 justify-end">
-                                    <button onClick={() => handleAction(user, 'edit')} className="text-primary-light hover:text-blue-500">
+                                    <button onClick={() => handleAction(user, 'edit')} className="text-gray-700 bg-gray-100 p-2 rounded-full hover:bg-blue-100  hover:text-blue-500">
                                         <FaEdit />
                                     </button>
-                                    <button onClick={() => handleAction(user, 'delete')} className="text-primary-light hover:text-blue-500">
+                                    <button onClick={() => handleAction(user, 'delete')} className="text-gray-700 bg-gray-100 p-2 rounded-full hover:bg-blue-100  hover:text-blue-500">
                                         <FaTrash />
                                     </button>
                                 </div>

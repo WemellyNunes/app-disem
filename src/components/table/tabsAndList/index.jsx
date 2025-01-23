@@ -71,24 +71,31 @@ const TabsAndList = () => {
         localStorage.setItem('appliedFilters', JSON.stringify(filters));
     };
 
+    useEffect(() => {
+        const savedFilters = JSON.parse(localStorage.getItem('appliedFilters')) || {};
+        setAppliedFilters(savedFilters); 
+    }, []);
+    
+
     const removeFilter = (filterKey, filterValue = null) => {
         setAppliedFilters((prev) => {
             const updatedFilters = { ...prev };
-
+    
             if (filterValue && Array.isArray(updatedFilters[filterKey])) {
                 updatedFilters[filterKey] = updatedFilters[filterKey].filter((item) => item !== filterValue);
-
+    
                 if (updatedFilters[filterKey].length === 0) {
                     delete updatedFilters[filterKey];
                 }
             } else {
                 delete updatedFilters[filterKey];
             }
-            localStorage.setItem('appliedFilters', JSON.stringify(updatedFilters));
-
+    
+            localStorage.setItem('appliedFilters', JSON.stringify(updatedFilters)); // Atualiza o localStorage
             return updatedFilters;
         });
     };
+    
 
     const filterData = () => {
         if (!Array.isArray(osData)) {
@@ -159,7 +166,6 @@ const TabsAndList = () => {
         }        
 
         filtered = filtered.sort((a, b) => {
-            // Verifica se o tipo de tratamento é 'ADM' para priorizar
             if (a.typeTreatment === 'adm' && b.typeTreatment !== 'adm') {
                 return -1; // Coloca 'ADM' no topo
             }
@@ -178,7 +184,7 @@ const TabsAndList = () => {
 
     const handleDeleteItem = (id) => {
         const updatedData = osData.filter(item => item.id !== id);
-        setOsData(updatedData); // Atualiza o estado principal
+        setOsData(updatedData); 
     };    
     
     useEffect(() => {
@@ -278,8 +284,6 @@ const TabsAndList = () => {
                 onDeleteItem={handleDeleteItem}
                 />
             </div>
-
-            
 
             <FilterModal
                 isOpen={isFilterModalOpen}

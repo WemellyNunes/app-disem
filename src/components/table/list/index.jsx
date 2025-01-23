@@ -1,5 +1,6 @@
 import Circle from "../circle";
 import { FaCirclePlus, FaRegClock } from "react-icons/fa6";
+import { FaPlus } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HistoryCard from "../../cards/historyCard";
@@ -26,11 +27,11 @@ const List = ({ filteredData, onDeleteItem }) => {
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
 
     const statusClasses = {
-        'A atender': 'font-medium text-orange-500 bg-orange-100 rounded-md p-1 text-xs',
-        'Em atendimento': 'font-medium text-status-prog bg-status-bgProg rounded-md p-1 text-xs',
-        'Atendida': 'font-medium text-status-resp bg-green-100 rounded-md p-1 text-xs',
-        'Finalizado': 'font-medium text-status-finish bg-status-bgFinish rounded-md p-1 text-xs',
-        'Negada': 'font-medium text-red-600 bg-red-100 rounded-md p-1 text-xs'
+        'A atender': 'font-medium text-white bg-orange-500 rounded-md p-1.5 text-xs',
+        'Em atendimento': 'font-medium text-white bg-blue-700 rounded-md p-1.5 text-xs',
+        'Atendida': 'font-medium text-white bg-green-600 rounded-md p-1.5 text-xs',
+        'Finalizado': 'font-medium text-white bg-gray-500 rounded-md p-1.5 text-xs',
+        'Negada': 'font-medium text-white bg-red-600 rounded-md p-1.5 text-xs'
     };
 
     const fetchHistory = async (orderId) => {
@@ -166,7 +167,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                                 className={`flex flex-col mt-2 md:flex-row p-4 rounded-xl shadow-sm border border-gray-300 hover:border hover:border-primary-light space-y-1 md:space-y-1 bg-white`}
                             >
                                 <div className="flex flex-col md:flex-row w-full justify-between">
-                                    <div className="flex flex-col md:w-1/3 space-y-1 pb-2 md:pb-0 text-primary-dark text-xs ">
+                                    <div className="flex flex-col md:w-1/3 md:space-y-1 pb-1 md:pb-1 text-primary-dark text-xs ">
                                         <span className="flex flex-row flex-wrap">
                                             <p className="font-medium mr-1 ">Requisição:</p>
                                             <p>{item.requisition}</p>
@@ -209,37 +210,37 @@ const List = ({ filteredData, onDeleteItem }) => {
                                     <div className="flex flex-col items-center justify-center py-3 md:py-0  md:w-1/3 md:items-end text-sm">
                                         <button
                                             onClick={() => handleProgramClick(item.id)}
-                                            className="flex flex-col items-center justify-center hover:underline"
+                                            className="flex flex-col items-center justify-center"
                                         >
                                             {(item.status === "Atendida" || item.status === "Finalizado" || item.status === "Negada") ? (
                                                 <>
-                                                    <span className="text-primary-light">Ver atendimento</span>
-                                                    <div>
-                                                        <MdEngineering className="text-primary-light h-4 w-4" />
+                                                    <div className="flex items-center border border-primary-light rounded-md p-2 text-primary-light gap-x-1  hover:bg-blue-100 ">
+                                                        <MdEngineering className="h-4 w-4" />
+                                                        <span className="">Ver atendimento</span>
                                                     </div>
                                                 </>
                                             ) : item.programingId ? (
                                                 <>
-                                                    <span className="text-primary-light">Atender</span>
-                                                    <div>
-                                                        <FiTool className="text-primary-light h-4 w-4" />
+                                                    <div className="flex items-center border border-primary-light rounded-md p-2 text-primary-light gap-x-1  hover:bg-blue-100 ">
+                                                        <FiTool className="h-3.5 w-3.5" />
+                                                        <span className="text-primary-light">Atender</span>
                                                     </div>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <span className="text-primary-light">Sem programação</span>
-                                                    <div>
-                                                        <FaCirclePlus className="text-primary-light h-4 w-4" />
+                                                    <div className="flex items-center border border-primary-light rounded-md p-2 text-primary-light gap-x-1  hover:bg-blue-100 ">
+                                                        <FaPlus className="h-3 w-3"/>
+                                                        <span >Adicionar programação</span>
                                                     </div>
                                                 </>
                                             )}
                                         </button>
                                     </div>
 
-                                    <div className="flex flex-col md:w-1/3 space-y-1 md:items-end text-primary-dark text-xs md:text-sm">
+                                    <div className="flex flex-col md:w-1/3 space-y-2 md:items-end text-primary-dark text-xs md:text-sm">
                                         <span className="flex">
                                             {item.typeTreatment === 'adm' ? (
-                                                <span className="font-bold text-xs text-blue-600">ADM</span>
+                                                <span className="font-bold text-xs text-blue-700">ADM</span>
                                             ) : (
                                                 <Circle prioridade={item.prioridade} />
                                             )}
@@ -251,7 +252,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                                                 onNegate={() => handleNegate(item.id)}
                                             />
                                         </span>
-                                        <div className="hidden md:flex items-center">
+                                        <div className="hidden items-center">
                                             <button onClick={() => handleShowHistory(item.id)} className="flex flex-col">
                                                 <div className="text-primary-light rounded-full hover:bg-status-bgProg" ><MdHistory size={20} /></div>
                                             </button>

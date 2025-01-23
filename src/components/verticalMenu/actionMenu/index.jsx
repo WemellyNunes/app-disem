@@ -11,7 +11,7 @@ const ActionsMenu = ({onEdit, onDelete, onNegate }) => {
 
     return (
         <div className="relative">
-            <button onClick={toggleMenu} className="text-primary-light font-bold text-lg hover:text-blue-900 p-1 rounded-full hover:bg-status-bgProg">
+            <button onClick={toggleMenu} className="text-gray-700 bg-gray-100 font-bold text-lg hover:text-blue-700 hover:bg-blue-100 p-1 rounded-full ">
                 <GoKebabHorizontal/>
             </button>
             {isOpen && (
