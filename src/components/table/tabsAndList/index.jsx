@@ -26,9 +26,8 @@ const TabsAndList = () => {
         const fetchOrders = async () => {
             try {
                 const data = await getAllOrders();
-                console.log("OS Data:", data); // Agora retorna uma lista completa
-    
-                // Realiza o cálculo de impacto e prioridade para cada item
+                console.log("OS Data:", data); 
+
                 const calculatedData = data.map((item) => {
                     const valorRisco = calcularValorRisco(item.classification, item.maintenanceIndicators);
                     const prioridadeCalculada = calcularPrioridade(valorRisco);
@@ -40,10 +39,10 @@ const TabsAndList = () => {
                     };
                 });
     
-                setOsData(calculatedData); // Atualiza o estado com os dados calculados
+                setOsData(calculatedData); 
             } catch (error) {
                 console.error("Erro ao buscar ordens de serviço:", error);
-                setOsData([]); // Garante que o estado seja um array vazio em caso de erro
+                setOsData([]); 
             }
         };
     
@@ -54,12 +53,10 @@ const TabsAndList = () => {
     const handleProgramClick = async (id) => {
         navigate(`/programing/${id}`);
     
-        // Atualiza o estado local para refletir a mudança
         const updatedData = osData.map((item) =>
             item.id === id ? { ...item, programingId: true } : item
         );
         setOsData(updatedData);
-
         setFilteredData(filterData(updatedData));
     };
     
@@ -161,7 +158,18 @@ const TabsAndList = () => {
             }
         }        
 
-        filtered = filtered.sort((a, b) => b.valorRisco - a.valorRisco);
+        filtered = filtered.sort((a, b) => {
+            // Verifica se o tipo de tratamento é 'ADM' para priorizar
+            if (a.typeTreatment === 'adm' && b.typeTreatment !== 'adm') {
+                return -1; // Coloca 'ADM' no topo
+            }
+            if (b.typeTreatment === 'adm' && a.typeTreatment !== 'adm') {
+                return 1; // Coloca 'ADM' no topo
+            }
+        
+            // Caso contrário, ordena pelo valor do risco
+            return b.valorRisco - a.valorRisco;
+        });
 
         return filtered;
     };

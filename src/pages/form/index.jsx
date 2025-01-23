@@ -406,7 +406,7 @@ export default function Form() {
                                 <InputPrimary
                                     label="Solicitante *"
                                     placeholder="Informe o nome do solicitante"
-                                    value={formData.solicitante.value}
+                                    value={formData.solicitante.value.toUpperCase()}
                                     onChange={handleFieldChange('solicitante')}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.solicitante ? "Este campo é obrigatório" : ""}
@@ -425,7 +425,7 @@ export default function Form() {
                                 <InputPrimary
                                     label="Contato (ramal, telefone, email)"
                                     placeholder="Informe o contato (opcional)"
-                                    value={formData.contato.value}
+                                    value={formData.contato.value.toUpperCase()}
                                     onChange={handleFieldChange('contato')}
                                     disabled={!isEditing}
                                 />
@@ -439,7 +439,7 @@ export default function Form() {
                                     label="Objeto de preparo *"
                                     placeholder="Informe a descrição da manutenção"
                                     onChange={handleFieldChange('objetoPreparo')}
-                                    value={formData.objetoPreparo.value}
+                                    value={formData.objetoPreparo.value.toUpperCase()}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.objetoPreparo ? "Este campo é obrigatório" : ""}
                                 />
@@ -496,7 +496,7 @@ export default function Form() {
                                     label="Observação"
                                     placeholder="Escreva uma observação (opcional)"
                                     onChange={handleFieldChange('observacao')}
-                                    value={formData.observacao.value}
+                                    value={formData.observacao.value.toUpperCase()}
                                     disabled={!isEditing}
                                 />
                             </div>

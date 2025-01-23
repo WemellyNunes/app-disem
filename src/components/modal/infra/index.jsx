@@ -210,7 +210,7 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
                             <InputPrimary
                                 label="Nome"
                                 placeholder="Nome do instituto"
-                                value={formDataInstituto.nome.value}
+                                value={formDataInstituto.nome.value.toUpperCase()}
                                 onChange={handleFieldChange("nome", "instituto")}
                                 disabled={isDisabled}
                                 errorMessage={emptyFields.nome ? "Este campo é obrigatório" : ""}
@@ -218,7 +218,7 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
                             <InputPrimary
                                 label="Sigla"
                                 placeholder="Sigla do instituto"
-                                value={formDataInstituto.sigla.value}
+                                value={formDataInstituto.sigla.value.toUpperCase()}
                                 onChange={handleFieldChange("sigla", "instituto")}
                                 disabled={isDisabled}
                                 errorMessage={emptyFields.sigla ? "Este campo é obrigatório" : ""}

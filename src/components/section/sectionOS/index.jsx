@@ -10,12 +10,8 @@ export default function OrderServiceDetails({ orderServiceData, user }) {
         >
             <div className="grid grid-cols-1 md:grid-cols-1 gap-y-4 text-sm text-gray-500 mb-8">
                 <div className="flex flex-row items-center gap-x-2">
-                    <p className="font-medium">Clasificação:</p>
-                    <p className="uppercase">{orderServiceData.classification}</p>
-                </div>
-                <div className="flex flex-row items-center gap-x-2 uppercase">
                     <p className="font-medium">Solicitante:</p>
-                    <p>{orderServiceData.requester}</p>
+                    <p className="uppercase">{orderServiceData.requester}</p>
                 </div>
                 <div className="flex flex-row items-center gap-x-2">
                     <p className="font-medium">Contato:</p>
@@ -35,15 +31,23 @@ export default function OrderServiceDetails({ orderServiceData, user }) {
                 </div>
                 <div className="flex flex-row items-center gap-x-2">
                     <p className="font-medium">Sistema:</p>
-                    <p>{orderServiceData.system}</p>
+                    <p className="uppercase">{orderServiceData.system}</p>
                 </div>
                 <div className="flex flex-row items-center gap-x-2">
                     <p className="font-medium">Unidade da manutenção:</p>
-                    <p>{orderServiceData.maintenanceUnit}</p>
+                    <p className="uppercase">{orderServiceData.maintenanceUnit}</p>
                 </div>
                 <div className="flex flex-row items-center gap-x-2">
                     <p className="mr-1 font-medium">Campus:</p>
-                    <p>{orderServiceData.campus}</p>
+                    <p className="uppercase">{orderServiceData.campus}</p>
+                </div>
+                <div className="flex flex-row items-center gap-x-2">
+                    <p className="font-medium">Tratamento:</p>
+                    <p className="uppercase">{orderServiceData.typeTreatment}</p>
+                </div>
+                <div className="flex flex-row items-center gap-x-2">
+                    <p className="font-medium">Clasificação:</p>
+                    <p className="uppercase">{orderServiceData.classification}</p>
                 </div>
                 <div className="flex flex-row items-center gap-x-2">
                     <p className="mr-1 font-medium">Data do cadastro:</p>

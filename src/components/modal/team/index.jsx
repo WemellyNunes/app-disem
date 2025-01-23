@@ -140,7 +140,7 @@ const TeamModal = ({ onClose, teamData = null }) => {
                         <InputPrimary
                             label="Nome"
                             placeholder="Nome do profissional"
-                            value={formData.nome.value}
+                            value={formData.nome.value.toUpperCase()}
                             onChange={handleFieldChange('nome')}
                             disabled={isDisabled}
                             errorMessage={emptyFields.nome ? "Este campo é obrigatório" : ""}
@@ -148,7 +148,7 @@ const TeamModal = ({ onClose, teamData = null }) => {
                         <InputPrimary
                             label="Cargo"
                             placeholder="Escreva o cargo"
-                            value={formData.cargo.value}
+                            value={formData.cargo.value.toUpperCase()}
                             onChange={handleFieldChange('cargo')}
                             disabled={isDisabled}
                             errorMessage={emptyFields.cargo ? "Este campo é obrigatório" : ""}

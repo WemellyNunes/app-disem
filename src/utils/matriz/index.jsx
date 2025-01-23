@@ -13,14 +13,14 @@ const pesosRisco = {
     retrofit: 6,
     residuos: 7,
     instalacoes: 8,
-    equipamentos_caros: 9,
+    equipamentosCaros: 9,
     qualidadeAr: 10,
-    recursoHidrico: 11,
-    corteenergia: 12,
+    recursosHidrico: 11,
+    corteEnergia: 12,
     normasSeguranca: 13,
     acessibilidade: 14,
-    sistemas: 15,
-    integridade: 16,
+    sistemasIncendio: 15,
+    integridadeEstrutural: 16,
     riscoAcidentes: 17,
 };
 
@@ -34,7 +34,7 @@ export const calcularValorRisco = (classe, indiceRisco) => {
 };
 
 export const calcularPrioridade = (valorRisco) => {
-    if (valorRisco > 45){
+    if (valorRisco >= 45){
         return 'Execução Imediata';
     }
     if (valorRisco >= 35) {

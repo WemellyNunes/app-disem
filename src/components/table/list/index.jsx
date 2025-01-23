@@ -52,13 +52,13 @@ const List = ({ filteredData, onDeleteItem }) => {
 
     const handleDelete = (id) => {
         setActionType('delete');
-        setSelectedId(id); 
+        setSelectedId(id);
         setShowConfirmation(true);
     };
 
     const handleEdit = (id) => {
         setActionType('edit');
-        setSelectedId(id); 
+        setSelectedId(id);
         setShowConfirmation(true);
     };
 
@@ -71,7 +71,7 @@ const List = ({ filteredData, onDeleteItem }) => {
     const handleProgramClick = (id) => {
         navigate(`/programing/${id}`);
     };
-    
+
     const handleConfirmAction = async () => {
         setShowConfirmation(false);
 
@@ -126,7 +126,7 @@ const List = ({ filteredData, onDeleteItem }) => {
             }
         }
     };
-    
+
 
     return (
         <>
@@ -166,7 +166,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                                 className={`flex flex-col mt-2 md:flex-row p-4 rounded-xl shadow-sm border border-gray-300 hover:border hover:border-primary-light space-y-1 md:space-y-1 bg-white`}
                             >
                                 <div className="flex flex-col md:flex-row w-full justify-between">
-                                    <div className="flex flex-col md:w-1/2 space-y-1 pb-2 md:pb-0 text-primary-dark text-xs ">
+                                    <div className="flex flex-col md:w-1/3 space-y-1 pb-2 md:pb-0 text-primary-dark text-xs ">
                                         <span className="flex flex-row flex-wrap">
                                             <p className="font-medium mr-1 ">Requisição:</p>
                                             <p>{item.requisition}</p>
@@ -183,14 +183,15 @@ const List = ({ filteredData, onDeleteItem }) => {
                                             <p className="font-medium mr-1">Manutenção:</p>
                                             <p>{item.typeMaintenance}</p>
                                         </span>
+
+                                    </div>
+
+                                    <div className="flex flex-col md:w-1/2 space-y-1 text-primary-dark text-xs ">
                                         <span className="flex flex-row flex-wrap">
                                             <p className="font-medium mr-1">Sistema:</p>
                                             <p>{item.system}</p>
                                         </span>
-                                    </div>
 
-                                    <div className="flex flex-col md:w-1/3 space-y-1 text-primary-dark text-xs ">
-                                        
                                         <span className="flex flex-row flex-wrap">
                                             <p className="font-medium mr-1">Unidade da manutenção:</p>
                                             <p className="uppercase" >{item.maintenanceUnit}</p>
@@ -237,7 +238,11 @@ const List = ({ filteredData, onDeleteItem }) => {
 
                                     <div className="flex flex-col md:w-1/3 space-y-1 md:items-end text-primary-dark text-xs md:text-sm">
                                         <span className="flex">
-                                            <Circle prioridade={item.prioridade} />
+                                            {item.typeTreatment === 'adm' ? (
+                                                <span className="font-bold text-xs text-blue-600">ADM</span>
+                                            ) : (
+                                                <Circle prioridade={item.prioridade} />
+                                            )}
                                         </span>
                                         <span className="hidden md:flex">
                                             <ActionsMenu
@@ -259,10 +264,10 @@ const List = ({ filteredData, onDeleteItem }) => {
 
                                 </div>
                                 {showHistory && (
-                                    <HistoryCard 
-                                    history={currentHistory} 
-                                    onClose={() => setShowHistory(false)}
-                                    loading={loadingHistory} />
+                                    <HistoryCard
+                                        history={currentHistory}
+                                        onClose={() => setShowHistory(false)}
+                                        loading={loadingHistory} />
                                 )}
                             </div>
                         );
@@ -270,7 +275,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                 ) : (
                     <div className=" flex flex-col items-center justify-center p-4 text-sm text-gray-500">
                         <div>
-                            <TbClipboardOff className="h-6 w-6 text-gray-300"/>
+                            <TbClipboardOff className="h-6 w-6 text-gray-300" />
                         </div>
                         <div>
                             Nenhum registro encontrado

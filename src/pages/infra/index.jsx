@@ -155,7 +155,7 @@ export default function InfraPage() {
         <>
             <div className="flex flex-col">
                 <PageTitle
-                    text="Institutos e Unidades"
+                    text="Unidades e institutos"
                     backgroundColor="bg-white"
                     textColor="text-primary-dark"
                 />

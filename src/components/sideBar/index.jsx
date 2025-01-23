@@ -52,7 +52,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
-                `flex items-center border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <MdOutlineDashboard className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -68,7 +68,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/form"
               className={({ isActive }) =>
-                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <FaFilePen className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -82,7 +82,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/listing"
               className={({ isActive }) =>
-                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <FaRegListAlt className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -98,7 +98,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/team"
               className={({ isActive }) =>
-                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <FaTools className='h-4 w-3.5' /> {/* Ícone com tamanho fixo */}
               <span
@@ -113,7 +113,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/users"
               className={({ isActive }) =>
-                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <FaUsers className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -131,7 +131,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               to="/503"
               onClick={(e) => e.preventDefault()} 
               className={({ isActive }) =>
-                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 cursor-not-allowed ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 cursor-not-allowed ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <BsCart4 className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -147,7 +147,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               to="/503"
               onClick={(e) => e.preventDefault()} 
               className={({ isActive }) =>
-                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 cursor-not-allowed ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 cursor-not-allowed ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <FaSolarPanel className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span
@@ -163,7 +163,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/infraestrutura"
               className={({ isActive }) =>
-                `flex items-center text-primary-dark border-b border-gray-400 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <ImOffice className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span

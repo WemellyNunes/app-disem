@@ -32,9 +32,9 @@ const LocationBarChart = ({ year }) => {
                 const labels = Object.keys(data).map((key) => {
                     if( key === "MARABA") { return 'Marabá'};
                     if ( key === "SANTANA_DO_ARAGUAIA") { return 'Santana do Araguaia'};
-                    if ( key === "XINGUARA") { return 'Xinguara'};
-                    if ( key === "SAO_FELIX_DO_XINGU") { return 'São Fêlix do Xingu'};
-                    if ( key === "RONDON_DO_PARA") { return 'Rondon do Pará'};
+                    if ( key === "XINGUARA") { return 'Xinguará'};
+                    if ( key === "SAO_FELIX_DO_XINGU") { return 'São Félix do Xingu'};
+                    if ( key === "RONDON") { return 'Rondon'};
                     return key;
                 }); // Pegue os nomes dos campi
                 const values = Object.values(data); // Pegue os valores correspondentes

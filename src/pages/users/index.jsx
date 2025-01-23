@@ -91,7 +91,7 @@ export default function UserPage() {
                         <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">Lista de usuários</p>
                         <p className="flex text-sm text-primary-dark mb-2">Total de usuários: {users.length}</p>
                     </div>
-                    <div className="flex text-sm font-medium text-primary-dark md:justify-none justify-between  px-3 border-b border-gray-300 py-2">
+                    <div className="flex text-sm font-medium text-gray-700 md:justify-none justify-between  px-2 border-b border-gray-300 py-2">
                         <p className="flex flex-col md:w-1/2">Nome</p>
                         <p className="flex flex-col md:w-1/2">Email</p>
                         <p className="flex flex-col md:w-1/3">Papel</p>
@@ -101,7 +101,7 @@ export default function UserPage() {
                         {users.map((user) => (
                             <div
                                 key={user.id}
-                                className="flex flex-col md:flex-row px-2 py-3.5  text-primary-dark text-sm bg-white border-b border-gray-300 hover:bg-blue-50 uppercase"
+                                className="flex flex-col md:flex-row px-2 py-3.5  text-primary-dark text-sm bg-white border-b border-gray-300 hover:bg-gray-50 uppercase"
                             >
                                 <div className="flex flex-col md:w-1/2">
                                     <span>{user.name}</span>
