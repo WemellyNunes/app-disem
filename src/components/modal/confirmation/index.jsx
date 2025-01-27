@@ -17,7 +17,7 @@ const ConfirmationModal = ({ title, message, onConfirm, onCancel }) => {
                         Cancelar
                     </ButtonSecondary>
                     <ButtonPrimary onClick={onConfirm}>
-                        Confirmar
+                        Sim
                     </ButtonPrimary>
                 </div>
             </div>

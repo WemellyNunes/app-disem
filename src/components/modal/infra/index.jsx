@@ -183,7 +183,7 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-md shadow-md w-96">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-medium text-primary-light">
+                    <h2 className="font-medium text-primary-dark">
                         {isEditing
                             ? `Editar ${selectedType === "instituto" ? "Instituto" : "Unidade"}`
                             : `Cadastrar ${selectedType === "instituto" ? "Instituto" : "Unidade"}`}

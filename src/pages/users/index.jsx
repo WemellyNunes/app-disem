@@ -78,7 +78,7 @@ export default function UserPage() {
                             setUserToEdit(null);
                             setShowModal(true);
                         }}
-                        className="flex items-center bg-primary-light text-sm text-white px-3 h-8 rounded hover:bg-blue-700 gap-2"
+                        className="flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-700 gap-2"
                     >
 
                         <FaPlus className="h-3 w-3"/> 
@@ -89,7 +89,7 @@ export default function UserPage() {
                 <div className="flex flex-col py-4 rounded-md bg-white px-2 md:px-6">
                     <div className="flex justify-between items-center mb-1">
                         <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">Lista de usuários</p>
-                        <p className="flex text-sm text-primary-dark mb-2">Total de usuários: {users.length}</p>
+                        <p className="flex text-sm text-gray-400mb-2">Total de usuários: {users.length}</p>
                     </div>
                     <div className="flex text-sm font-medium text-gray-700 md:justify-none justify-between  px-2 border-b border-gray-300 py-2">
                         <p className="flex flex-col md:w-1/2">Nome</p>

@@ -29,7 +29,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
 
   return (
     <>
-      <div className={`hidden md:flex flex-col h-1/2 md:h-full bg-gray-600 border-r border-gray-300 md:fixed transition-all duration-300 ${isCollapsed ? 'w-12 md:w-14' : 'w-60'} transform`}>
+      <div className={`hidden md:flex flex-col h-1/2 md:h-full bg-gray-600 border-r border-gray-300 md:fixed transition-all duration-300 ${isCollapsed ? 'w-12 md:w-14' : 'w-60'} transform` }>
         <div className="flex flex-col p-4">
           <div className="flex flex-col">
             <div className="flex items-center justify-start  text-primary-dark mt-2">
@@ -52,7 +52,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
-                `flex items-center border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
+                `flex items-center border-b- border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
               <MdOutlineDashboard className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
               <span

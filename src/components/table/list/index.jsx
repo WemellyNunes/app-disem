@@ -250,6 +250,7 @@ const List = ({ filteredData, onDeleteItem }) => {
                                                 onEdit={() => handleEdit(item.id)}
                                                 onDelete={() => handleDelete(item.id)}
                                                 onNegate={() => handleNegate(item.id)}
+                                                showNegate={item.status === 'A atender'} 
                                             />
                                         </span>
                                         <div className="hidden items-center">

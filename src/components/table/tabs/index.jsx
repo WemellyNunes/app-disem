@@ -9,7 +9,7 @@ const Tabs = ({ activeTab, setActiveTab }) => {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`px-3 md:px-8 py-4 hover:bg-gray-100 ${activeTab === tab
-                            ? 'border-b-2 border-primary-light bg-blue-50 text-primary-light'
+                            ? 'border-b-2 border-primary-light font-bold text-primary-light'
                             : 'text-primary-dark '
                         }`}
                 >

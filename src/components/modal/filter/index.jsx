@@ -93,7 +93,7 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
       <div className="bg-white p-6 mx-4 md:mx-0 rounded-md shadow-lg w-96 max-w-full">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-sm md:text-base font-medium text-primary-light">Filtrar por:</h3>
+          <h3 className="text-sm md:text-base font-medium text-primary-dark">Filtrar por:</h3>
           <button onClick={onClose}>
             <FaTimes className="text-gray-500 hover:text-red-500" />
           </button>

@@ -17,7 +17,7 @@ export default function Login() {
                         <img src="./public/images/disemLogo.png" alt="" />
                     </div>
                     <div className="flex flex-col items-center mb-10">
-                        <h2 className="text-3xl font-semibold text-primary-light">Acesse sua conta</h2>
+                        <h2 className="text-3xl font-semibold text-gray-700">Acesse sua conta</h2>
                         <p className="text-lg font-light text-primary-dark">Realize seu login e bom trabalho!</p>
                     </div>
                     <div className="flex flex-col p-8 h-full w-96 max-w-xs md:max-w-md rounded-md bg-white border border-primary-light">

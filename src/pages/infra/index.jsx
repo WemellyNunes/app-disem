@@ -56,7 +56,8 @@ export default function InfraPage() {
             setFilteredUnits(
                 term
                     ? units.filter((unit) =>
-                          unit.unit.toLowerCase().includes(term.toLowerCase())
+                          unit.unit.toLowerCase().includes(term.toLowerCase()) || 
+                          unit.campus.toLowerCase().includes(term.toLowerCase())
                       )
                     : units
             );
@@ -64,7 +65,8 @@ export default function InfraPage() {
             setFilteredInstitutes(
                 term
                     ? institutes.filter((institute) =>
-                          institute.name.toLowerCase().includes(term.toLowerCase())
+                          institute.name.toLowerCase().includes(term.toLowerCase()) ||
+                          institute.acronym.toLowerCase().includes(term.toLowerCase())
                       )
                     : institutes
             );
@@ -157,13 +159,13 @@ export default function InfraPage() {
                 />
 
                 <div className="pt-3 px-2 md:px-6">
-                    <div className="flex flex-row gap-x-2 mb-3">
+                    <div className="flex flex-row gap-x-2 mb-4">
                         <SearchInput
                             placeholder="Buscar..."
                             onSearch={handleSearch}
                         />
                         <button
-                            className="flex items-center bg-primary-light text-sm text-white px-3 h-8 rounded hover:bg-blue-700 gap-2"
+                            className="flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-700 gap-2"
                             onClick={() => {
                                 setShowModal(true);
                                 setSelectedData(null); 

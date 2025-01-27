@@ -97,6 +97,36 @@ const MobileMenu = ({ isOpen, toggleMenu }) => {
               </NavLink>
             </li>
             <li className="border-b">
+              <NavLink
+                to="/team"
+                className={({ isActive }) =>
+                  `block px-4 py-2 ${
+                    isActive
+                      ? "text-white bg-blue-700 hover:bg-blue-800"
+                      : "text-primary-dark text-sm hover:bg-blue-50"
+                  }`
+                }
+                onClick={toggleMenu}
+              >
+                Equipe
+              </NavLink>
+            </li>
+            <li className="border-b">
+              <NavLink
+                to="/infraestrutura"
+                className={({ isActive }) =>
+                  `block px-4 py-2 ${
+                    isActive
+                      ? "text-white bg-blue-700 hover:bg-blue-800"
+                      : "text-primary-dark text-sm hover:bg-blue-50"
+                  }`
+                }
+                onClick={toggleMenu}
+              >
+                Unidades e institutos
+              </NavLink>
+            </li>
+            <li className="border-b">
               {/* Botão para sair */}
               <button
                 className="block w-full text-left px-4 py-2 text-primary-dark text-sm hover:bg-blue-50"

@@ -210,7 +210,7 @@ const TabsAndList = () => {
                 
                 <button
                     onClick={() => navigate("../form")}
-                    className="flex items-center gap-2 bg-primary-light text-white px-3 md:px-4 h-8 rounded hover:bg-blue-700"
+                    className="flex items-center gap-2 bg-primary-light text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-700"
                 >
                     <span>
                         <FaPlus className='h-3 w-3' />
@@ -219,7 +219,7 @@ const TabsAndList = () => {
                 </button>
                 <button
                     onClick={() => setIsFilterModalOpen(true)}
-                    className="flex items-center gap-2 bg-white text-primary-light border border-primary-light px-3 md:px-4 h-8 rounded hover:bg-blue-100 hover:border-primary-light"
+                    className="flex items-center gap-2 bg-white text-primary-light border border-primary-light px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-100 hover:border-primary-light"
                 >
                     <span>
                         <FaSlidersH className='h-3 w-3' />
@@ -251,7 +251,7 @@ const TabsAndList = () => {
                 })}
             </div>
 
-            <div className="w-full overflow-auto px-2 md:px-6">
+            <div className="w-full overflow-auto px-2 md:px-6 mt-2">
                 <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
 

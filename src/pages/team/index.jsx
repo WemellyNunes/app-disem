@@ -173,14 +173,14 @@ export default function TeamPage() {
 
                         />
                         <button
-                            className='flex items-center bg-primary-light text-sm text-white px-3 h-8 rounded hover:bg-blue-700 gap-2'
+                            className='flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-700 gap-2'
                             onClick={handleOpenModal}
                         >
                             <span><FaPlus className='h-3 w-3' /></span>
-                            <span className='hidden md:flex flex-wrap' >Novo profissional</span>
+                            <span className='hidden md:flex flex-wrap' >Cadastrar</span>
                         </button>
                         <div className='flex gap-x-2 items-center'>
-                            <label className='flex items-center border border-primary-light text-primary-light text-sm bg-white px-3 h-8 rounded hover:bg-blue-100 gap-2 cursor-pointer'>
+                            <label className='flex items-center border border-primary-light text-primary-light text-sm bg-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-100 gap-2 cursor-pointer'>
                                 <span><FaUpload className='h-3 w-3' /></span>
                                 <span className='hidden md:flex'>Enviar planilha</span>
                                 <input
@@ -192,14 +192,14 @@ export default function TeamPage() {
                                     id='fileUpload'
                                 />
                             </label>
-                            <span className='flex text-xs md:text-sm text-primary-dark flex-wrap'>Envie uma planilha com novos profissionais</span>
+                            <span className='flex text-xs md:text-sm text-gray-500 flex-wrap'>Envie uma planilha com novos profissionais</span>
                         </div>
                     </div>
 
                     <div className="flex flex-col py-4 rounded-md bg-white">
                         <div className="flex justify-between items-center mb-1">
                             <p className="text-sm md:text-base font-medium text-gray-800 mt-3 mb-6">Lista de profissionais</p>
-                            <p className="flex text-sm text-primary-dark mb-2">Total de profissionais: {filteredData.length}</p>
+                            <p className="flex text-sm text-gray-500 mb-2">Total de profissionais: {filteredData.length}</p>
                         </div>
                         <div className="flex text-sm font-medium text-gray-700 md:justify-none justify-between px-2 border-b border-gray-300 py-2">
                             <p className='flex flex-col md:w-1/12'>ID</p>
@@ -245,7 +245,7 @@ export default function TeamPage() {
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-center text-sm text-primary-dark py-4">
+                                <div className="text-center text-sm text-gray-500 py-4">
                                     Nenhum registro encontrado.
                                 </div>
                             )}
