@@ -15,7 +15,7 @@ const SearchInput = ({ placeholder, onSearch }) => {
     };
 
     return (
-        <div className={`flex items-center bg-white border border-gray-300 hover:border-primary-light px-2 rounded-lg transition-all duration-300 ease-in-out ${isExpanded ? 'w-full' : 'w-9'} md:w-1/2`}>
+        <div className={`flex items-center bg-white border border-gray-300 hover:border-primary-light h-9 px-2 rounded-lg transition-all outline-blue-500 duration-300 ease-in-out ${isExpanded ? 'w-full' : 'w-9'} md:w-1/2`}>
             <FaSearch
                 className="text-primary-light cursor-pointer h-3 w-3"
                 onClick={toggleExpand}
