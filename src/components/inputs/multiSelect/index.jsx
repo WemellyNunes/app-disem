@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const MultiSelect = ({ label, options, onChange, disabled, selectedValues = [], className, errorMessage }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
     const handleToggle = () => {
-        setIsOpen((prev) => !prev); // Alterna a visibilidade
+        setIsOpen((prev) => !prev);
     };
 
     const handleSelectOption = (option) => {
@@ -18,13 +19,30 @@ const MultiSelect = ({ label, options, onChange, disabled, selectedValues = [], 
             updatedSelections = [...selectedValues, option];
         }
 
-        onChange(updatedSelections); // Passa as opções atualizadas para o componente pai
+        onChange(updatedSelections);
     };
 
     const isSelected = (option) => selectedValues.some((item) => item.value === option.value);
 
+    // Fechar ao clicar fora
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isOpen]);
+
     return (
-        <div className="w-full mb-4">
+        <div className="w-full mb-4" ref={dropdownRef}>
             <label className="block text-primary-dark text-xs md:text-sm font-normal mb-2">
                 {label}
             </label>

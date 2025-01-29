@@ -16,7 +16,7 @@ const ListInstitute = ({ filteredData, handleEditClick, handleDeleteClick }) => 
             </div>
             <div className="flex flex-col">
                 {filteredData.length > 0 ? (
-                    filteredData.map((institute) => ( // Renomeado para `institute`
+                    filteredData.map((institute) => (
                         <div
                             key={institute.id}
                             className="flex flex-col md:items-center md:flex-row px-2 py-2 text-primary-dark text-sm bg-white border-b border-gray-300 hover:bg-gray-50 uppercase"

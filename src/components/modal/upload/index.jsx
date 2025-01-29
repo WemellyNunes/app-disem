@@ -27,13 +27,11 @@ const UploadModal = ({ isOpen, onClose, onUpload, initialFiles = [], initialDesc
 
     const handleUpload = () => {
         if (editIndex !== null) {
-            // Edição de arquivo existente
             if (description.trim() === "") {
                 alert("A descrição é obrigatória para editar um arquivo.");
                 return;
             }
         } else if (files.length === 0) {
-            // Novo upload exige arquivos
             alert("Selecione ao menos um arquivo para fazer o upload.");
             return;
         }

@@ -11,7 +11,7 @@ import { createInstitute, updateInstitute, createUnit, getAllUnits, updateUnit} 
 
 
 const InfraModal = ({ onClose, data = null, isEditing = false }) => {
-    const [selectedType, setSelectedType] = useState("instituto"); // Define se é Instituto ou Unidade
+    const [selectedType, setSelectedType] = useState("instituto");
     const [formDataInstituto, setFormDataInstituto] = useState({
         nome: { value: "", required: true },
         sigla: { value: "", required: true },
@@ -161,7 +161,7 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
     
             setTimeout(() => {
                 setShowMessageBox(false);
-                onClose(updatedItem, selectedType); // Passa o item atualizado ao pai
+                onClose(updatedItem, selectedType); 
             }, 1000);
         } catch (error) {
             setMessageContent({
@@ -175,10 +175,6 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
         }
     };
     
-    
-    
-
-
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-md shadow-md w-96">

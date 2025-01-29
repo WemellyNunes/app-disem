@@ -43,19 +43,9 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                 const newFiles = validFiles.map((file) => ({ file, description }));
                 
                 if (uploadType === "image") {
-                    // Atualiza o estado acumulando os arquivos
                     const updatedFiles = [...uploadedFiles, ...newFiles];
                     setUploadedFiles(updatedFiles);
-                    await onFilesUpload(updatedFiles); // Passa todos os arquivos
-                } else if (uploadType === "document" && orderServiceId) {
-                    for (const file of validFiles) {
-                        const response = await uploadDocument(file, orderServiceId);
-                        console.log("Documento carregado com sucesso:", response);
-                        setUploadedFiles((prevFiles) => [
-                            ...prevFiles,
-                            { file, description, id: response.id },
-                        ]);
-                    }
+                    await onFilesUpload(updatedFiles); 
                 } else {
                     console.error("Tipo de upload ou ID inválido.");
                 }
@@ -109,7 +99,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
             setShowConfirmModal(false);
             setShowMessageBox(true);
             setTimeout(() => setShowMessageBox(false), 1200);
-            setImageToDelete(null); // Reseta o estado
+            setImageToDelete(null); 
         }
     };
     
@@ -138,16 +128,16 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
     
 
     const handleEditFile = async (file, description, index) => {
-        const fileId = uploadedFiles[index]?.id; // Recupera o ID da imagem para atualização
+        const fileId = uploadedFiles[index]?.id; 
         if (!fileId) {
             console.error("ID da imagem não encontrado.");
             return;
         }
     
         const payload = {
-            nameFile: file.name, // Nome do arquivo
-            description: description || "", // Descrição atualizada
-            observation: "Observação atualizada", // Qualquer outra informação relevante
+            nameFile: file.name, 
+            description: description || "", 
+            observation: "Observação atualizada", 
         };
     
         try {

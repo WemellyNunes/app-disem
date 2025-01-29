@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://18.230.17.37:8080/api',
+  baseURL: 'http://localhost:8080/api',
 });
 
 export const createOrder = async (orderData) => {
@@ -111,11 +111,7 @@ export const updateOpenDays = async (orderServiceId) => {
 };
 
 
-export const uploadDocument = async (file, orderServiceId) => {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('orderServiceId', orderServiceId);
-
+export const uploadDocument = async (formData) => {
   try {
     const response = await api.post('/uploadDocument', formData, {
       headers: {
@@ -124,10 +120,11 @@ export const uploadDocument = async (file, orderServiceId) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Erro ao fazer upload do documento:", error);
+    console.error("Erro ao fazer upload do documento:", error.response?.data || error);
     throw error;
   }
 };
+
 
 export const getDocumentsByOrderServiceId = async (orderServiceId) => {
   try {
@@ -137,6 +134,15 @@ export const getDocumentsByOrderServiceId = async (orderServiceId) => {
       return response.data;
   } catch (error) {
       console.error("Erro ao buscar documentos:", error);
+      throw error;
+  }
+};
+
+export const deleteDocument = async (documentId) => {
+  try {
+      await api.delete(`/document/${documentId}`);
+  } catch (error) {
+      console.error("Erro ao excluir documento:", error);
       throw error;
   }
 };
@@ -329,6 +335,8 @@ export const deleteImage = async (id) => {
       throw error;
   }
 };
+
+
 
 export const updateImage = async (id, payload) => {
   try {

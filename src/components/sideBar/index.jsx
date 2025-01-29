@@ -46,15 +46,14 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
           </div>
         </div>
 
-        <div className="mt-2">
-          {/* Menu Options */}
+        <div className="mt-9">
           <div className="flex flex-col">
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
                 `flex items-center border-b- border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <MdOutlineDashboard className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
+              <MdOutlineDashboard className='h-4 w-4' /> 
               <span
                 className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
                   }`}
@@ -70,7 +69,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <FaFilePen className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
+              <FaFilePen className='h-4 w-4' /> 
               <span
                 className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
                   }`}
@@ -84,7 +83,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <FaRegListAlt className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
+              <FaRegListAlt className='h-4 w-4' /> 
               <span
                 className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
                   }`}
@@ -100,7 +99,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <FaTools className='h-4 w-3.5' /> {/* Ícone com tamanho fixo */}
+              <FaTools className='h-4 w-3.5' />
               <span
                 className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
                   }`}
@@ -109,13 +108,12 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               </span>
             </NavLink>
 
-
             <NavLink
               to="/users"
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <FaUsers className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
+              <FaUsers className='h-4 w-4' /> 
               <span
                 className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
                   }`}
@@ -133,7 +131,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 cursor-not-allowed ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <BsCart4 className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
+              <BsCart4 className='h-4 w-4' /> 
               <span
                 className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
                   }`}
@@ -149,7 +147,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 cursor-not-allowed ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <FaSolarPanel className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
+              <FaSolarPanel className='h-4 w-4' /> 
               <span
                 className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
                   }`}
@@ -165,7 +163,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-gray-500 px-4 py-4 hover:bg-gray-300 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <ImOffice className='h-4 w-4' /> {/* Ícone com tamanho fixo */}
+              <ImOffice className='h-4 w-4' /> 
               <span
                 className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
                   }`}
@@ -173,14 +171,11 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
                 Unidades/institutos 
               </span>
             </NavLink>
-
-            
           </div>
-
         </div>
 
         <div className="flex items-center justify-center p-4 mt-auto cursor-pointer text-white hover:bg-gray-300 hover:text-gray-700" onClick={handleLogoutClick}>
-          <RiLogoutCircleRLine className="h-5 w-5" /> {/* Ícone com tamanho fixo */}
+          <RiLogoutCircleRLine className="h-5 w-5" /> 
           <span
             className={`font-medium transition-all duration-300 ease-in-out transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] text-sm w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto ml-2'
               }`}
@@ -190,7 +185,6 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
         </div>
 
       </div>
-      {/* Modal de confirmação */}
       {
         showModal && (
           <ConfirmationModal

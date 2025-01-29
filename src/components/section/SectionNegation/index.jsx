@@ -29,7 +29,7 @@ const NegationSection = ({orderServiceId}) => {
           setFormData({
             conteudo: { value: negation.content || "", required: true },
           });
-          setIsSaved(true); // Define como salvo
+          setIsSaved(true); 
         }
       } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -37,7 +37,7 @@ const NegationSection = ({orderServiceId}) => {
           setFormData({
             conteudo: { value: "", required: true },
           });
-          setIsSaved(false); // Define como não salvo
+          setIsSaved(false); 
         } else {
           console.error("Erro ao buscar os dados da negação:", error);
         }
@@ -88,7 +88,7 @@ const NegationSection = ({orderServiceId}) => {
         if (!validateFields()) {
           setMessageContent({ type: "error", title: "Erro.", message: "Este campo é obrigatório." });
           setShowMessageBox(true);
-          setTimeout(() => setShowMessageBox(false), 1000);
+          setTimeout(() => setShowMessageBox(false), 1500);
           return;
         }
     
@@ -106,7 +106,7 @@ const NegationSection = ({orderServiceId}) => {
           setIsSaved(true);
           setMessageContent({ type: "success", title: "Sucesso.", message: "Negação salva com sucesso!" });
           setShowMessageBox(true);
-          setTimeout(() => setShowMessageBox(false), 1000);
+          setTimeout(() => setShowMessageBox(false), 1500);
         
         } catch (error) {
           setMessageContent({
@@ -115,7 +115,7 @@ const NegationSection = ({orderServiceId}) => {
             message: error.response?.data || "Erro ao negar a ordem de serviço.",
           });
           setShowMessageBox(true);
-          setTimeout(() => setShowMessageBox(false), 1000);
+          setTimeout(() => setShowMessageBox(false), 1500);
           console.error("Erro ao negar:", error);
         } finally {
           setIsSaving(false);
@@ -134,7 +134,7 @@ const NegationSection = ({orderServiceId}) => {
       });
     } finally {
       setShowMessageBox(true);
-      setTimeout(() => setShowMessageBox(false), 1000);
+      setTimeout(() => setShowMessageBox(false), 1500);
     }
   };
 

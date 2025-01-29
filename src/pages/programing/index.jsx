@@ -124,7 +124,6 @@ export default function Programing() {
 
             try {
                 const notes = await getNotesByProgramingId(programingId); 
-                console.log("Relatos carregados:", notes); 
                 const formattedReports = notes.map((note) => ({
                     id: note.id,
                     usuario: note.usuario || "Desconhecido",
@@ -152,8 +151,6 @@ export default function Programing() {
         try {
             const createdNote = await createNote(noteData);
 
-            console.log("relato:", noteData)
-
             const reportWithUser = {
                 usuario: user.name,
                 texto: createdNote.content,
@@ -164,7 +161,6 @@ export default function Programing() {
             setShowAddReport(false);
 
         } catch (error) {
-
             console.error("Erro ao adicionar relato:", error);
         }
     };
@@ -239,7 +235,6 @@ export default function Programing() {
                 }
 
                 const orderData = await getOrderById(id);
-                console.log("Dados da OS carregados:", orderData);
                 setOrderServiceData(orderData);
 
                 setStatus(orderData.status);
@@ -275,7 +270,6 @@ export default function Programing() {
                     }));
 
                     setProgramingId(orderData.programingId);
-                    console.log("Programing ID definido em fetchOrderData:", orderData.programingId);
                     setIsSaved(true);
                     setIsEditing(false);
                 }
@@ -287,7 +281,7 @@ export default function Programing() {
                     message: error.message || 'Não foi possível carregar os dados.',
                 });
                 setShowMessageBox(true);
-                setTimeout(() => setShowMessageBox(false), 1000);
+                setTimeout(() => setShowMessageBox(false), 1500);
             }
         };
         fetchOrderData();
@@ -322,15 +316,13 @@ export default function Programing() {
                 message: 'Por favor, preencha todos os campos obrigatórios.'
             });
             setShowMessageBox(true);
-            setTimeout(() => setShowMessageBox(false), 1000);
+            setTimeout(() => setShowMessageBox(false), 1500);
             return;
         }
 
         try {
             const formattedDate1 = formData.startData.value.split('/').reverse().join('-');
             const formattedDate2 = formData.endData.value.split('/').reverse().join('-');
-
-           
 
             const programingData = {
                 orderService_id: id,
@@ -377,7 +369,7 @@ export default function Programing() {
                 message: "Programação salva com sucesso!",
             });
             setShowMessageBox(true);
-            setTimeout(() => setShowMessageBox(false), 1000);
+            setTimeout(() => setShowMessageBox(false), 1500);
 
             const programingDataReloaded = await getProgramingById(newProgramingId);
             const selectedProfessionals = programingDataReloaded.worker.split(', ').map(worker => {
@@ -398,6 +390,7 @@ export default function Programing() {
                 message: 'Erro ao salvar a programação.'
             });
             setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 1500);
         }
     };
 
@@ -446,6 +439,7 @@ export default function Programing() {
                 message: "Não foi possível excluir a programação. Tente novamente.",
             });
             setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 1500);
         }
     };
 
@@ -462,7 +456,6 @@ export default function Programing() {
         setFormData((prevData) => {
             const updatedData = { ...prevData, [field]: { ...prevData[field], value: date } };
     
-            // Atualiza o estado dos campos obrigatórios
             setEmptyFields((prevEmptyFields) => {
                 const updatedEmptyFields = { ...prevEmptyFields };
                 if (date) {
@@ -491,6 +484,12 @@ export default function Programing() {
             setIsMaintenanceClosed(orderServiceData.status === "Finalizado");
         }
     }, [orderServiceData]);
+
+    const handleKeyNumber = (event) => {
+        if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+            event.preventDefault();
+        }
+    };
 
     if (!orderServiceData) {
         return <p>Carregando dados da OS...</p>;
@@ -614,12 +613,13 @@ export default function Programing() {
                                         placeholder="Informe"
                                         value={formData.custo.value}
                                         onChange={handleFieldChange('custo')}
+                                        onKeyDown={handleKeyNumber}
                                         disabled={!isEditing}
                                     />
                                     <InputPrimary
                                         label="Observação"
                                         placeholder="Escreva uma observação (opcional)"
-                                        value={formData.observacao.value || 'sem observação'}
+                                        value={formData.observacao.value}
                                         onChange={handleFieldChange('observacao')}
                                         disabled={!isEditing}
                                     />

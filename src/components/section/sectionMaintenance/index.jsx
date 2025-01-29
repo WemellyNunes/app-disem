@@ -18,7 +18,6 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
     const [isSaved, setIsSaved] = useState(false);
     const [isAdvancing, setIsAdvancing] = useState(false);
 
-
     const { user, setUser } = useUser();
 
     const programingId = orderServiceData?.programingId || null;
@@ -79,7 +78,6 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
 
                 return updatedEmptyFields;
             });
-
             return updatedData;
         });
     };
@@ -118,12 +116,11 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
         }
 
         try {
-            // Upload dos arquivos "antes da manutenção"
             if (formData.filesBefore.value.length > 0) {
                 const uploadedFilesBefore = await Promise.all(
                     formData.filesBefore.value.map(async (fileObj) => {
                         const response = await uploadFiles(
-                            [fileObj], // Envia o arquivo
+                            [fileObj], 
                             programingId,
                             "antes",
                             fileObj.description,
@@ -147,12 +144,11 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 }));
             }
 
-            // Upload dos arquivos "após a manutenção"
             if (formData.filesAfter.value.length > 0) {
                 const uploadedFilesAfter = await Promise.all(
                     formData.filesAfter.value.map(async (fileObj) => {
                         const response = await uploadFiles(
-                            [fileObj], // Envia o arquivo
+                            [fileObj], 
                             programingId,
                             "depois",
                             fileObj.description,
@@ -186,8 +182,8 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
             });
             setShowMessageBox(true);
 
-            onMaintenanceSave(); // Notifica o componente pai que a manutenção foi salva
-            setTimeout(() => setShowMessageBox(false), 1200);
+            onMaintenanceSave();
+            setTimeout(() => setShowMessageBox(false), 1500);
         } catch (error) {
             setMessageContent({
                 type: "error",
@@ -195,6 +191,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 message: "Ocorreu um erro ao salvar os dados da manutenção. Tente novamente.",
             });
             setShowMessageBox(true);
+            setTimeout(() => setShowMessageBox(false), 1500);
             console.error("Erro ao salvar manutenção:", error);
         }
     };
@@ -205,8 +202,6 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
 
             try {
                 const files = await getAllImages(programingId);
-
-                // Separar arquivos "antes" e "depois" com base no `type`
                 const filesBefore = files.filter((file) => file.type === "antes");
                 const filesAfter = files.filter((file) => file.type === "depois");
 
@@ -216,7 +211,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                             id: f.id,
                             file: {
                                 name: f.nameFile,
-                                content: f.content, // Adiciona o conteúdo Base64
+                                content: f.content, 
                                 description: f.description
                             },
                             description: f.description,
@@ -228,7 +223,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                             id: f.id,
                             file: {
                                 name: f.nameFile,
-                                content: f.content, // Adiciona o conteúdo Base64
+                                content: f.content, 
                                 description: f.description
                             },
                             description: f.description,
@@ -267,7 +262,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 <InputUpload
                     label="Anexar arquivo(s)"
                     initialFiles={formData.filesBefore.value || []}
-                    onFilesUpload={(filesWithDescriptions) => handleFieldChange("filesBefore")(filesWithDescriptions)} // Atualiza o estado
+                    onFilesUpload={(filesWithDescriptions) => handleFieldChange("filesBefore")(filesWithDescriptions)} 
                     errorMessage={emptyFields.filesBefore ? "Este campo é obrigatório" : ""}
                     disabled={!isEditing}
                 />
@@ -277,7 +272,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 <InputUpload
                     label="Anexar arquivo(s)"
                     initialFiles={formData.filesAfter.value || []}
-                    onFilesUpload={(filesWithDescriptions) => handleFieldChange("filesAfter")(filesWithDescriptions)} // Atualiza o estado
+                    onFilesUpload={(filesWithDescriptions) => handleFieldChange("filesAfter")(filesWithDescriptions)} 
                     errorMessage={emptyFields.filesAfter ? "Este campo é obrigatório" : ""}
                     disabled={!isEditing}
                 />

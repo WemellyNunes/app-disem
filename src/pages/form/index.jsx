@@ -5,17 +5,18 @@ import { useUser } from "../../contexts/user";
 import InputSelect from "../../components/inputs/inputSelect";
 import InputPrimary from "../../components/inputs/inputPrimary";
 import RadioInput from "../../components/inputs/radioInput";
-import InputUpload from "../../components/inputs/inputUpload";
 import ButtonPrimary from "../../components/buttons/buttonPrimary";
 import ButtonSecondary from "../../components/buttons/buttonSecondary";
 import MessageBox from "../../components/box/message";
 import PageTitle from "../../components/title";
 import Loading from "../../components/modal/loading";
 import MessageCard from "../../components/cards/menssegeCard";
+import UploadModalFiles from "../../components/modal/uploadFiles";
+import DocumentList from "../../components/documents";
 
 import { origin, classification, options, system, indicesRisco, maintence } from "../../utils/constants/selectOptions";
 import { calcularValorRisco, calcularPrioridade } from "../../utils/matriz";
-import { createOrder, updateOrder, uploadDocument, getOrderById, getDocumentsByOrderServiceId, getAllInstitutes, getAllUnits } from "../../utils/api/api";
+import { createOrder, updateOrder, getOrderById, getAllInstitutes, getAllUnits, getDocumentsByOrderServiceId } from "../../utils/api/api";
 
 export default function Form() {
     const { id } = useParams();
@@ -23,7 +24,6 @@ export default function Form() {
     const navigate = useNavigate();
 
     const [orderId, setOrderId] = useState(null);
-    const [selectedFiles, setSelectedFiles] = useState([]);
     const [emptyFields, setEmptyFields] = useState({});
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
@@ -32,9 +32,11 @@ export default function Form() {
     const [isSaved, setIsSaved] = useState(false);
     const [status, setStatus] = useState("A atender");
     const [isLoading, setIsLoading] = useState(false);
-    const [uploadedDocuments, setUploadedDocuments] = useState([]);
     const [institutes, setInstitutes] = useState([]);
     const [units, setUnits] = useState([]);
+    const [documents, setDocuments] = useState([]);
+    const [uploadedFiles, setUploadedFiles] = useState([]); 
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         selectedOption: { value: 'comum', required: false },
@@ -55,6 +57,25 @@ export default function Form() {
         objetoPreparo: { value: '', required: true },
     });
 
+
+    useEffect(() => {
+        if (orderId) {
+            fetchDocuments(orderId);
+        }
+    }, [orderId]);
+
+    const fetchDocuments = async (orderId) => {
+        try {
+            console.log(`📂 Buscando documentos para OS ID: ${orderId}`);
+            const response = await getDocumentsByOrderServiceId(orderId);
+            setDocuments(response);
+            console.log("📂 Documentos encontrados:", response);
+        } catch (error) {
+            console.error("❌ Erro ao buscar documentos:", error);
+        }
+    };
+
+    
     useEffect(() => {
         const fetchInstitutes = async () => {
             try {
@@ -93,18 +114,6 @@ export default function Form() {
     }, []);
 
 
-    const handleFileChange = (files) => {
-        setSelectedFiles(files);
-        setUploadedDocuments((prev) => [...prev, ...files]);
-    };
-
-    useEffect(() => {
-        if (id) {
-            setIsCreating(false);
-            setIsEditing(true);
-            fetchOrderData(id);
-        }
-    }, [id]);
 
     useEffect(() => {
         document.body.classList.add("bg-form-page");
@@ -113,6 +122,14 @@ export default function Form() {
             document.body.classList.remove("bg-form-page");
         };
     }, []);
+
+    useEffect(() => {
+        if (id) {
+            setIsCreating(false);
+            setIsEditing(true);
+            fetchOrderData(id);
+        }
+    }, [id]);
 
     const fetchOrderData = async (id) => {
         try {
@@ -134,42 +151,17 @@ export default function Form() {
                 observacao: { ...prevData.observacao, value: response.observation },
                 objetoPreparo: { ...prevData.objetoPreparo, value: response.preparationObject },
                 indiceRisco: { ...prevData.indiceRisco, value: response.maintenanceIndicators },
-                documento: { ...prevData.documento, value: response.documents }
+                
 
             }));
-            const documents = await getDocumentsByOrderServiceId(id);
-            setUploadedDocuments(
-                documents.map((doc) => ({
-                    file: {
-                        name: doc.nameFile,
-                        size: doc.size,
-                        content: doc.content
-                    },
-                    description: doc.description || "Sem descrição",
-                }))
-            );
+
             setEmptyFields({});
         } catch (error) {
             console.error("Erro ao carregar os dados da ordem de serviço:", error);
         }
     };
-
-    useEffect(() => {
-        if (orderId) {
-            handleUpload();
-        }
-    }, [orderId]);
-
-    const handleUpload = async () => {
-        try {
-            for (const fileItem of selectedFiles) {
-                await uploadDocument(fileItem.file, orderId);
-            }
-            console.log("Documentos carregados com sucesso.");
-        } catch (error) {
-            console.error("Erro ao fazer upload dos documentos:", error);
-        }
-    };
+    
+    
 
     const handleFieldChange = (field) => (value) => {
         setFormData((prevData) => {
@@ -246,7 +238,6 @@ export default function Form() {
             system: formData.sistema.value,
             typeMaintenance: formData.manutencao.value,
             typeTreatment: formData.selectedOption.value,
-            documento: "uploads/images",
             status,
             date: new Date().toISOString().split("T")[0],
             modificationDate: new Date().toISOString().split("T")[0]
@@ -257,7 +248,7 @@ export default function Form() {
         if (!validateFields()) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
             setShowMessageBox(true);
-            setTimeout(() => setShowMessageBox(false), 1000);
+            setTimeout(() => setShowMessageBox(false), 1500);
             return;
         }
 
@@ -267,13 +258,16 @@ export default function Form() {
             const ordemDeServico = getOrderData();
             const response = await createOrder(ordemDeServico);
 
-            if (response) {
-                setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço criada com sucesso.` });
-                setShowMessageBox(true);
+            if (response && response.id) {
+                console.log("✅ OS criada com sucesso. ID:", response.id);
                 setOrderId(response.id);
                 setIsSaved(true);
                 setIsCreating(false);
                 setIsEditing(false);
+                setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço criada com sucesso.` });
+                setShowMessageBox(true);
+            } else {
+                throw new Error("Erro ao criar OS. Nenhum ID retornado.");
             }
         } catch (error) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Não foi possível salvar a ordem de serviço.' });
@@ -281,7 +275,7 @@ export default function Form() {
             console.error("Erro ao salvar a ordem de serviço:", error);
         } finally {
             setIsLoading(false);
-            setTimeout(() => setShowMessageBox(false), 1000);
+            setTimeout(() => setShowMessageBox(false), 1500);
         }
     };
 
@@ -299,7 +293,7 @@ export default function Form() {
         if (!validateFields()) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Por favor, preencha todos os campos obrigatórios.' });
             setShowMessageBox(true);
-            setTimeout(() => setShowMessageBox(false), 1000);
+            setTimeout(() => setShowMessageBox(false), 1500);
             return;
         }
 
@@ -310,12 +304,15 @@ export default function Form() {
             const response = await updateOrder(orderId, ordemDeServico);
 
             if (response) {
-                setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Ordem de serviço atualizada com sucesso.' });
-                setShowMessageBox(true);
-                setTimeout(() => setShowMessageBox(false), 1000);
+                console.log("✅ OS atualizada com sucesso. ID:", orderId);
                 setIsSaved(true);
                 setIsEditing(false);
-                await handleUpload();
+                
+                await handleUpload(orderId);
+
+                setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Ordem de serviço atualizada com sucesso.' });
+                setShowMessageBox(true);
+                setTimeout(() => setShowMessageBox(false), 1500);
             }
         } catch (error) {
             setMessageContent({ type: 'error', title: 'Erro.', message: 'Não foi possível atualizar a ordem de serviço.' });
@@ -323,12 +320,28 @@ export default function Form() {
             console.error("Erro ao atualizar a ordem de serviço:", error);
         } finally {
             setIsLoading(false);
-            setTimeout(() => setShowMessageBox(false), 1000);
+            setTimeout(() => setShowMessageBox(false), 1500);
         }
     };
 
     const handleContinue = () => {
         navigate("../Listing");
+    };
+
+    const handleRemoveDocument = (documentId) => {
+        setDocuments((prevDocuments) => prevDocuments.filter(doc => doc.id !== documentId));
+    };
+    
+
+    const handleKeyDown = (event) => {
+        if (/\d/.test(event.key)) {
+            event.preventDefault(); // Bloqueia a entrada de números
+        }
+    };
+    const handleKeyNumber = (event) => {
+        if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+            event.preventDefault();
+        }
     };
 
     return (
@@ -385,7 +398,9 @@ export default function Form() {
                                     label="N° da requisição *"
                                     placeholder="Informe"
                                     value={formData.requisicao.value}
+                                    type="number"
                                     onChange={handleFieldChange('requisicao')}
+                                    onKeyDown={handleKeyNumber}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.requisicao ? "Este campo é obrigatório" : ""}
                                 />
@@ -408,6 +423,7 @@ export default function Form() {
                                     placeholder="Informe o nome do solicitante"
                                     value={formData.solicitante.value.toUpperCase()}
                                     onChange={handleFieldChange('solicitante')}
+                                    onKeyDown={handleKeyDown}
                                     disabled={!isEditing}
                                     errorMessage={emptyFields.solicitante ? "Este campo é obrigatório" : ""}
                                 />
@@ -487,7 +503,7 @@ export default function Form() {
                                     placeholder="Automático"
                                     value={formData.campus.value}
                                     onChange={handleFieldChange('campus')}
-                                    disabled={!isEditing}
+                                    disabled
                                     errorMessage={emptyFields.campus ? "Este campo é obrigatório" : ""}
                                 />
                             </div>
@@ -509,13 +525,11 @@ export default function Form() {
                                     onChange={handleFieldChange('selectedOption')}
                                     disabled={!isEditing}
                                 />
-                                <InputUpload
-                                    label="Anexar documento(s)"
-                                    disabled={!isEditing}
-                                    onFilesUpload={handleFileChange}
-                                    initialFiles={uploadedDocuments}
-                                />
                             </div>
+                            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                                <DocumentList documents={documents} onRemove={handleRemoveDocument} />
+                            </div>
+
                         </div>
                         <div className="flex flex-col items-center justify-center mt-4 md:flex-row h-14 md:h-16 gap-y-2 bottom-0 z-10">
                             <div className="flex pr-0 md:pr-6">
@@ -536,6 +550,9 @@ export default function Form() {
                                     <>
                                         <ButtonSecondary onClick={handleEdit}>Editar</ButtonSecondary>
                                         <ButtonPrimary onClick={handleContinue}>Continuar</ButtonPrimary>
+                                        <ButtonPrimary onClick={() => setIsModalOpen(true)}>
+                                            Anexar Documentos
+                                        </ButtonPrimary>
                                     </>
                                 )}
                             </div>
@@ -543,7 +560,7 @@ export default function Form() {
                     </div>
 
                 </div>
-
+                <UploadModalFiles isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} orderId={orderId} onUploadSuccess={fetchDocuments} />
 
             </div>
 

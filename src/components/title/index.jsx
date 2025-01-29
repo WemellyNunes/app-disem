@@ -1,27 +1,25 @@
 import { useNavigate } from 'react-router-dom';
 import { RiArrowLeftSLine } from "react-icons/ri";
 import ConfirmationModal from "../modal/confirmation";
-import { RiLogoutCircleRLine } from "react-icons/ri";
+import { RiLogoutCircleRLine, RiNotificationLine  } from "react-icons/ri";
 import { useState } from 'react';
-
-
 
 const PageTitle = ({ text, backgroundColor, children }) => {
   
-  const [showModal, setShowModal] = useState(false); // Controla a exibição do modal
+  const [showModal, setShowModal] = useState(false); 
   const navigate = useNavigate();
   
   const handleLogoutClick = () => {
-    setShowModal(true); // Mostra o modal quando o usuário clica em "Sair"
+    setShowModal(true); 
   };
 
   const handleConfirmLogout = () => {
-    setShowModal(false); // Esconde o modal
-    navigate("/"); // Redireciona para a página de login
+    setShowModal(false); 
+    navigate("/"); 
   };
 
   const handleCancelLogout = () => {
-    setShowModal(false); // Apenas fecha o modal
+    setShowModal(false); 
   };
 
   return (
@@ -44,8 +42,9 @@ const PageTitle = ({ text, backgroundColor, children }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-center" onClick={handleLogoutClick}>
-        <RiLogoutCircleRLine className="text-gray-700 md:h-5 md:w-5 cursor-pointer hover:text-primary-light" title="Sair" /> {/* Ícone com tamanho fixo */}
+      <div className="flex items-center justify-center space-x-2" onClick={handleLogoutClick}>
+        <RiNotificationLine  className="text-gray-700 md:h-5 md:w-5 cursor-pointer hover:text-primary-light" title="Sair" /> 
+        <RiLogoutCircleRLine className="text-gray-700 md:h-5 md:w-5 cursor-pointer hover:text-primary-light" title="Sair" /> 
       </div>
       {
         showModal && (

@@ -33,18 +33,25 @@ export default function InfraPage() {
     const fetchData = async () => {
         try {
             const [instituteData, unitData] = await Promise.all([getAllInstitutes(), getAllUnits()]);
-
-            const sortedInstitutes = instituteData.sort((a, b) => a.id - b.id);
+    
+            // Garantindo que os dados recebidos são arrays válidos
+            const institutesArray = Array.isArray(instituteData) ? instituteData : [];
+            const unitsArray = Array.isArray(unitData) ? unitData : [];
+    
+            // Aplicando o sort apenas se os arrays não estiverem vazios
+            const sortedInstitutes = [...institutesArray].sort((a, b) => a.id - b.id);
             setInstitutes(sortedInstitutes);
             setFilteredInstitutes(sortedInstitutes);
-
-            const sortedUnits = unitData.sort((a, b) => a.id - b.id);
+    
+            const sortedUnits = [...unitsArray].sort((a, b) => a.id - b.id);
             setUnits(sortedUnits);
             setFilteredUnits(sortedUnits);
         } catch (error) {
             console.error("Erro ao buscar dados:", error);
+            setInstitutes([]); // Evita estado inconsistente
+            setUnits([]);
         }
-    };
+    };    
 
     useEffect(() => {
         fetchData();
@@ -78,7 +85,6 @@ export default function InfraPage() {
     
         if (updatedData) {
             if (type === "unidade") {
-                // Atualiza ou adiciona uma unidade na lista
                 setUnits((prev) => {
                     const exists = prev.some((unit) => unit.id === updatedData.id);
                     return exists
@@ -91,8 +97,8 @@ export default function InfraPage() {
                         ? prev.map((unit) => (unit.id === updatedData.id ? updatedData : unit))
                         : [updatedData, ...prev];
                 });
+
             } else if (type === "instituto") {
-                // Atualiza ou adiciona um instituto na lista
                 setInstitutes((prev) => {
                     const exists = prev.some((institute) => institute.id === updatedData.id);
                     return exists
@@ -109,24 +115,21 @@ export default function InfraPage() {
     
         }
     };
-    
-    
-    
+       
 
     const handleDeleteClick = (item) => {
-        setDataToDelete(item); // Define o item a ser deletado
-        setShowConfirmationModal(true); // Abre o modal de confirmação
+        setDataToDelete(item); 
+        setShowConfirmationModal(true);
     };
 
     const handleConfirmDelete = async () => {
         try {
             if (activeTab === 0) {
-                // Exclui unidade
                 await deleteUnit(dataToDelete.id);
                 setUnits((prev) => prev.filter((unit) => unit.id !== dataToDelete.id));
                 setFilteredUnits((prev) => prev.filter((unit) => unit.id !== dataToDelete.id));
+
             } else {
-                // Exclui instituto
                 await deleteInstitute(dataToDelete.id);
                 setInstitutes((prev) => prev.filter((institute) => institute.id !== dataToDelete.id));
                 setFilteredInstitutes((prev) =>
