@@ -251,7 +251,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
             <div className="flex justify-between rounded  py-4 cursor-pointer bg-white mb-3" onClick={toggleSection}>
                 <div className="flex flex-col gap-y-1">
                     <h3 className="text-sm md:text-base font-medium text-gray-800">Manutenção</h3>
-                    <p className="text-sm text-primary-dark">Adicione as imagens da manutenção realizada nos campos indicados abaixo.</p>
+                    <p className="text-sm text-primary-dark">Imagens da manutenção realizada.</p>
                 </div>
                 <span className="text-primary-light">{isOpen ? <IoIosRemoveCircleOutline size={25} /> : <IoIosAddCircleOutline size={25} />}</span>
             </div>
@@ -281,7 +281,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 {isSaved && <p className="mt-2 text-sm mb-3 text-gray-400">Enviado por: {user.name}</p>}
             </div>
             <div className="flex flex-col md:flex-row justify-end">
-                <div className="flex flex-col md:flex-row justify-end pb-4 gap-y-1.5">
+                <div className="flex flex-col md:flex-row justify-end pb-4 gap-y-1.5 md:gap-x-3">
                     {!isMaintenanceClosed && orderServiceData.status !== "Finalizado" ? (
                         isEditing && !isAdvancing ? (
                             <>

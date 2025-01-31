@@ -126,6 +126,11 @@ export const uploadDocument = async (formData) => {
 };
 
 
+export const getDocumentUrl = (fileName) => {
+  return `http://localhost:8080/api/files/${fileName}`;
+};
+
+
 export const getDocumentsByOrderServiceId = async (orderServiceId) => {
   try {
       const response = await api.get(`/documents`, {
@@ -137,6 +142,7 @@ export const getDocumentsByOrderServiceId = async (orderServiceId) => {
       throw error;
   }
 };
+
 
 export const deleteDocument = async (documentId) => {
   try {
@@ -326,6 +332,11 @@ export const getAllImages = async (programingId) => {
     throw error;
   }
 };
+
+export const getImageUrl = (fileName) => {
+  return `http://localhost:8080/api/file/view/${fileName}`;
+};
+
 
 export const deleteImage = async (id) => {
   try {

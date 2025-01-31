@@ -143,7 +143,7 @@ const NegationSection = ({orderServiceId}) => {
             <div className="px-4 md:px-6 py-4">
               <div className="flex flex-col gap-y-1">
                 <h3 className="text-sm md:text-base font-medium text-gray-800">Sem aprovação</h3>
-                <p className="text-sm text-primary-dark">Informe o motivo para não realizar o atendimento desta ordem de serviço.</p>
+                <p className="text-sm text-primary-dark">Motivo para não realizar o atendimento desta ordem de serviço.</p>
               </div>
                 <div className="mt-7">
                     <InputPrimary

@@ -226,6 +226,20 @@ export default function Programing() {
         }
     };
 
+    const calculateOpenDays = (creationDate, programingId) => {
+        if (!creationDate) return 0; 
+    
+        const today = new Date();
+        const createdDate = new Date(creationDate);
+    
+        const differenceInTime = today.getTime() - createdDate.getTime();
+        const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+    
+        return programingId ? differenceInDays : differenceInDays;
+    };
+    
+
+
     useEffect(() => {
         const fetchOrderData = async () => {
             try {
@@ -238,6 +252,12 @@ export default function Programing() {
                 setOrderServiceData(orderData);
 
                 setStatus(orderData.status);
+
+                const openDays = calculateOpenDays(orderData.date, orderData.programingId);
+                setOrderServiceData((prevData) => ({
+                    ...prevData,
+                    openDays: openDays
+                }));
 
                 if (orderData.programingId) {
                     const programingData = await getProgramingById(orderData.programingId);
@@ -563,7 +583,7 @@ export default function Programing() {
                         )}
 
                         {status !== "Negada" && (
-                            <SectionCard title="Programação" placeholder="Agende a programação para a realização da manutenção.">
+                            <SectionCard title="Programação" placeholder="Programação para a realização da manutenção.">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4">
                                     <DateTimePicker
                                         label="Data inicial *"

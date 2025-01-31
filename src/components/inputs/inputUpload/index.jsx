@@ -5,7 +5,7 @@ import PreviewFile from '../../modal/preview';
 import ConfirmationModal from '../../modal/confirmation';
 import MessageBox from '../../box/message';
 
-import { updateImage, uploadDocument, deleteImage } from '../../../utils/api/api';
+import { updateImage, deleteImage, getImageUrl } from '../../../utils/api/api';
 
 const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, initialFiles, uploadType = "image", orderServiceId }) => {
     const [showModal, setShowModal] = useState(false);
@@ -124,6 +124,8 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         } else {
             alert("Conteúdo do arquivo não disponível para visualização.");
         }
+
+        
     };
     
 
@@ -141,7 +143,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         };
     
         try {
-            await updateImage(fileId, payload); // Envia apenas os dados necessários para a atualização
+            await updateImage(fileId, payload); 
             console.log("Imagem atualizada com sucesso!");
     
             // Atualiza o estado local com a nova descrição

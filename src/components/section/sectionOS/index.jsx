@@ -82,7 +82,7 @@ export default function OrderServiceDetails({ orderServiceData, user }) {
                 </div>
             </div>
 
-            <DocumentList documents={documents} onRemove={handleRemoveDocument} />
+            <DocumentList documents={documents} onRemove={handleRemoveDocument} isReadOnly={true} />
 
             <p className="mt-2 text-sm text-gray-400">Cadastrado por: {user.name}</p>
         </SectionCard>

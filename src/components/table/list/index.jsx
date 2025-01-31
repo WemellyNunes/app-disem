@@ -17,6 +17,7 @@ import { updateOrderServiceStatus, deleteOrder, getHistoryByOrderId } from "../.
 const List = ({ filteredData, onDeleteItem }) => {
     const navigate = useNavigate();
 
+    const [selectedItems, setSelectedItems] = useState(new Set());
     const [showHistory, setShowHistory] = useState(false);
     const [currentHistory, setCurrentHistory] = useState([]);
     const [loadingHistory, setLoadingHistory] = useState(false);
@@ -128,6 +129,18 @@ const List = ({ filteredData, onDeleteItem }) => {
         }
     };
 
+    const handleCheckboxChange = (id) => {
+        setSelectedItems((prevSelected) => {
+            const newSelected = new Set(prevSelected);
+            if (newSelected.has(id)) {
+                newSelected.delete(id);
+            } else {
+                newSelected.add(id);
+            }
+            return newSelected;
+        });
+    };
+
 
     return (
         <>
@@ -154,19 +167,32 @@ const List = ({ filteredData, onDeleteItem }) => {
 
             <div className="flex flex-col w-full space-y-2">
                 {filteredData.length > 0 ? (
-                    filteredData.map((item, index) => {
+                    filteredData.map((item) => {
                         if (!item) {
                             return null;
                         }
                         const history = [
                             `OS Nº ${item.requisition} Criada em 00/00/0000 agente: Fulano da Silva `,
                         ];
+
+                        const isSelected = selectedItems.has(item.id);
                         return (
                             <div
                                 key={item.id}
-                                className={`flex flex-col mt-2 md:flex-row p-4 rounded-xl shadow-sm border border-gray-300 hover:border hover:border-primary-light space-y-1 md:space-y-1 bg-white`}
+                                className={`flex flex-col mt-2 md:flex-row p-4 rounded-xl shadow-sm border ${
+                                    isSelected ? "border-blue-500" : "border-gray-300"
+                                } hover:border hover:border-primary-light space-y-1 md:space-y-1 bg-white`}
                             >
                                 <div className="flex flex-col md:flex-row w-full justify-between">
+                                    <div className="hidden md:flex pr-6">
+
+                                        <input
+                                            type="checkbox"
+                                            checked={isSelected}
+                                            onChange={() => handleCheckboxChange(item.id)}
+                                            className="cursor-pointer"
+                                        />
+                                    </div>
                                     <div className="flex flex-col md:w-1/3 md:space-y-1 pb-1 md:pb-1 text-primary-dark text-xs ">
                                         <span className="flex flex-row flex-wrap">
                                             <p className="font-medium mr-1 ">Requisição:</p>

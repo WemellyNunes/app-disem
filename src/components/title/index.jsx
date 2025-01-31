@@ -23,7 +23,7 @@ const PageTitle = ({ text, backgroundColor, children }) => {
   };
 
   return (
-    <div className={`w-full ${backgroundColor} text-gray-800 flex items-center justify-between px-2 md:px-6 h-8 md:h-10 border-b border-gray-30 mt-10 md:mt-0`}>
+    <div className={`w-full ${backgroundColor} text-gray-800 flex items-center justify-between px-2 md:px-6 h-8 md:h-10 border-b border-gray-300 mt-10 md:mt-0`}>
 
       <div className='flex flex-row gap-x-2'>
         <button 
