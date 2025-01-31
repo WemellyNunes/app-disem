@@ -13,6 +13,7 @@ import Loading from "../../components/modal/loading";
 import MessageCard from "../../components/cards/menssegeCard";
 import UploadModalFiles from "../../components/modal/uploadFiles";
 import DocumentList from "../../components/documents";
+import ButtonUpload from "../../components/buttons/buttonUpload";
 
 import { origin, classification, options, system, indicesRisco, maintence } from "../../utils/constants/selectOptions";
 import { calcularValorRisco, calcularPrioridade } from "../../utils/matriz";
@@ -304,11 +305,9 @@ export default function Form() {
             const response = await updateOrder(orderId, ordemDeServico);
 
             if (response) {
-                console.log("✅ OS atualizada com sucesso. ID:", orderId);
                 setIsSaved(true);
                 setIsEditing(false);
                 
-                await handleUpload(orderId);
 
                 setMessageContent({ type: 'success', title: 'Sucesso.', message: 'Ordem de serviço atualizada com sucesso.' });
                 setShowMessageBox(true);
@@ -331,6 +330,11 @@ export default function Form() {
     const handleRemoveDocument = (documentId) => {
         setDocuments((prevDocuments) => prevDocuments.filter(doc => doc.id !== documentId));
     };
+    
+    const handleUploadSuccess = () => {
+        fetchDocuments(orderId); // Busca a lista de documentos atualizada diretamente da API
+    };
+    
     
 
     const handleKeyDown = (event) => {
@@ -531,8 +535,8 @@ export default function Form() {
                             </div>
 
                         </div>
-                        <div className="flex flex-col items-center justify-center mt-4 md:flex-row h-14 md:h-16 gap-y-2 bottom-0 z-10">
-                            <div className="flex pr-0 md:pr-6">
+                        <div className="flex w-full justify-center items-center py-4">
+                            <div className="flex flex-col md:flex-row gap-y-2 md:gap-x-3 ">
                                 {isCreating ? (
                                     <>
                                         <ButtonSecondary onClick={() => navigate("../Listing")}>Cancelar</ButtonSecondary>
@@ -544,15 +548,18 @@ export default function Form() {
                                             setIsEditing(false);
                                             setShowMessageBox(false);
                                         }}>Cancelar</ButtonSecondary>
+                                        <ButtonUpload onClick={() => setIsModalOpen(true)}>
+                                            Anexar documentos
+                                        </ButtonUpload>
                                         <ButtonPrimary onClick={handleUpdate}>Atualizar</ButtonPrimary>
                                     </>
                                 ) : (
                                     <>
                                         <ButtonSecondary onClick={handleEdit}>Editar</ButtonSecondary>
+                                        <ButtonUpload onClick={() => setIsModalOpen(true)}>
+                                            Anexar documentos
+                                        </ButtonUpload>
                                         <ButtonPrimary onClick={handleContinue}>Continuar</ButtonPrimary>
-                                        <ButtonPrimary onClick={() => setIsModalOpen(true)}>
-                                            Anexar Documentos
-                                        </ButtonPrimary>
                                     </>
                                 )}
                             </div>
@@ -560,7 +567,11 @@ export default function Form() {
                     </div>
 
                 </div>
-                <UploadModalFiles isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} orderId={orderId} onUploadSuccess={fetchDocuments} />
+                <UploadModalFiles 
+                    isOpen={isModalOpen} 
+                    onClose={() => setIsModalOpen(false)} 
+                    orderId={orderId} 
+                    onUploadSuccess={handleUploadSuccess} />
 
             </div>
 

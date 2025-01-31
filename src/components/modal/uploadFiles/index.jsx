@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import ButtonPrimary from '../../buttons/buttonPrimary';
 import ButtonSecondary from '../../buttons/buttonSecondary';
 import { uploadDocument } from '../../../utils/api/api';
+import MessageBox from '../../box/message';
 
 const UploadModalFiles = ({ isOpen, onClose, orderId, onUploadSuccess }) => {
     const [files, setFiles] = useState([]);
+    const [message, setMessage] = useState({ show: false, type: "", title: "", text: "" });
 
     useEffect(() => {
         if (isOpen) {
-            setFiles([]); 
+            setFiles([]);
         }
     }, [isOpen]);
 
@@ -19,73 +21,80 @@ const UploadModalFiles = ({ isOpen, onClose, orderId, onUploadSuccess }) => {
             file.type === 'image/jpeg'
         );
 
-        setFiles(prevFiles => [...prevFiles, ...selectedFiles]); 
+        setFiles(prevFiles => [...prevFiles, ...selectedFiles]);
     };
 
     const handleUpload = async () => {
         if (!orderId) {
-            alert("Erro: Nenhuma OS foi salva ainda.");
+            setMessage({ show: true, type: "error", title: "Erro!", text: "Nenhuma OS foi salva ainda." });
+            setTimeout(() => setMessage({ show: false }), 1500);
             return;
         }
-
+    
         if (files.length === 0) {
-            alert("Selecione ao menos um arquivo para fazer o upload.");
+            setMessage({ show: true, type: "warning", title: "Atenção!", text: "Selecione ao menos um arquivo para enviar." });
+            setTimeout(() => setMessage({ show: false }), 1500);
             return;
         }
-
+    
         try {
-            console.log(`📂 Iniciando upload de ${files.length} arquivos para a OS ID: ${orderId}`);
-
-            const uploadedFiles = [];
             for (const file of files) {
                 const formData = new FormData();
                 formData.append("file", file);
                 formData.append("orderServiceId", orderId);
-
-                const response = await uploadDocument(formData);
-                console.log("✅ Documento carregado com sucesso:", response);
-
-                uploadedFiles.push({
-                    id: response.id, // Supondo que o backend retorna um ID do documento
-                    name: file.name,
-                });
+    
+                await uploadDocument(formData);
             }
-
-            console.log("🎉 Todos os documentos foram enviados com sucesso.");
-            onUploadSuccess(uploadedFiles); // Atualiza a lista de documentos na tela principal
-            setFiles([]);
-            onClose();
+    
+            setMessage({ show: true, type: "success", title: "Sucesso!", text: "Documentos enviados com sucesso." });
+    
+            setTimeout(() => {
+                setMessage({ show: false });
+                onUploadSuccess(); // Chama a atualização da lista de documentos
+                onClose(); // Fecha o modal
+            }, 1500);
         } catch (error) {
-            console.error("❌ Erro ao fazer upload dos documentos:", error);
-            alert("Erro ao enviar os documentos.");
+            setMessage({ show: true, type: "error", title: "Erro!", text: "Não foi possível enviar os documentos." });
+            setTimeout(() => setMessage({ show: false }), 1500);
         }
     };
+    
 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg mx-2 md:mx-0 w-full md:w-1/3">
-                <h2 className="text-sm md:text-base font-medium text-primary-light mb-4">Anexar Documentos</h2>
-                <div>
-                    <input
-                        type="file"
-                        onChange={handleFileChange}
-                        accept=".pdf, .png, .jpg, .jpeg"
-                        multiple
-                        className="mb-2"
+        <>
+            <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg mx-2 md:mx-0 w-full md:w-1/3">
+                    <h2 className="text-sm md:text-base font-medium text-primary-light mb-4">Anexar Documentos</h2>
+                    <div>
+                        <input
+                            type="file"
+                            onChange={handleFileChange}
+                            accept=".pdf, .png, .jpg, .jpeg"
+                            multiple
+                            className="mb-2"
+                            />
+                    </div>
+                    <div className="flex flex-col md:flex-row gap-y-1.5 justify-end">
+                        <ButtonSecondary onClick={onClose}>
+                            Cancelar
+                        </ButtonSecondary>
+                        <ButtonPrimary onClick={handleUpload}>
+                            Salvar
+                        </ButtonPrimary>
+                    </div>
+                </div>
+                {message.show && (
+                    <MessageBox
+                        type={message.type}
+                        title={message.title}
+                        message={message.text}
+                        onClose={() => setMessage({ show: false })}
                     />
-                </div>
-                <div className="flex flex-col md:flex-row gap-y-1.5 justify-end">
-                    <ButtonSecondary onClick={onClose}>
-                        Cancelar
-                    </ButtonSecondary>
-                    <ButtonPrimary onClick={handleUpload}>
-                        Salvar
-                    </ButtonPrimary>
-                </div>
+                )}
             </div>
-        </div>
+        </>
     );
 };
 

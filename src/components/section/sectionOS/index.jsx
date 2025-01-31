@@ -1,7 +1,30 @@
+import { useEffect, useState } from "react";
 import SectionCard from "../sectionPrimary";
-import Circle from "../../table/circle";
+import DocumentList from "../../documents";
+import { getDocumentsByOrderServiceId } from "../../../utils/api/api";
 
 export default function OrderServiceDetails({ orderServiceData, user }) {
+    const [documents, setDocuments] = useState([]);
+
+    useEffect(() => {
+        if (orderServiceData?.id) {
+            fetchDocuments(orderServiceData.id);
+        }
+    }, [orderServiceData]);
+
+    const fetchDocuments = async (orderId) => {
+        try {
+            const response = await getDocumentsByOrderServiceId(orderId);
+            setDocuments(response);
+        } catch (error) {
+            console.error(" Erro ao buscar documentos:", error);
+        }
+    };
+
+    const handleRemoveDocument = (documentId) => {
+        setDocuments((prevDocuments) => prevDocuments.filter(doc => doc.id !== documentId));
+    };
+
     return (
         <SectionCard
             background="bg-gray-50"
@@ -58,6 +81,8 @@ export default function OrderServiceDetails({ orderServiceData, user }) {
                     <p>{orderServiceData.openDays}</p>
                 </div>
             </div>
+
+            <DocumentList documents={documents} onRemove={handleRemoveDocument} />
 
             <p className="mt-2 text-sm text-gray-400">Cadastrado por: {user.name}</p>
         </SectionCard>

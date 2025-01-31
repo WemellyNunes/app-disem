@@ -627,8 +627,8 @@ export default function Programing() {
                                     {isSaved && <p className="mt-2 mb-6 text-sm text-gray-400">Programado por: {user.name}</p>}
 
                                 </div>
-                                <div className="flex flex-col md:flex-row justify-end">
-                                    <div className="flex flex-col md:flex-row gap-y-1.5 ">
+                                <div className="flex flex-col py-4  md:flex-row justify-end">
+                                    <div className="flex flex-col md:flex-row gap-y-1.5 md:gap-x-3 ">
                                         {isEditing ? (
                                             <>
                                                 <ButtonSecondary onClick={() => setIsEditing(false)}>Cancelar</ButtonSecondary>

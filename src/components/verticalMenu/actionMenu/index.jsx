@@ -18,7 +18,6 @@ const ActionsMenu = ({ onEdit, onDelete, onNegate, showNegate, showEdit }) => {
       </button>
       {isOpen && (
         <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10 text-primary-dark">
-          {/* Só exibe "Editar" se showEdit for verdadeiro */}
           {showEdit && (
             <button
               onClick={() => {

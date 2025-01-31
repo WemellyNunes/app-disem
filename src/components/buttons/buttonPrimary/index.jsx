@@ -3,10 +3,10 @@ const ButtonPrimary = ({ children, bgColor = 'bg-primary-light', hoverColor = 'h
       <button
           className={`${bgColor} ${hoverColor} ${textColor} 
           font-medium text-xs md:text-sm h-9 md:h-11 px-10 rounded-full flex items-center 
-          justify-center mr-1.5`}
+          justify-center`}
           {...props}
       >
-          {icon && <span className="mr-2">{icon}</span>} 
+          {icon && <span className="">{icon}</span>} 
           {children}
       </button>
   );
