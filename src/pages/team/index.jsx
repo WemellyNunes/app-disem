@@ -5,8 +5,9 @@ import { FaPlus, FaUpload, FaEdit, FaTrash } from "react-icons/fa";
 import SearchInput from '../../components/inputs/searchInput';
 import ConfirmationModal from '../../components/modal/confirmation';
 import MessageBox from '../../components/box/message';
+import MessageCard from '../../components/cards/menssegeCard';
 
-import { getAllTeams, deleteTeam, uploadTeams  } from '../../utils/api/api';
+import { getAllTeams, deleteTeam, uploadTeams } from '../../utils/api/api';
 import { parseExcelFile } from '../../utils/parseExcel';
 
 
@@ -83,19 +84,19 @@ export default function TeamPage() {
         setShowConfirmationModal(true); // Abre o modal
     };
 
-    
+
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
-    
+
         try {
             // Converte o arquivo para JSON
             const formattedData = await parseExcelFile(file);
             console.log('Dados convertidos:', formattedData);
-    
+
             // Envia para o backend como ARRAY
             await uploadTeams(formattedData);
-    
+
             // Exibe mensagem de sucesso
             setMessageContent({
                 type: "success",
@@ -103,15 +104,15 @@ export default function TeamPage() {
                 message: "Profissionais cadastrados com sucesso!"
             });
             setShowMessageBox(true);
-    
+
             setTimeout(() => {
                 setShowMessageBox(false); // Esconde o MessageBox após 1.5s
                 window.location.reload(); // Atualiza a página
             }, 1000);
-    
+
         } catch (error) {
             console.error('Erro ao enviar planilha:', error);
-    
+
             // Exibe mensagem de erro
             setMessageContent({
                 type: "error",
@@ -119,14 +120,14 @@ export default function TeamPage() {
                 message: "Erro ao enviar planilha. Verifique o formato ou os campos."
             });
             setShowMessageBox(true);
-    
+
             setTimeout(() => {
                 setShowMessageBox(false); // Esconde o MessageBox após 1.5s
             }, 1500);
         }
     };
-    
-    
+
+
 
 
     const handleConfirmDelete = async () => {
@@ -138,9 +139,9 @@ export default function TeamPage() {
                     title: "Sucesso.",
                     message: "Profissional deletado com sucesso!"
                 });
-                setShowMessageBox(true); 
+                setShowMessageBox(true);
                 fetchTeams();
-                setTimeout(() => setShowMessageBox(false), 1000); 
+                setTimeout(() => setShowMessageBox(false), 1000);
             } catch (error) {
                 setMessageContent({
                     type: "error",
@@ -148,9 +149,9 @@ export default function TeamPage() {
                     message: "Erro ao deletar profissional."
                 });
                 setShowMessageBox(true);
-                setTimeout(() => setShowMessageBox(false), 1500); 
+                setTimeout(() => setShowMessageBox(false), 1500);
             } finally {
-                setShowConfirmationModal(false); 
+                setShowConfirmationModal(false);
             }
         }
     };
@@ -160,7 +161,7 @@ export default function TeamPage() {
         <>
             <div className='flex flex-col'>
                 <PageTitle
-                    text="Equipe"
+                    text="Equipe de manutenção"
                     backgroundColor="bg-white"
                     textColor="text-primary-dark"
                 />
@@ -173,14 +174,14 @@ export default function TeamPage() {
 
                         />
                         <button
-                            className='flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-700 gap-2'
+                            className='flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-700 gap-2'
                             onClick={handleOpenModal}
                         >
                             <span><FaPlus className='h-3 w-3' /></span>
                             <span className='hidden md:flex flex-wrap' >Cadastrar</span>
                         </button>
                         <div className='flex gap-x-2 items-center'>
-                            <label className='flex items-center border border-primary-light text-primary-light text-sm bg-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-100 gap-2 cursor-pointer'>
+                            <label className='flex items-center border border-primary-light text-primary-light text-sm bg-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-100 gap-2 cursor-pointer'>
                                 <span><FaUpload className='h-3 w-3' /></span>
                                 <span className='hidden md:flex'>Enviar planilha</span>
                                 <input
@@ -188,12 +189,20 @@ export default function TeamPage() {
                                     accept=".xlsx, .xls"
                                     className="hidden"
                                     onChange={handleFileUpload}
-                                    style={{display: 'none'}}
+                                    style={{ display: 'none' }}
                                     id='fileUpload'
                                 />
                             </label>
                             <span className='flex text-xs md:text-sm text-gray-500 flex-wrap'>Envie uma planilha com novos profissionais</span>
                         </div>
+                    </div>
+                    <div>
+                        <MessageCard
+                            type="info"
+                            title="Info."
+                            message="Ao enviar uma planilha para cadastro de profissionais, a formatação precisa seguir o padrão de 3 colunas, respectivamente: Nome do profissional, Cargo e Status."
+                            storageKey="showMessageTeam"
+                        />
                     </div>
 
                     <div className="flex flex-col py-4 rounded-md bg-white">

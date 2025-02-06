@@ -1,18 +1,31 @@
+import { useEffect } from "react";
 import InputSecondary from "../../components/inputs/inputSecondary";
 import { FaEye, FaArrowRight } from 'react-icons/fa';
 import ButtonPrimary from "../../components/buttons/buttonPrimary";
 import { useNavigate } from "react-router-dom";
+import MessageCard from "../../components/cards/menssegeCard";
 
 
 export default function Login() {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+            document.body.classList.add("bg-login-page");
+    
+            return () => {
+                document.body.classList.remove("bg-login-page");
+            };
+        }, []);
+
     return (
-            <div className="flex flex-col items-center p-10 justify-center md:flex-row">
-
-
-                <div className="flex flex-col justify-center items-center content-center w-full">
+            <div className="flex flex-col items-center p-10 justify-center ">
+                    <MessageCard
+                        type="info"
+                        message="Sem autenticação no momento, só clique no botão entrar."
+                        storageKey="showLoginMessage"
+                    />
+                <div className="flex flex-col justify-center items-center content-center w-full mt-2">
                     <div className="flex flex-col mb-10 md:mb-16 h-3 w-44">
                         <img src="./public/images/disemLogo.png" alt="" />
                     </div>

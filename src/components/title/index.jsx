@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { RiArrowLeftSLine } from "react-icons/ri";
 import ConfirmationModal from "../modal/confirmation";
-import { RiLogoutCircleRLine, RiNotificationLine  } from "react-icons/ri";
+import { RiLogoutCircleRLine  } from "react-icons/ri";
 import { useState } from 'react';
+import NotificationButton from '../notification';
 
 const PageTitle = ({ text, backgroundColor, children }) => {
   
@@ -42,10 +43,15 @@ const PageTitle = ({ text, backgroundColor, children }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-center space-x-2" onClick={handleLogoutClick}>
-        <RiNotificationLine  className="text-gray-700 md:h-5 md:w-5 cursor-pointer hover:text-primary-light" title="Sair" /> 
-        <RiLogoutCircleRLine className="text-gray-700 md:h-5 md:w-5 cursor-pointer hover:text-primary-light" title="Sair" /> 
+      <div className='flex gap-x-1'>
+        <div>
+        <NotificationButton />
+        </div>
+        <div className="flex items-center justify-center space-x-2" onClick={handleLogoutClick}>
+          <RiLogoutCircleRLine className="text-gray-700 md:h-5 md:w-5 cursor-pointer hover:text-primary-light" title="Sair" /> 
+        </div>
       </div>
+
       {
         showModal && (
           <ConfirmationModal

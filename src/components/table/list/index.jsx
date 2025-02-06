@@ -1,5 +1,4 @@
 import Circle from "../circle";
-import { FaCirclePlus, FaRegClock } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -240,21 +239,21 @@ const List = ({ filteredData, onDeleteItem }) => {
                                         >
                                             {(item.status === "Atendida" || item.status === "Finalizado" || item.status === "Negada") ? (
                                                 <>
-                                                    <div className="flex items-center border border-primary-light rounded-md p-2 text-primary-light gap-x-1  hover:bg-blue-100 ">
+                                                    <div className="flex items-center border border-primary-light rounded-md p-2 text-primary-light gap-x-1  hover:bg-green-100 ">
                                                         <MdEngineering className="h-4 w-4" />
                                                         <span className="">Ver atendimento</span>
                                                     </div>
                                                 </>
                                             ) : item.programingId ? (
                                                 <>
-                                                    <div className="flex items-center border border-primary-light rounded-md p-2 text-primary-light gap-x-1  hover:bg-blue-100 ">
+                                                    <div className="flex items-center border border-primary-light rounded-md p-2 text-primary-light gap-x-1  hover:bg-green-100 ">
                                                         <FiTool className="h-3.5 w-3.5" />
                                                         <span className="text-primary-light">Atender</span>
                                                     </div>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <div className="flex items-center border border-primary-light rounded-md p-2 text-primary-light gap-x-1  hover:bg-blue-100 ">
+                                                    <div className="flex items-center border border-primary-light rounded-md p-2 text-primary-light gap-x-1  hover:bg-green-100 ">
                                                         <FaPlus className="h-3 w-3"/>
                                                         <span >Adicionar programação</span>
                                                     </div>

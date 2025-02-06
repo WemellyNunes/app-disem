@@ -10,12 +10,13 @@ export default {
         extend: {
           colors: {
             primary: {
-              light: '#0071ff',
+              light: '#009A17',
               hover: '#6082B9',
               dark: '#555555',
               red: '#D50505',
               gray: '#F7F7F7',
               back: '#FCFCFC',
+              green: '#009A17',
             },
             secondary: {
               hover: '#D7E3F5',
@@ -50,7 +51,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Rawline', 'sans-serif'],
+        sans: ['Roboto', 'sans-serif'],
       },
     },
   },

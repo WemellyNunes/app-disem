@@ -13,6 +13,8 @@ const TeamModal = ({ onClose, teamData = null }) => {
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: "", title: "", message: "" });
     const [isDisabled, setIsDisabled] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+
 
     const [formData, setFormData] = useState({
         nome: { value: '', required: true },
@@ -81,6 +83,7 @@ const TeamModal = ({ onClose, teamData = null }) => {
             return;
         }
 
+        setIsSaving(true); 
         setIsDisabled(true)
 
         const teamPayload = {
@@ -121,6 +124,8 @@ const TeamModal = ({ onClose, teamData = null }) => {
             setShowMessageBox(true);
             setIsDisabled(false)
             console.error("Erro:", error);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -161,9 +166,9 @@ const TeamModal = ({ onClose, teamData = null }) => {
                             onChange={handleFieldChange('status')}
                         />
                     </div>
-                    <div className="flex justify-center mt-8">
-                        <ButtonSecondary onClick={onClose}>Cancelar</ButtonSecondary>
-                        <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
+                    <div className="flex justify-center mt-8 gap-y-2 md:gap-x-2">
+                        <ButtonSecondary onClick={onClose} >Cancelar</ButtonSecondary>
+                        <ButtonPrimary onClick={handleSave} loading={isSaving}>Salvar</ButtonPrimary>
                     </div>
                 </div>
             </div>

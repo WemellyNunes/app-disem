@@ -1,4 +1,4 @@
-const ButtonSecondary = ({ children, borderColor = 'border border-primary-light', bgColor = 'bg-white', hoverColor ='hover:bg-secondary-hover', textColor = 'text-primary-light', icon, ...props }) => {
+const ButtonSecondary = ({ children, borderColor = 'border border-primary-light', bgColor = 'bg-white', hoverColor ='hover:bg-green-100', textColor = 'text-primary-light', icon, ...props }) => {
   return (
       <button
           className={`${borderColor} ${bgColor} ${hoverColor} ${textColor} 

@@ -1,4 +1,4 @@
-const ButtonTertiary = ({ children, bgColor = 'bg-white', textColor = 'text-primary-light', hoverColor ='hover:bg-secondary-hover', icon, ...props }) => {
+const ButtonTertiary = ({ children, bgColor = 'bg-white', textColor = 'text-primary-light', hoverColor ='hover:bg-green-100', icon, ...props }) => {
   return (
       <button
           className={`${bgColor}  ${textColor} ${hoverColor} font-medium text-xs md:text-sm h-9 md:h-11 px-10  rounded-full flex items-center justify-center mr-1.5`}

@@ -9,7 +9,7 @@ import List from '../list';
 import { getAllOrders } from "../../../utils/api/api";
 import { calcularValorRisco, calcularPrioridade } from '../../../utils/matriz';
 import { MdNavigateNext, MdNavigateBefore  } from "react-icons/md";
-
+import MessageCard from '../../cards/menssegeCard';
 
 const TabsAndList = () => {
     const [osData, setOsData] = useState([]);
@@ -167,13 +167,12 @@ const TabsAndList = () => {
 
         filtered = filtered.sort((a, b) => {
             if (a.typeTreatment === 'adm' && b.typeTreatment !== 'adm') {
-                return -1; // Coloca 'ADM' no topo
+                return -1; 
             }
             if (b.typeTreatment === 'adm' && a.typeTreatment !== 'adm') {
-                return 1; // Coloca 'ADM' no topo
+                return 1; 
             }
         
-            // Caso contrário, ordena pelo valor do risco
             return b.valorRisco - a.valorRisco;
         });
 
@@ -210,7 +209,7 @@ const TabsAndList = () => {
                 
                 <button
                     onClick={() => navigate("../form")}
-                    className="flex items-center gap-2 bg-primary-light text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-700"
+                    className="flex items-center gap-2 bg-primary-light text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-700"
                 >
                     <span>
                         <FaPlus className='h-3 w-3' />
@@ -219,7 +218,7 @@ const TabsAndList = () => {
                 </button>
                 <button
                     onClick={() => setIsFilterModalOpen(true)}
-                    className="flex items-center gap-2 bg-white text-primary-light border border-primary-light px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-100 hover:border-primary-light"
+                    className="flex items-center gap-2 bg-white text-primary-light border border-primary-light px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-100 hover:border-primary-light"
                 >
                     <span>
                         <FaSlidersH className='h-3 w-3' />
@@ -251,7 +250,19 @@ const TabsAndList = () => {
                 })}
             </div>
 
-            <div className="w-full overflow-auto px-2 md:px-6 mt-2">
+            <div className="flex flex-col justify-center items-center w-full overflow-auto px-2 md:px-6 mt-2 gap-y-1">
+                <MessageCard
+                    type="info"
+                    title="Info."
+                    message="OS marcadas com um ponto no canto superior direito indicam sua ordem de prioridade. Para melhor compreensão acesse a [Matriz de prioridade](https://drive.google.com/file/d/15nGBFHLrG-dJbyvVE7_TgS__UarLPhXA/view?usp=sharing) "
+                    storageKey="showMandatoryMessage"
+                />
+                <MessageCard
+                    type="info"
+                    title="Info."
+                    message="OS marcadas com um 'ADM' no canto superior direito indicam alta prioridade."
+                    storageKey="showMessageADM"
+                />
                 <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
 

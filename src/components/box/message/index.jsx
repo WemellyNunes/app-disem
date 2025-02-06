@@ -10,7 +10,7 @@ const MessageBox = ({ type, title, message, onClose }) => {
 
     const handleClose = () => {
         setIsVisible(false); // Inicia a animação de saída
-        setTimeout(onClose, 300); // Aguarda a animação antes de remover o componente
+        setTimeout(onClose); // Aguarda a animação antes de remover o componente
     };
 
     const iconTypes = {

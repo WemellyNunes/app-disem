@@ -15,6 +15,7 @@ import UploadModalFiles from "../../components/modal/uploadFiles";
 import DocumentList from "../../components/documents";
 import ButtonUpload from "../../components/buttons/buttonUpload";
 
+import { useNotifications } from "../../contexts/notification/NotificationContext";
 import { origin, classification, options, system, indicesRisco, maintence } from "../../utils/constants/selectOptions";
 import { calcularValorRisco, calcularPrioridade } from "../../utils/matriz";
 import { createOrder, updateOrder, getOrderById, getAllInstitutes, getAllUnits, getDocumentsByOrderServiceId } from "../../utils/api/api";
@@ -23,6 +24,8 @@ export default function Form() {
     const { id } = useParams();
     const { user } = useUser();
     const navigate = useNavigate();
+    const { addNotification } = useNotifications();
+
 
     const [orderId, setOrderId] = useState(null);
     const [emptyFields, setEmptyFields] = useState({});
@@ -260,13 +263,13 @@ export default function Form() {
             const response = await createOrder(ordemDeServico);
 
             if (response && response.id) {
-                console.log("✅ OS criada com sucesso. ID:", response.id);
                 setOrderId(response.id);
                 setIsSaved(true);
                 setIsCreating(false);
                 setIsEditing(false);
                 setMessageContent({ type: 'success', title: 'Sucesso.', message: `Ordem de serviço criada com sucesso.` });
                 setShowMessageBox(true);
+                addNotification(`Nova OS cadastrada n°${response.requisition} em ${response.date}`);
             } else {
                 throw new Error("Erro ao criar OS. Nenhum ID retornado.");
             }
@@ -365,21 +368,19 @@ export default function Form() {
                 <div className="">
                     <PageTitle
                         icon={FaFilePen}
-                        text={isCreating ? "Cadastro de Ordem de Serviço" : "Pré-visualização Ordem de Serviço"}
+                        text={isCreating ? "Cadastro de ordem de serviço" : "Pré-visualização ordem de serviço"}
                         backgroundColor="bg-white"
                         textColor="text-primary-dark"
                     />
                 </div>
-                <div className="flex flex-col py-1 gap-y-1 ">
+                <div className="flex md:mx-6 mt-1 justify-center items-center flex-col py-1 gap-y-1 ">
                     <MessageCard
                         type="info"
-                        title="Info."
                         message="Os campos com '*' no final são obrigatórios."
                         storageKey="showMandatoryMessage"
                     />
                     <MessageCard
                         type="info"
-                        title="Info."
                         message="O campo 'Índice de manutenção' indica o impacto e a prioridade da manutenção."
                         storageKey="showIndexExplanationMessage"
                     />
@@ -387,7 +388,7 @@ export default function Form() {
                 <div className="flex justify-center items-center">
                     <div className="flex flex-col items-center bg-white border border-gray-300 mt-2 mb-2 px-8 py-4 md:px-16  w-full md:w-[850px] rounded-xl">
                         <div className="flex-1 mb-2 w-full">
-                            <p className="text-sm md:text-base font-medium text-gray-800 my-6">Formulário de cadastro</p>
+                            <p className="text-sm md:text-base font-medium text-gray-800 my-6 pb-2.5 border-b border-gray-300">Formulário de cadastro</p>
                             <p className="text-sm md:text-base font-medium text-gray-800 my-6">1. Dados da ordem de serviço</p>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6">
                                 <InputSelect

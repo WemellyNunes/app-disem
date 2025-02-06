@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'http://18.230.17.37:8080/api',
 });
 
 export const createOrder = async (orderData) => {
@@ -127,8 +127,10 @@ export const uploadDocument = async (formData) => {
 
 
 export const getDocumentUrl = (fileName) => {
-  return `http://localhost:8080/api/files/${fileName}`;
+  const cleanFileName = fileName.replace("/uploads/documents/", ""); // Remove caminho
+  return `http://18.230.17.37:8080/api/files/${cleanFileName}`;
 };
+
 
 
 export const getDocumentsByOrderServiceId = async (orderServiceId) => {
@@ -334,7 +336,7 @@ export const getAllImages = async (programingId) => {
 };
 
 export const getImageUrl = (fileName) => {
-  return `http://localhost:8080/api/file/view/${fileName}`;
+  return `http://18.230.17.37:8080/api/file/view/${fileName}`;
 };
 
 

@@ -27,6 +27,7 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
     const [showMessageBox, setShowMessageBox] = useState(false);
     const [messageContent, setMessageContent] = useState({ type: "", title: "", message: "" });
     const [isDisabled, setIsDisabled] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         fetchUnits();
@@ -118,7 +119,8 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
             setTimeout(() => setShowMessageBox(false), 2000);
             return;
         }
-    
+        
+        setIsSaving(true); 
         setIsDisabled(true);
     
         try {
@@ -172,6 +174,8 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
             setShowMessageBox(true);
             setIsDisabled(false);
             console.error(error);
+        } finally {
+            setIsSaving(false);
         }
     };
     
@@ -259,9 +263,9 @@ const InfraModal = ({ onClose, data = null, isEditing = false }) => {
                     )}
                 </div>
 
-                <div className="flex justify-center mt-8">
+                <div className="flex justify-center mt-8 gap-y-2 md:gap-x-2">
                     <ButtonSecondary onClick={onClose}>Cancelar</ButtonSecondary>
-                    <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
+                    <ButtonPrimary onClick={handleSave} loading={isSaving}>Salvar</ButtonPrimary>
                 </div>
             </div>
             {showMessageBox && (

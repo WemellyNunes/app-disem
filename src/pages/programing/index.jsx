@@ -37,7 +37,7 @@ export default function Programing() {
 
     const [formData, setFormData] = useState({
         startData: { value: '', required: true },
-        endData: { value: '', required: false},
+        endData: { value: '', required: false },
         turno: { value: '', required: true },
         encarregado: { value: '', required: true },
         profissionais: { value: [], required: true },
@@ -52,6 +52,8 @@ export default function Programing() {
     const [messageContent, setMessageContent] = useState({ type: '', title: '', message: '' });
     const [isEditing, setIsEditing] = useState(true);
     const [isSaved, setIsSaved] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isMaintenanceClosed, setIsMaintenanceClosed] = useState(false);
     const [isFinalized, setIsFinalized] = useState(false);
     const [isMaintenanceSaved, setIsMaintenanceSaved] = useState(false);
@@ -88,11 +90,11 @@ export default function Programing() {
     };
 
     const handleOpenModal = (action) => {
-        setConfirmationModal({ show: true, action }); 
+        setConfirmationModal({ show: true, action });
     };
 
     const handleCloseModal = () => {
-        setConfirmationModal({ show: false, action: null }); 
+        setConfirmationModal({ show: false, action: null });
     };
 
     const handleConfirmAction = () => {
@@ -107,7 +109,7 @@ export default function Programing() {
 
     const handleDownloadReport = async (id) => {
         try {
-            await downloadReport(id); 
+            await downloadReport(id);
         } catch (error) {
             setMessageContent({
                 type: 'error',
@@ -123,7 +125,7 @@ export default function Programing() {
             if (!programingId) return;
 
             try {
-                const notes = await getNotesByProgramingId(programingId); 
+                const notes = await getNotesByProgramingId(programingId);
                 const formattedReports = notes.map((note) => ({
                     id: note.id,
                     usuario: note.usuario || "Desconhecido",
@@ -227,17 +229,17 @@ export default function Programing() {
     };
 
     const calculateOpenDays = (creationDate, programingId) => {
-        if (!creationDate) return 0; 
-    
+        if (!creationDate) return 0;
+
         const today = new Date();
         const createdDate = new Date(creationDate);
-    
+
         const differenceInTime = today.getTime() - createdDate.getTime();
         const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
-    
+
         return programingId ? differenceInDays : differenceInDays;
     };
-    
+
 
 
     useEffect(() => {
@@ -278,20 +280,25 @@ export default function Programing() {
                         })
                         .filter(Boolean);
 
-                    setFormData((prevData) => ({
-                        ...prevData,
-                        startData: { ...prevData.startData, value: formattedDate1 },
-                        endData: { ...prevData.endData, value: formattedDate2 },
-                        turno: { ...prevData.turno, value: programingData.time },
-                        encarregado: { ...prevData.encarregado, value: programingData.overseer },
-                        profissionais: { ...prevData.profissionais, value: selectedProfessionals },
-                        custo: { ...prevData.custo, value: programingData.cost },
-                        observacao: { ...prevData.observacao, value: programingData.observation },
-                    }));
+                    setTimeout(() => {
+                        setFormData((prevData) => ({
+                            ...prevData,
+                            startData: { ...prevData.startData, value: formattedDate1 },
+                            endData: { ...prevData.endData, value: formattedDate2 },
+                            turno: { ...prevData.turno, value: programingData.time },
+                            encarregado: { ...prevData.encarregado, value: programingData.overseer },
+                            profissionais: { ...prevData.profissionais, value: selectedProfessionals },
+                            custo: { ...prevData.custo, value: programingData.cost },
+                            observacao: { ...prevData.observacao, value: programingData.observation },
+                        }));
 
-                    setProgramingId(orderData.programingId);
-                    setIsSaved(true);
-                    setIsEditing(false);
+                        setProgramingId(orderData.programingId);
+                        setIsSaved(true);
+                        setIsEditing(false);
+                        setIsLoading(false);
+                    })
+                } else {
+                    setIsLoading(false);
                 }
             } catch (error) {
                 console.error("Erro ao buscar dados da OS ou programação:", error);
@@ -302,6 +309,7 @@ export default function Programing() {
                 });
                 setShowMessageBox(true);
                 setTimeout(() => setShowMessageBox(false), 1500);
+                setIsLoading(false);
             }
         };
         fetchOrderData();
@@ -341,6 +349,7 @@ export default function Programing() {
         }
 
         try {
+            setIsSaving(true);
             const formattedDate1 = formData.startData.value.split('/').reverse().join('-');
             const formattedDate2 = formData.endData.value.split('/').reverse().join('-');
 
@@ -372,7 +381,7 @@ export default function Programing() {
 
             setProgramingId(newProgramingId);
 
-            const updatedOrder = await updateOpenDays(id); 
+            const updatedOrder = await updateOpenDays(id);
             setOrderServiceData(updatedOrder);
 
             setOrderServiceData((prevData) => ({
@@ -411,6 +420,8 @@ export default function Programing() {
             });
             setShowMessageBox(true);
             setTimeout(() => setShowMessageBox(false), 1500);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -429,7 +440,7 @@ export default function Programing() {
             setStatus("A atender");
             setFormData({
                 startData: { value: '', required: true },
-                endData: { value: '', required: false},
+                endData: { value: '', required: false },
                 turno: { value: '', required: true },
                 encarregado: { value: '', required: true },
                 profissionais: { value: [], required: true },
@@ -475,7 +486,7 @@ export default function Programing() {
     const handleDateChange = (field) => (date) => {
         setFormData((prevData) => {
             const updatedData = { ...prevData, [field]: { ...prevData[field], value: date } };
-    
+
             setEmptyFields((prevEmptyFields) => {
                 const updatedEmptyFields = { ...prevEmptyFields };
                 if (date) {
@@ -485,11 +496,11 @@ export default function Programing() {
                 }
                 return updatedEmptyFields;
             });
-    
+
             return updatedData;
         });
     };
-    
+
 
     useEffect(() => {
         if (isMaintenanceSaved) {
@@ -512,7 +523,21 @@ export default function Programing() {
     };
 
     if (!orderServiceData) {
-        return <p>Carregando dados da OS...</p>;
+        return (
+            <div className="flex flex-col space-y-4 p-4">
+                <div className="animate-pulse flex flex-col space-y-4">
+                    <div className="h-6 w-3/4 bg-gray-100 rounded-xl mb-1"></div> {/* Título */}
+                    <div className="h-4 w-1/2 bg-gray-100 rounded-xl mb-1"></div> {/* Subtítulo */}
+                </div>
+                
+                <div className="animate-pulse flex flex-col space-y-3 mt-6">
+                    <div className="h-10 bg-gray-100 rounded-xl mb-1"></div> {/* StatusBar */}
+                    <div className="h-16 bg-gray-100 rounded-xl mb-1"></div> {/* Detalhes */}
+                    <div className="h-10 bg-gray-100 rounded-xl mb-1"></div> {/* Botões */}
+                    <div className="h-40 bg-gray-100 rounded-xl mb-1"></div> {/* Seção de programação */}
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -531,7 +556,7 @@ export default function Programing() {
                     <div className="flex justify-center">
                         <PageTitle
                             icon={GrHostMaintenance}
-                            text="Atendimento da Ordem de Serviço"
+                            text="Atendimento da ordem de serviço"
                             backgroundColor="bg-white"
                             textColor="text-primary-dark"
                         />
@@ -579,121 +604,133 @@ export default function Programing() {
                                     setStatus("Atendida");
                                     handleMaintenanceSave();
                                 }}
+
                             />
                         )}
 
                         {status !== "Negada" && (
                             <SectionCard title="Programação" placeholder="Programação para a realização da manutenção.">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4">
-                                    <DateTimePicker
-                                        label="Data inicial *"
-                                        placeholder="exemplo: 00/00/0000"
-                                        onDateChange={handleDateChange('startData')}
-                                        value={formData.startData.value}
-                                        disabled={!isEditing}
-                                        errorMessage={emptyFields.startData ? "Este campo é obrigatório" : ""}
-                                    />
-                                    <DateTimePicker
-                                        label="Data final"
-                                        placeholder="exemplo: 00/00/0000"
-                                        onDateChange={handleDateChange('endData')}
-                                        value={formData.endData.value}
-                                        disabled={!isEditing}
-                                        errorMessage={emptyFields.endData ? "Este campo é obrigatório" : ""}
-                                    />
-                                    <InputSelect
-                                        label="Turno *"
-                                        options={hours}
-                                        onChange={handleFieldChange('turno')}
-                                        value={formData.turno.value}
-                                        disabled={!isEditing}
-                                        errorMessage={emptyFields.turno ? "Este campo é obrigatório" : ""}
-                                    />
-                                    
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-1">
-                                <InputSelect
-                                        label="Encarregado *"
-                                        options={overseers}
-                                        onChange={handleFieldChange('encarregado')}
-                                        value={formData.encarregado.value}
-                                        disabled={!isEditing}
-                                        errorMessage={emptyFields.encarregado ? "Este campo é obrigatório" : ""}
-                                    />
-                                    <MultiSelect
-                                        label="Profissional(is) *"
-                                        options={professionals}
-                                        onChange={handleMultiSelectChange}
-                                        selectedValues={formData.profissionais.value}
-                                        disabled={!isEditing}
-                                        errorMessage={emptyFields.profissionais ? "Este campo é obrigatório" : ""}
-                                    />
-                                    <InputPrimary
-                                        label="Custo estimado"
-                                        placeholder="Informe"
-                                        value={formData.custo.value}
-                                        onChange={handleFieldChange('custo')}
-                                        onKeyDown={handleKeyNumber}
-                                        disabled={!isEditing}
-                                    />
-                                    <InputPrimary
-                                        label="Observação"
-                                        placeholder="Escreva uma observação (opcional)"
-                                        value={formData.observacao.value}
-                                        onChange={handleFieldChange('observacao')}
-                                        disabled={!isEditing}
-                                    />
-
-                                    {isSaved && <p className="mt-2 mb-6 text-sm text-gray-400">Programado por: {user.name}</p>}
-
-                                </div>
-                                <div className="flex flex-col py-4  md:flex-row justify-end">
-                                    <div className="flex flex-col md:flex-row gap-y-1.5 md:gap-x-3 ">
-                                        {isEditing ? (
-                                            <>
-                                                <ButtonSecondary onClick={() => setIsEditing(false)}>Cancelar</ButtonSecondary>
-                                                <ButtonPrimary onClick={handleSave}>Salvar</ButtonPrimary>
-                                            </>
-                                        ) : (
-                                            <>
-                                                {status === "Em atendimento" && !isMaintenanceClosed ? (
-                                                    <>
-                                                        <ButtonTertiary
-                                                            bgColor="bg-white"
-                                                            textColor="text-red-500"
-                                                            icon={<FaTrash />}
-                                                            hoverColor="hover:bg-red-100"
-                                                            onClick={() => handleOpenModal("delete")}
-                                                        >
-                                                            Excluir
-                                                        </ButtonTertiary>
-
-                                                        <ButtonSecondary
-                                                            borderColor="border border-primary-light"
-                                                            bgColor="bg-white"
-                                                            hoverColor="hover:bg-secondary-hover"
-                                                            textColor="text-primary-light"
-                                                            icon={<FaEdit />}
-                                                            onClick={() => setIsEditing(true)}
-                                                        >
-                                                            Editar
-                                                        </ButtonSecondary>
-
-                                                        <ButtonPrimary
-                                                            bgColor="bg-primary-light"
-                                                            hoverColor="hover:bg-primary-hover"
-                                                            textColor="text-white"
-                                                            icon={<TbFileExport />}
-                                                            onClick={() => handleDownloadReport(orderServiceId)}
-                                                        >
-                                                            Exportar
-                                                        </ButtonPrimary>
-                                                    </>
-                                                ) : null}
-                                            </>
-                                        )}
+                                {isLoading ? (
+                                    <div className="animate-pulse flex flex-col space-y-4">
+                                        <div className="h-10 bg-gray-300 rounded"></div>
+                                        <div className="h-10 bg-gray-300 rounded"></div>
+                                        <div className="h-10 bg-gray-300 rounded"></div>
+                                        <div className="h-16 bg-gray-300 rounded"></div>
                                     </div>
-                                </div>
+                                ) : (
+                                    <>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4">
+                                            <DateTimePicker
+                                                label="Data inicial *"
+                                                placeholder="exemplo: 00/00/0000"
+                                                onDateChange={handleDateChange('startData')}
+                                                value={formData.startData.value}
+                                                disabled={!isEditing}
+                                                errorMessage={emptyFields.startData ? "Este campo é obrigatório" : ""}
+                                            />
+                                            <DateTimePicker
+                                                label="Data final"
+                                                placeholder="exemplo: 00/00/0000"
+                                                onDateChange={handleDateChange('endData')}
+                                                value={formData.endData.value}
+                                                disabled={!isEditing}
+                                                errorMessage={emptyFields.endData ? "Este campo é obrigatório" : ""}
+                                            />
+                                            <InputSelect
+                                                label="Turno *"
+                                                options={hours}
+                                                onChange={handleFieldChange('turno')}
+                                                value={formData.turno.value}
+                                                disabled={!isEditing}
+                                                errorMessage={emptyFields.turno ? "Este campo é obrigatório" : ""}
+                                            />
+
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-1">
+                                            <InputSelect
+                                                label="Encarregado *"
+                                                options={overseers}
+                                                onChange={handleFieldChange('encarregado')}
+                                                value={formData.encarregado.value}
+                                                disabled={!isEditing}
+                                                errorMessage={emptyFields.encarregado ? "Este campo é obrigatório" : ""}
+                                            />
+                                            <MultiSelect
+                                                label="Profissional(is) *"
+                                                options={professionals}
+                                                onChange={handleMultiSelectChange}
+                                                selectedValues={formData.profissionais.value}
+                                                disabled={!isEditing}
+                                                errorMessage={emptyFields.profissionais ? "Este campo é obrigatório" : ""}
+                                            />
+                                            <InputPrimary
+                                                label="Custo estimado"
+                                                placeholder="Informe"
+                                                value={formData.custo.value}
+                                                onChange={handleFieldChange('custo')}
+                                                onKeyDown={handleKeyNumber}
+                                                disabled={!isEditing}
+                                            />
+                                            <InputPrimary
+                                                label="Observação"
+                                                placeholder="Escreva uma observação (opcional)"
+                                                value={formData.observacao.value}
+                                                onChange={handleFieldChange('observacao')}
+                                                disabled={!isEditing}
+                                            />
+
+                                            {isSaved && <p className="mt-2 mb-6 text-sm text-gray-400">Programado por: {user.name}</p>}
+
+                                        </div>
+                                        <div className="flex flex-col py-4  md:flex-row justify-end">
+                                            <div className="flex flex-col md:flex-row gap-y-1.5 md:gap-x-3 ">
+                                                {isEditing ? (
+                                                    <>
+                                                        <ButtonSecondary onClick={() => setIsEditing(false)}>Cancelar</ButtonSecondary>
+                                                        <ButtonPrimary onClick={handleSave} loading={isSaving}>Salvar</ButtonPrimary>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {status === "Em atendimento" && !isMaintenanceClosed ? (
+                                                            <>
+                                                                <ButtonTertiary
+                                                                    bgColor="bg-white"
+                                                                    textColor="text-red-500"
+                                                                    icon={<FaTrash />}
+                                                                    hoverColor="hover:bg-red-100"
+                                                                    onClick={() => handleOpenModal("delete")}
+                                                                >
+                                                                    Excluir
+                                                                </ButtonTertiary>
+
+                                                                <ButtonSecondary
+                                                                    borderColor="border border-primary-light"
+                                                                    bgColor="bg-white"
+                                                                    hoverColor="hover:bg-secondary-hover"
+                                                                    textColor="text-primary-light"
+                                                                    icon={<FaEdit />}
+                                                                    onClick={() => setIsEditing(true)}
+                                                                >
+                                                                    Editar
+                                                                </ButtonSecondary>
+
+                                                                <ButtonPrimary
+                                                                    bgColor="bg-primary-light"
+                                                                    hoverColor="hover:bg-primary-hover"
+                                                                    textColor="text-white"
+                                                                    icon={<TbFileExport />}
+                                                                    onClick={() => handleDownloadReport(orderServiceId)}
+                                                                >
+                                                                    Exportar
+                                                                </ButtonPrimary>
+                                                            </>
+                                                        ) : null}
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
                             </SectionCard>
                         )}
 

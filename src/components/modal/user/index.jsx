@@ -78,7 +78,7 @@ const UserModal = ({ user, onClose, onSave, emptyFields, setEmptyFields }) => {
                         errorMessage={emptyFields.role ? "Campo obrigatório" : ""}
                     />
                 </div>
-                <div className="flex justify-center mt-8">
+                <div className="flex justify-center mt-8 gap-y-2 md:gap-x-2">
                     <ButtonSecondary onClick={onClose}>Cancelar</ButtonSecondary>
                     <ButtonPrimary onClick={handleSubmit}>Salvar</ButtonPrimary>
                 </div>

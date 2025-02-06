@@ -9,6 +9,7 @@ import { createFinished, updateOrderServiceStatus, getFinalizationByProgramingId
 const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
   const [isSaved, setIsSaved] = useState(isFinalized);
   const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false); 
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [messageContent, setMessageContent] = useState({ type: "", title: "", message: "" });
@@ -26,20 +27,19 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
     try {
       const response = await getFinalizationByProgramingId(programingId);
 
-      if (response && response.length > 0) {
-        // Use a última observação ou concatene todas, dependendo da lógica
-        const latestContent = response[response.length - 1].content;
-        setFormData((prevData) => ({
-          ...prevData,
-          observation: { ...prevData.observation, value: latestContent },
-        }));
-        setIsSaved(true);
-      } else {
-        console.warn("Nenhuma observação encontrada.");
-      }
+      setTimeout(() => {
+        if (response && response.length > 0) {
+          const latestContent = response[response.length - 1].content;
+          setFormData((prevData) => ({
+            ...prevData,
+            observation: { ...prevData.observation, value: latestContent },
+          }));
+          setIsSaved(true);
+        }
+        setIsLoading(false);
+      }, 1000)
     } catch (error) {
       console.error("Erro ao buscar a finalização:", error);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -119,6 +119,7 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
 
   const handleExportReport = async () => {
     try {
+      setIsExporting(true);
       await downloadReport(orderServiceData.id);
       setMessageContent({ type: "success", title: "Sucesso.", message: "Relatório baixado com sucesso!" });
     } catch (error) {
@@ -128,14 +129,11 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
         message: "Não foi possível baixar o relatório. Tente novamente.",
       });
     } finally {
+      setIsExporting(false);
       setShowMessageBox(true);
       setTimeout(() => setShowMessageBox(false), 1000);
     }
   };
-
-  if (isLoading) {
-    return <p>Carregando...</p>;
-  }
 
   return (
     <div className="flex flex-col bg-white border border-gray-300 rounded-xl mb-4 mt-1.5">
@@ -144,24 +142,33 @@ const FinalizeSection = ({ orderServiceData, onFinalize, isFinalized }) => {
           <h3 className="text-sm md:text-base font-medium text-gray-800">Finalização</h3>
           <p className="text-sm text-primary-dark">Observação sobre a manutenção realizada para conclusão da ordem de serviço.</p>
         </div>
-        <div className="mt-7">
-          <InputPrimary
-            label="Observação final *"
-            placeholder="Escrever uma observação"
-            value={formData.observation.value.toUpperCase()}
-            onChange={handleFieldChange("observation")}
-            disabled={isSaved || isSaving}
-            errorMessage={emptyFields.observation ? "Este campo é obrigatório" : ""}
-          />
-        </div>
-        {isSaved && <p className="mt-2 text-sm text-gray-400">Finalizado por: {user.name}</p>}
+        {isLoading ? (
+          <div className="animate-pulse flex flex-col space-y-3 mt-7">
+            <div className="h-10 bg-gray-100 rounded-xl"></div>
+            <div className="h-10 bg-gray-100 rounded-xl"></div>
+          </div>
+        ) : (
+          <>
+            <div className="mt-7">
+              <InputPrimary
+                label="Observação final *"
+                placeholder="Escrever uma observação"
+                value={formData.observation.value.toUpperCase()}
+                onChange={handleFieldChange("observation")}
+                disabled={isSaved || isSaving}
+                errorMessage={emptyFields.observation ? "Este campo é obrigatório" : ""}
+              />
+            </div>
+            {isSaved && <p className="mt-2 text-sm text-gray-400">Finalizado por: {user.name}</p>}
+          </>
+        )}
         <div className="flex justify-end mt-4">
           {!isSaved ? (
-            <ButtonPrimary onClick={handleSave} disabled={isSaving}>
-              {isSaving ? "Salvando..." : "Salvar"}
+            <ButtonPrimary onClick={handleSave} loading={isSaving}>
+              salvar
             </ButtonPrimary>
           ) : (
-            <ButtonPrimary onClick={handleExportReport} >Exportar Relatório</ButtonPrimary>
+            <ButtonPrimary onClick={handleExportReport} loading={isExporting}>Exportar Relatório</ButtonPrimary>
           )}
         </div>
       </div>

@@ -168,7 +168,7 @@ export default function InfraPage() {
                             onSearch={handleSearch}
                         />
                         <button
-                            className="flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-blue-700 gap-2"
+                            className="flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-700 gap-2"
                             onClick={() => {
                                 setShowModal(true);
                                 setSelectedData(null); 

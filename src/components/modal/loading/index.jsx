@@ -9,7 +9,7 @@ export default function Loading() {
                     ariaLabel="loading-indicator"
                     width={50}
                     height={50}
-                    color='#1351b4'
+                    color='#009A17'
                 />
             </div>
             <div className='text-sm text-primary-dark'>

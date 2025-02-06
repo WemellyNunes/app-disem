@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 body {
-    @apply font-sans;
+    font-family: 'Roboto', sans-serif;
     @apply bg-white;
 }
 
@@ -15,4 +15,8 @@ body.bg-dashboard-page {
 
 body.bg-form-page {
     @apply bg-gray-50; 
+}
+
+body.bg-login-page {
+    @apply bg-gray-50;
 }

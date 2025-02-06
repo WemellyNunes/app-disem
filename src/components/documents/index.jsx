@@ -50,7 +50,7 @@ const DocumentList = ({ documents, onRemove, isReadOnly = false }) => {
     };
 
     const handleOpenDocument = (doc) => {
-        if (!doc.nameFile) {
+        if (!doc.namefile) { // Alterado para namefile (igual ao backend)
             setMessageContent({
                 type: "error",
                 title: "Erro",
@@ -60,10 +60,12 @@ const DocumentList = ({ documents, onRemove, isReadOnly = false }) => {
             return;
         }
     
-        const fileUrl = getDocumentUrl(doc.nameFile.replace("/uploads/documents/", ""));
+        const fileUrl = getDocumentUrl(doc.namefile.replace("/uploads/documents/", ""));
+       
         
         window.open(fileUrl, "_blank");
     };
+    
     
 
     return (
@@ -76,7 +78,7 @@ const DocumentList = ({ documents, onRemove, isReadOnly = false }) => {
                             className="flex items-center text-sm text-primary-dark hover:text-primary-light cursor-pointer"
                             onClick={() => handleOpenDocument(doc)}
                         >
-                            <span >{doc.nameFile} ({(doc.size / 1024).toFixed(2)} KB)</span>
+                            <span >{doc.namefile}</span>
                         </div>
                         <div className="flex items-center">
                             <button
