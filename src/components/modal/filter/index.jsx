@@ -4,8 +4,28 @@ import DateTimePicker from "../../inputs/dateTimePicker";
 import MultiSelect from "../../inputs/multiSelect";
 import ButtonPrimary from "../../buttons/buttonPrimary";
 import ButtonSecondary from "../../buttons/buttonSecondary";
+import { getAllTeams } from '../../../utils/api/api';
 
 const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
+
+  const [professionals, setProfessionals] = useState([]);
+
+  useEffect(() => {
+    const fetchProfessionals = async () => {
+        try {
+            const data = await getAllTeams();
+            const formattedProfessionals = data.map((team) => ({
+                label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
+                value: team.name
+            }));
+            setProfessionals(formattedProfessionals);
+        } catch (error) {
+            console.error("Erro ao buscar profissionais:", error);
+        }
+    };
+    fetchProfessionals();
+}, []);
+
   const options = [
     { label: 'UNIDADE I - MARABÁ', value: 'UNIDADE I - MARABÁ' },
     { label: 'UNIDADE II - MARABÁ', value: 'UNIDADE II - MARABÁ' },
@@ -117,6 +137,12 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
             options={system}
             onChange={(selectedOptions) => handleMultiSelectChange('system', selectedOptions)}
             selectedValues={filters.system}
+          />
+          <MultiSelect
+            label="Profissionais"
+            options={professionals}
+            onChange={(selectedOptions) => handleMultiSelectChange('professionals', selectedOptions)}
+            selectedValues={filters.professionals}
           />
           <MultiSelect
             label="Tipo de manutenção"

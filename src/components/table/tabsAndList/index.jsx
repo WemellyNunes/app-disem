@@ -91,7 +91,7 @@ const TabsAndList = () => {
                 delete updatedFilters[filterKey];
             }
     
-            localStorage.setItem('appliedFilters', JSON.stringify(updatedFilters)); // Atualiza o localStorage
+            localStorage.setItem('appliedFilters', JSON.stringify(updatedFilters)); 
             return updatedFilters;
         });
     };
@@ -163,6 +163,21 @@ const TabsAndList = () => {
                     )
                 );
             }
+
+            if (appliedFilters.professionals && appliedFilters.professionals.length > 0) {
+                filtered = filtered.filter(item => {
+                    if (!item.programings || item.programings.length === 0) {
+                        return false; // Se a OS não tem programações, não precisa ser exibida
+                    }
+                    return item.programings.some(programing =>
+                        appliedFilters.professionals.some(prof =>
+                            programing.worker.toLowerCase().includes(prof.value.toLowerCase())
+                        )
+                    );
+                });
+            }
+            
+            
         }        
 
         filtered = filtered.sort((a, b) => {

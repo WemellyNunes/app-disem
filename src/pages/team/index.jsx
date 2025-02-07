@@ -10,7 +10,6 @@ import MessageCard from '../../components/cards/menssegeCard';
 import { getAllTeams, deleteTeam, uploadTeams } from '../../utils/api/api';
 import { parseExcelFile } from '../../utils/parseExcel';
 
-
 export default function TeamPage() {
     const [showModal, setShowModal] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -37,10 +36,9 @@ export default function TeamPage() {
     };
 
     const handleEditClick = (team) => {
-        setSelectedTeam(team); // Define o profissional selecionado
-        setShowModal(true);    // Abre o modal
+        setSelectedTeam(team); 
+        setShowModal(true);    
     };
-
 
     const fetchTeams = async () => {
         try {
@@ -59,10 +57,9 @@ export default function TeamPage() {
         fetchTeams();
     }, []);
 
-
     const filterData = (term) => {
         if (!term) {
-            setFilteredData(teams); // Se o termo estiver vazio, exibe todos os dados
+            setFilteredData(teams);
         } else {
             const filtered = teams.filter((team) =>
                 team.name.toLowerCase().includes(term.toLowerCase()) ||
@@ -70,34 +67,30 @@ export default function TeamPage() {
                 team.status.toLowerCase().includes(term.toLowerCase())
 
             );
-            setFilteredData(filtered); // Atualiza a lista filtrada
+            setFilteredData(filtered); 
         }
     };
 
     const handleSearch = (term) => {
         setSearchTerm(term);
-        filterData(term); // Aplica o filtro
+        filterData(term); 
     };
 
     const handleDeleteClick = (team) => {
-        setSelectedTeam(team); // Define o profissional selecionado
-        setShowConfirmationModal(true); // Abre o modal
+        setSelectedTeam(team); 
+        setShowConfirmationModal(true); 
     };
-
 
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
 
         try {
-            // Converte o arquivo para JSON
             const formattedData = await parseExcelFile(file);
             console.log('Dados convertidos:', formattedData);
 
-            // Envia para o backend como ARRAY
             await uploadTeams(formattedData);
 
-            // Exibe mensagem de sucesso
             setMessageContent({
                 type: "success",
                 title: "Sucesso.",
@@ -106,14 +99,13 @@ export default function TeamPage() {
             setShowMessageBox(true);
 
             setTimeout(() => {
-                setShowMessageBox(false); // Esconde o MessageBox após 1.5s
-                window.location.reload(); // Atualiza a página
+                setShowMessageBox(false); 
+                window.location.reload(); 
             }, 1000);
 
         } catch (error) {
             console.error('Erro ao enviar planilha:', error);
 
-            // Exibe mensagem de erro
             setMessageContent({
                 type: "error",
                 title: "Erro.",
@@ -122,18 +114,15 @@ export default function TeamPage() {
             setShowMessageBox(true);
 
             setTimeout(() => {
-                setShowMessageBox(false); // Esconde o MessageBox após 1.5s
+                setShowMessageBox(false); 
             }, 1500);
         }
     };
 
-
-
-
     const handleConfirmDelete = async () => {
         if (selectedTeam) {
             try {
-                await deleteTeam(selectedTeam.id); // Chama o endpoint
+                await deleteTeam(selectedTeam.id); 
                 setMessageContent({
                     type: "success",
                     title: "Sucesso.",
@@ -165,7 +154,6 @@ export default function TeamPage() {
                     backgroundColor="bg-white"
                     textColor="text-primary-dark"
                 />
-
                 <div className="pt-3 px-2 md:px-6">
                     <div className='flex flex-row gap-x-2 mb-3 '>
                         <SearchInput

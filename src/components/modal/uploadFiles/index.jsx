@@ -45,13 +45,13 @@ const UploadModalFiles = ({ isOpen, onClose, orderId, onUploadSuccess }) => {
     
                 await uploadDocument(formData);
             }
-    
+
             setMessage({ show: true, type: "success", title: "Sucesso!", text: "Documentos enviados com sucesso." });
     
             setTimeout(() => {
                 setMessage({ show: false });
-                onUploadSuccess(); // Chama a atualização da lista de documentos
-                onClose(); // Fecha o modal
+                onUploadSuccess();
+                onClose(); 
             }, 1500);
         } catch (error) {
             setMessage({ show: true, type: "error", title: "Erro!", text: "Não foi possível enviar os documentos." });

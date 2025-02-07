@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://18.230.17.37:8080/api',
+  baseURL: 'http://localhost:8080/api',
 });
 
 export const createOrder = async (orderData) => {
@@ -127,7 +127,7 @@ export const uploadDocument = async (formData) => {
 
 
 export const getDocumentUrl = (fileName) => {
-  const cleanFileName = fileName.replace("/uploads/documents/", ""); // Remove caminho
+  const cleanFileName = fileName.replace("/uploads/documents/", ""); 
   return `http://18.230.17.37:8080/api/files/${cleanFileName}`;
 };
 
@@ -279,7 +279,7 @@ export const getProgramingById = async (id) => {
 export const updatePrograming = async (id, programingData) => {
   try {
     const response = await api.put(`/programing/${id}`, programingData);
-    return response.data; // Retorna a resposta do backend
+    return response.data; 
   } catch (error) {
     console.error("Erro ao atualizar programação:", error);
     throw error;
@@ -289,10 +289,10 @@ export const updatePrograming = async (id, programingData) => {
 export const deletePrograming = async (id) => {
   try {
     const response = await api.delete(`/programing/${id}`);
-    return response.data; // Retorna a resposta do backend
+    return response.data;
   } catch (error) {
     console.error("Erro ao excluir programação:", error);
-    throw error; // Lança o erro para ser tratado
+    throw error; 
   }
 };
 
@@ -301,11 +301,11 @@ export const uploadFiles = async (files, programingId, type, description, create
 
  
   files.forEach((fileObj) => {
-    formData.append("file", fileObj.file); // Envia o arquivo com a chave 'file'
+    formData.append("file", fileObj.file); 
   });
 
-  formData.append("programingId", programingId); // Adiciona o ID da programação
-  formData.append("type", type); // Tipo (antes/depois)
+  formData.append("programingId", programingId); 
+  formData.append("type", type);
   formData.append("description", description);
   formData.append("createdAt", createdAt);
 
@@ -326,7 +326,7 @@ export const uploadFiles = async (files, programingId, type, description, create
 export const getAllImages = async (programingId) => {
   try {
     const response = await api.get(`/files`, {
-      params: { programingId }, // Adiciona o parâmetro à requisição
+      params: { programingId }, 
     });
     return response.data;
   } catch (error) {
@@ -443,11 +443,11 @@ export const getHistoryByOrderId = async (orderId) => {
 
 export const createTeam = async (teamData) => {
   try {
-    const response = await api.post('/teams', teamData); // Faz o POST para o endpoint /teams
-    return response.data; // Retorna os dados da equipe salva
+    const response = await api.post('/teams', teamData); 
+    return response.data; 
   } catch (error) {
-    console.error("Erro ao salvar equipe:", error); // Log de erro no console
-    throw error; // Lança o erro para ser tratado
+    console.error("Erro ao salvar equipe:", error); 
+    throw error; 
   }
 };
 
@@ -463,7 +463,7 @@ export const getAllTeams = async () => {
 
 export const deleteTeam = async (id) => {
   try {
-      const response = await api.delete(`/team/${id}`); // Endpoint de exclusão
+      const response = await api.delete(`/team/${id}`);
       return response.data;
   } catch (error) {
       console.error("Erro ao excluir profissional:", error);
@@ -488,7 +488,7 @@ export const uploadTeams = async (formData) => {
               'Content-Type': 'application/json',
           },
       });
-      return response.data; // Retorna os dados da resposta
+      return response.data; 
   } catch (error) {
       throw new Error(error.response?.data || "Erro ao enviar planilha.");
   };
@@ -528,7 +528,7 @@ export const getAllInstitutes = async () => {
 
 export const deleteInstitute = async (id) => {
   try {
-      const response = await api.delete(`/institute/${id}`); // Endpoint de exclusão
+      const response = await api.delete(`/institute/${id}`); 
       return response.data;
   } catch (error) {
       console.error("Erro ao excluir a instituição:", error);
@@ -538,7 +538,7 @@ export const deleteInstitute = async (id) => {
 
 export const deleteUnit = async (id) => {
   try {
-      const response = await api.delete(`/unit/${id}`); // Endpoint de exclusão
+      const response = await api.delete(`/unit/${id}`); 
       return response.data;
   } catch (error) {
       console.error("Erro ao excluir a unidade:", error);
