@@ -4,36 +4,52 @@ import DateTimePicker from "../../inputs/dateTimePicker";
 import MultiSelect from "../../inputs/multiSelect";
 import ButtonPrimary from "../../buttons/buttonPrimary";
 import ButtonSecondary from "../../buttons/buttonSecondary";
-import { getAllTeams } from '../../../utils/api/api';
+import { getAllTeams, getAllUnits } from '../../../utils/api/api';
 
 const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
 
   const [professionals, setProfessionals] = useState([]);
+  const [units, setUnits] = useState([]);
 
   useEffect(() => {
     const fetchProfessionals = async () => {
-        try {
-            const data = await getAllTeams();
-            const formattedProfessionals = data.map((team) => ({
-                label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
-                value: team.name
-            }));
-            setProfessionals(formattedProfessionals);
-        } catch (error) {
-            console.error("Erro ao buscar profissionais:", error);
-        }
+      try {
+        const data = await getAllTeams();
+        const formattedProfessionals = data.map((team) => ({
+          label: `${team.name.toUpperCase()} - ${team.role.toUpperCase()}`,
+          value: team.name
+        }));
+        setProfessionals(formattedProfessionals);
+      } catch (error) {
+        console.error("Erro ao buscar profissionais:", error);
+      }
     };
+
+    const fetchUnits = async () => {
+      try {
+        const data = await getAllUnits();
+        const formattedUnits = data.map((unit) => ({
+          label: `${unit.unit.toUpperCase()} - ${unit.campus.toUpperCase()}`,
+          value: unit.unit
+        }));
+        setUnits(formattedUnits);
+      } catch (error) {
+        console.error("Erro ao buscar unidades:", error);
+      }
+    };
+
     fetchProfessionals();
-}, []);
+    fetchUnits();
+  }, []);
 
   const options = [
-    { label: 'UNIDADE I - MARABÁ', value: 'UNIDADE I - MARABÁ' },
-    { label: 'UNIDADE II - MARABÁ', value: 'UNIDADE II - MARABÁ' },
-    { label: 'UNIDADE III - MARABÁ', value: 'UNIDADE III - MARABÁ' },
-    { label: 'UNIDADE SANTANA DO ARAGUAIA', value: 'UNIDADE SANTANA DO ARAGUAIA' },
-    { label: 'UNIDADE SÃO FELIX DO XINGU', value: 'UNIDADE SÃO FELIX DO XINGU' },
-    { label: 'UNIDADE RONDON', value: 'UNIDADE RONDON' },
-    { label: 'UNIDADE XINGUARA', value: 'UNIDADE XINGUARA' },
+    { label: 'UNIDADE I - MARABÁ', value: 'UNIDADE I' },
+    { label: 'UNIDADE II - MARABÁ', value: 'UNIDADE II' },
+    { label: 'UNIDADE III - MARABÁ', value: 'UNIDADE III' },
+    { label: 'UNIDADE SANTANA DO ARAGUAIA', value: 'SANTANA DO ARAGUAIA' },
+    { label: 'UNIDADE SÃO FELIX DO XINGU', value: 'SÃO FELIX DO XINGU' },
+    { label: 'UNIDADE RONDON', value: 'RONDON' },
+    { label: 'UNIDADE XINGUARA', value: 'XINGUARA' },
   ];
 
   const system = [
@@ -128,7 +144,7 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
           />
           <MultiSelect
             label="Unidade"
-            options={options}
+            options={units}
             onChange={(selectedOptions) => handleMultiSelectChange('campus', selectedOptions)}
             selectedValues={filters.campus}
           />
@@ -137,12 +153,6 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, appliedFilters }) => {
             options={system}
             onChange={(selectedOptions) => handleMultiSelectChange('system', selectedOptions)}
             selectedValues={filters.system}
-          />
-          <MultiSelect
-            label="Profissionais"
-            options={professionals}
-            onChange={(selectedOptions) => handleMultiSelectChange('professionals', selectedOptions)}
-            selectedValues={filters.professionals}
           />
           <MultiSelect
             label="Tipo de manutenção"

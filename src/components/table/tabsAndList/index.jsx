@@ -135,10 +135,10 @@ const TabsAndList = () => {
             if (appliedFilters.campus && appliedFilters.campus.length > 0) {
                 filtered = filtered.filter(item =>
                     appliedFilters.campus.some(unit =>
-                        item.maintenanceUnit.toLowerCase().includes(unit.value.toLowerCase())
+                        item.maintenanceUnit.trim().toLowerCase() === unit.value.trim().toLowerCase()
                     )
                 );
-            }
+            }            
         
             if (appliedFilters.typeMaintenance && appliedFilters.typeMaintenance.length > 0) {
                 filtered = filtered.filter(item =>
