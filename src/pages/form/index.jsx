@@ -335,14 +335,13 @@ export default function Form() {
     };
     
     const handleUploadSuccess = () => {
-        fetchDocuments(orderId); // Busca a lista de documentos atualizada diretamente da API
+        fetchDocuments(orderId); 
     };
     
     
-
     const handleKeyDown = (event) => {
         if (/\d/.test(event.key)) {
-            event.preventDefault(); // Bloqueia a entrada de números
+            event.preventDefault(); 
         }
     };
     const handleKeyNumber = (event) => {
@@ -386,7 +385,7 @@ export default function Form() {
                     />
                 </div>
                 <div className="flex justify-center items-center">
-                    <div className="flex flex-col items-center bg-white border border-gray-300 mt-2 mb-2 px-8 py-4 md:px-16  w-full md:w-[850px] rounded-xl">
+                    <div className="flex flex-col items-center bg-white border border-gray-300 mt-2 mb-2 px-8 py-4 md:px-16  w-full md:w-[900px] rounded-xl">
                         <div className="flex-1 mb-2 w-full">
                             <p className="text-sm md:text-base font-medium text-gray-800 my-6 pb-2.5 border-b border-gray-300">Formulário de cadastro</p>
                             <p className="text-sm md:text-base font-medium text-gray-800 my-6">1. Dados da ordem de serviço</p>

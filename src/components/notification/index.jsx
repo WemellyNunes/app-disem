@@ -31,7 +31,6 @@ const NotificationButton = () => {
 
     return (
         <div className="relative">
-            {/* Botão do sino */}
             <button 
                 className="relative p-1.5 text-gray-700 hover:text-blue-600"
                 onClick={() => { setIsOpen(!isOpen); markAllAsRead(); }}
@@ -45,7 +44,7 @@ const NotificationButton = () => {
             </button>
 
             {isOpen && (
-                <div ref={dropdownRef}  className="absolute right-0 mt-2 w-96 bg-white border border-gray-300 shadow-lg rounded-md p-2">
+                <div ref={dropdownRef}  className="absolute right-0 mt-2 w-96 bg-white border border-gray-300 shadow-lg rounded-md p-2 z-50">
                     <div className="flex justify-between items-center mb-2">
                         <h3 className="text-sm font-semibold text-gray-800">Notificações</h3>
                         <button onClick={() => setIsOpen(false)}>

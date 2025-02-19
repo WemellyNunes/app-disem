@@ -126,10 +126,16 @@ export const uploadDocument = async (formData) => {
 };
 
 
-export const getDocumentUrl = (fileName) => {
-  const cleanFileName = fileName.replace("/uploads/documents/", ""); 
-  return `http://18.230.17.37:8080/api/files/${cleanFileName}`;
+export const getDocumentBase64 = async (fileName) => {
+  try {
+      const response = await api.get(`/files/${fileName}`);
+      return response.data;
+  } catch (error) {
+      console.error("Erro ao buscar o arquivo:", error);
+      throw error;
+  }
 };
+
 
 
 
@@ -298,7 +304,6 @@ export const deletePrograming = async (id) => {
 
 export const uploadFiles = async (files, programingId, type, description, createdAt) => {
   const formData = new FormData();
-
  
   files.forEach((fileObj) => {
     formData.append("file", fileObj.file); 
@@ -315,7 +320,6 @@ export const uploadFiles = async (files, programingId, type, description, create
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(`Arquivos ${description} enviados com sucesso:`, response.data);
     return response.data;
   } catch (error) {
     console.error(`Erro ao enviar arquivos ${description}:`, error.response?.data || error.message);
@@ -328,7 +332,7 @@ export const getAllImages = async (programingId) => {
     const response = await api.get(`/files`, {
       params: { programingId }, 
     });
-    return response.data;
+    return response.data || [];
   } catch (error) {
     console.error("Erro ao buscar as imagens:", error);
     throw error;

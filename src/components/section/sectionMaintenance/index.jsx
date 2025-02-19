@@ -215,7 +215,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                 setTimeout(() => {
                     setFormData({
                         filesBefore: {
-                            value: filesBefore.map((f) => ({
+                            value: (filesBefore || []).map((f) => ({
                                 id: f.id,
                                 file: {
                                     name: f.nameFile,
@@ -227,7 +227,7 @@ const MaintenanceSection = ({ orderServiceData, onMaintenanceClose, onMaintenanc
                             required: true
                         },
                         filesAfter: {
-                            value: filesAfter.map((f) => ({
+                            value: (filesAfter || []).map((f) => ({
                                 id: f.id,
                                 file: {
                                     name: f.nameFile,

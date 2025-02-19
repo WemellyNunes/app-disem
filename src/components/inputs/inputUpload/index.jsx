@@ -20,14 +20,15 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
 
 
     useEffect(() => {
-        const formattedFiles = initialFiles.map((item) => ({
+        const formattedFiles = (initialFiles || []).map((item) => ({
             id: item.id || item.file?.id,
             file: item.file || item,
             description: item.description || "",
         }));
         console.log("Arquivos formatados corrigidos:", formattedFiles);
-        setUploadedFiles(formattedFiles || []);
-    }, [initialFiles]);
+        setUploadedFiles(formattedFiles);
+    }, [initialFiles]);    
+
 
     const handleUpload = async (files, description) => {
         const validFiles = files.filter((file) => {
@@ -40,7 +41,10 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
 
         if (validFiles.length > 0) {
             try {
-                const newFiles = validFiles.map((file) => ({ file, description }));
+                const newFiles = validFiles.map((file) => {
+                    return { file, description };
+                });
+
 
                 if (uploadType === "image") {
                     const updatedFiles = [...uploadedFiles, ...newFiles];
@@ -151,7 +155,6 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
             await updateImage(fileId, payload);
             console.log("Imagem atualizada com sucesso!");
     
-            // Atualiza o estado local com a nova descrição
             setUploadedFiles((prevFiles) =>
                 prevFiles.map((item, i) =>
                     i === index ? { ...item, description } : item
