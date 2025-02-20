@@ -128,10 +128,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         } else {
             alert("Conteúdo do arquivo não disponível para visualização.");
         }
-
-
     };
-
 
     const handleEditFile = async (file, description, index) => {
         const fileId = uploadedFiles[index]?.id; 
@@ -168,14 +165,11 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         }
     };
     
-
-
     const handleShowConfirmModal = (file) => {
         console.log("Arquivo selecionado para deletar:", file);
         setImageToDelete(file);
         setShowConfirmModal(true);
     };
-
 
     return (
         <div className={`flex flex-col mb-4`}>
@@ -200,17 +194,17 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                     {uploadedFiles.map((item, index) => (
                         <div key={index} className={`flex justify-between items-center border rounded-md p-1.5 mt-1 ${disabled ? 'bg-gray-50 border-none' : 'border'}`}>
                             <div className="flex flex-col">
-                                <span className={`text-xs md:text-sm font-light ${disabled ? 'text-gray-500' : 'text-primary-light'}`}>{item?.file?.name || "Arquivo não identificado"}</span>
+                                <span className={`text-xs md:text-sm font-light ${disabled ? 'text-gray-500' : 'text-primary-light'}`}>{item?.file?.name.split("/").pop() || "Arquivo não identificado"}</span>
                                 <span className="text-xs text-gray-500">
                                     {item?.file?.size
-                                        ? (item.file.size / 1024 / 1024).toFixed(2) + " MB" // Arquivo local
-                                        : ((item?.file?.content.length * 3) / 4 / 1024 / 1024).toFixed(2) + " MB" // Arquivo salvo
+                                        ? (item.file.size / 1024 / 1024).toFixed(2) + " MB" 
+                                        : ((item?.file?.content.length * 3) / 4 / 1024 / 1024).toFixed(2) + " MB" 
                                     }
                                 </span>
                                 <span className="text-xs text-gray-500">Descrição: {item?.description || "Sem descrição"}</span>
                             </div>
                             <div className="flex">
-                                {item?.id && ( // Apenas mostra os botões se a imagem tiver um ID (salva no backend)
+                                {item?.id && ( 
                                     <>
                                         <button
                                             onClick={() => handlePreviewFile(item?.file)}
@@ -273,10 +267,10 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                 <ConfirmationModal
                     title="Excluir Imagem"
                     message="Tem certeza de que deseja excluir esta imagem? Esta ação não pode ser desfeita."
-                    onConfirm={handleDeleteFile} // Confirma a exclusão
+                    onConfirm={handleDeleteFile} 
                     onCancel={() => {
-                        setShowConfirmModal(false); // Fecha o modal
-                        setImageToDelete(null);    // Limpa o estado
+                        setShowConfirmModal(false); 
+                        setImageToDelete(null);   
                     }}
                 />
 

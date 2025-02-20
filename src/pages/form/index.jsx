@@ -117,8 +117,6 @@ export default function Form() {
         fetchUnits();
     }, []);
 
-
-
     useEffect(() => {
         document.body.classList.add("bg-form-page");
 
@@ -165,8 +163,6 @@ export default function Form() {
         }
     };
     
-    
-
     const handleFieldChange = (field) => (value) => {
         setFormData((prevData) => {
             const updatedData = {
