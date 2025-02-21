@@ -90,9 +90,9 @@ export default function Dashboard() {
                         textColor="text-primary-dark"
                     />
                 </div>
-                <div className="flex gap-x-2 bg-white md:gap-x-4 mx-2 md:mx-6 items-center justify-center md:justify-between py-1 md:px-6 border border-gray-300 rounded-md mt-2">
+                <div className="flex gap-x-2 bg-white md:gap-x-4 mx-2 md:mx-6 items-center justify-center md:justify-between py-1 md:px-6 shadow rounded-md mt-2">
                     <div>
-                        <p className="hidden md:flex text-primary-dark text-sm">Dados das Ordem de Serviços no sitema</p>
+                        <p className="hidden md:flex text-gray-700 text-sm">Dados das Ordem de Serviços no sitema</p>
                     </div>
                     <div className="flex gap-x-2 md:gap-x-4 items-center ">
                         <p className="hidden md:flex text-xs text-gray-500" >Comparar periodos</p>
@@ -111,14 +111,13 @@ export default function Dashboard() {
                     </div>
                 </div>
                 <div className="px-2 md:px-6">
-                    <div className="flex flex-row justify-between mt-3 gap-x-1 overflow-x-auto">
+                    <div className="flex flex-row justify-between mt-3 gap-x-2 md:gap-x-4 overflow-x-auto">
                         <StatCard
                             title="Sipac"
                             approved={stats.sipac.approved}
                             finalized={stats.sipac.finalized}
                             borderColor="border-r-blue-500"
                             percentage={stats.sipac.percentage}
-                            hover="hover:bg-blue-50"
                         />
 
                         <StatCard
@@ -126,7 +125,6 @@ export default function Dashboard() {
                             approved={stats.monthly.approved}
                             finalized={stats.monthly.finalized}
                             borderColor="border-r-purple-500"
-                            hover="hover:bg-blue-50"
                         />
 
                         <StatCard
@@ -134,7 +132,6 @@ export default function Dashboard() {
                             approved={stats.weekly.approved}
                             finalized={stats.weekly.finalized}
                             borderColor="border-r-red-500"
-                            hover="hover:bg-blue-50"
                         />
 
                         <StatCard
@@ -142,7 +139,6 @@ export default function Dashboard() {
                             approved={stats.today.approved}
                             finalized={stats.today.finalized}
                             borderColor="border-r-orange-500"
-                            hover="hover:bg-blue-50"
                         />
 
                         <StatCard
@@ -150,11 +146,10 @@ export default function Dashboard() {
                             approved={stats.yearly.approved}
                             finalized={stats.yearly.finalized}
                             borderColor="border-r-yellow-500"
-                            hover="hover:bg-blue-50"
                         />
                     </div>
-                    <div className="flex flex-col  mb-2">
-                        <div className="flex flex-col gap-x-1.5 sm:flex-row">
+                    <div className="flex flex-col mb-2">
+                        <div className="flex flex-col gap-x-4 sm:flex-row">
                             <Card>
                                 <BarGraphic year={selectedYear} month={selectedMonth} />
                             </Card>
@@ -162,7 +157,7 @@ export default function Dashboard() {
                                 <DoughnutChart year={selectedYear} month={selectedMonth} />
                             </Card>
                         </div>
-                        <div className="flex flex-col gap-x-1.5 sm:flex-row">
+                        <div className="flex flex-col gap-x-4 sm:flex-row">
                             <Card>
                                 <LocationBarChart year={selectedYear} />
                             </Card>

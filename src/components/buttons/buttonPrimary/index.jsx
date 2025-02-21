@@ -12,7 +12,7 @@ const ButtonPrimary = ({
   return (
       <button
           className={`${bgColor} ${hoverColor} ${textColor} 
-          font-medium text-xs md:text-sm h-9 md:h-11 px-10 rounded-full flex items-center 
+          font-medium text-sm h-10 px-10 rounded-full flex items-center 
           justify-center disabled:opacity-50`}
           disabled={loading || props.disabled}
           {...props}

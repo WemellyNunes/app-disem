@@ -72,18 +72,18 @@ const LocationBarChart = ({ year }) => {
                 text: 'OS abertas por localidade',
                 font: {
                     size: 16,
-                    weight: 'normal' // Aumenta o tamanho do título
+                    weight: 'bold' 
                 },
             },
             datalabels: {
-                display: true, // Exibe os valores diretamente
-                color: '#fff', // Define a cor dos valores como branca
+                display: true, 
+                color: '#fff', 
                 font: {
                     weight: 'bold',
                 },
                 anchor: 'center',
                 align: 'center',
-                formatter: (value) => value, // Exibe o valor numérico
+                formatter: (value) => value, 
             },
         },
         scales: {

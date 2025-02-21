@@ -17,12 +17,11 @@ const DoughnutChart = ({year, month}) => {
 
     const getMonthName = (monthNumber) => {
         const date = new Date();
-        date.setMonth(monthNumber - 1); // Subtraímos 1 porque os meses no JS são indexados de 0
+        date.setMonth(monthNumber - 1); 
         return date.toLocaleString("default", { month: "long" });
     };
 
     useEffect(() => {
-        // Atualize o título sempre que o mês mudar
         setTitle(`Tipo de manutenções abertas em ${getMonthName(month)}`);
     }, [month]);
 
@@ -76,7 +75,7 @@ const DoughnutChart = ({year, month}) => {
                 text: title,
                 font: {
                     size: 16,
-                    weight: 'normal'
+                    weight: 'bold'
                 },
             },
             tooltip: {

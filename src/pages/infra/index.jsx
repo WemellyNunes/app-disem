@@ -34,11 +34,9 @@ export default function InfraPage() {
         try {
             const [instituteData, unitData] = await Promise.all([getAllInstitutes(), getAllUnits()]);
     
-            // Garantindo que os dados recebidos são arrays válidos
             const institutesArray = Array.isArray(instituteData) ? instituteData : [];
             const unitsArray = Array.isArray(unitData) ? unitData : [];
     
-            // Aplicando o sort apenas se os arrays não estiverem vazios
             const sortedInstitutes = [...institutesArray].sort((a, b) => a.id - b.id);
             setInstitutes(sortedInstitutes);
             setFilteredInstitutes(sortedInstitutes);
@@ -48,7 +46,7 @@ export default function InfraPage() {
             setFilteredUnits(sortedUnits);
         } catch (error) {
             console.error("Erro ao buscar dados:", error);
-            setInstitutes([]); // Evita estado inconsistente
+            setInstitutes([]); 
             setUnits([]);
         }
     };    
@@ -168,7 +166,7 @@ export default function InfraPage() {
                             onSearch={handleSearch}
                         />
                         <button
-                            className="flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-700 gap-2"
+                            className="flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-10 rounded-lg hover:bg-green-700 gap-2"
                             onClick={() => {
                                 setShowModal(true);
                                 setSelectedData(null); 

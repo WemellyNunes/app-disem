@@ -167,7 +167,7 @@ const TabsAndList = () => {
             if (appliedFilters.professionals && appliedFilters.professionals.length > 0) {
                 filtered = filtered.filter(item => {
                     if (!item.programings || item.programings.length === 0) {
-                        return false; // Se a OS não tem programações, não precisa ser exibida
+                        return false; 
                     }
                     return item.programings.some(programing =>
                         appliedFilters.professionals.some(prof =>
@@ -224,7 +224,7 @@ const TabsAndList = () => {
                 
                 <button
                     onClick={() => navigate("../form")}
-                    className="flex items-center gap-2 bg-primary-light text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-700"
+                    className="flex items-center gap-2 bg-primary-light text-white px-3.5 md:px-4 h-10 rounded-lg hover:bg-green-700"
                 >
                     <span>
                         <FaPlus className='h-3 w-3' />
@@ -233,7 +233,7 @@ const TabsAndList = () => {
                 </button>
                 <button
                     onClick={() => setIsFilterModalOpen(true)}
-                    className="flex items-center gap-2 bg-white text-primary-light border border-primary-light px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-100 hover:border-primary-light"
+                    className="flex items-center gap-2 bg-white text-primary-light border border-primary-light px-3.5 md:px-4 h-10 rounded-lg hover:bg-green-100 hover:border-primary-light"
                 >
                     <span>
                         <FaSlidersH className='h-3 w-3' />

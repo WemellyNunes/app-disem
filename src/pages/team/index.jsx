@@ -162,14 +162,14 @@ export default function TeamPage() {
 
                         />
                         <button
-                            className='flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-700 gap-2'
+                            className='flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-10 rounded-lg hover:bg-green-700 gap-2'
                             onClick={handleOpenModal}
                         >
                             <span><FaPlus className='h-3 w-3' /></span>
                             <span className='hidden md:flex flex-wrap' >Cadastrar</span>
                         </button>
                         <div className='flex gap-x-2 items-center'>
-                            <label className='flex items-center border border-primary-light text-primary-light text-sm bg-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-100 gap-2 cursor-pointer'>
+                            <label className='flex items-center border border-primary-light text-primary-light text-sm bg-white px-3.5 md:px-4 h-10 rounded-lg hover:bg-green-100 gap-2 cursor-pointer'>
                                 <span><FaUpload className='h-3 w-3' /></span>
                                 <span className='hidden md:flex'>Enviar planilha</span>
                                 <input

@@ -175,7 +175,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
         <div className={`flex flex-col mb-4`}>
             <label
                 className={`flex items-center border border-dashed rounded-md p-4 cursor-pointer w-full 
-                h-9 md:h-10 transition-colors duration-200 ${disabled ? ' border-gray-200 text-gray-400' : 'border-primary-light hover:bg-blue-50'} ${className}`}
+                h-10 transition-colors duration-200 ${disabled ? ' border-gray-200 text-gray-400' : 'border-primary-light hover:bg-blue-50'} ${className}`}
                 onClick={() => {
                     if (!disabled) {
                         setFileToEdit(null);
@@ -184,7 +184,7 @@ const InputUpload = ({ label, disabled, className, onFilesUpload, errorMessage, 
                 }}
             >
                 <FaUpload className={`h-4 w-4 mr-3 ${disabled ? 'text-gray-400' : 'text-primary-light'}`} />
-                <span className={`text-xs md:text-sm italic font-normal ${disabled ? 'text-gray-400' : 'text-primary-light'}`}>
+                <span className={`text-sm italic font-normal ${disabled ? 'text-gray-400' : 'text-primary-light'}`}>
                     {label}
                 </span>
             </label>

@@ -20,7 +20,6 @@ const DoughnutSystem = ({ year }) => {
             try {
                 const data = await getOrdersBySystemStatistics(year);
 
-                // Mapeando os dados do backend para labels e valores
                 const labels = Object.keys(data).map((key) => {
                     if( key === "CIVIL") { return 'Civil'};
                     if ( key === "ELETRICO") { return 'Elétrico'};
@@ -71,7 +70,7 @@ const DoughnutSystem = ({ year }) => {
                 text: 'Manutenções abertas por tipo de sistema',
                 font: {
                     size: 16,
-                    weight: 'normal'
+                    weight: 'bold'
                 },
             },
             tooltip: {

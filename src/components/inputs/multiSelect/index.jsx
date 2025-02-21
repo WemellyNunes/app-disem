@@ -43,12 +43,12 @@ const MultiSelect = ({ label, options, onChange, disabled, selectedValues = [], 
 
     return (
         <div className="w-full mb-4" ref={dropdownRef}>
-            <label className="block text-primary-dark text-xs md:text-sm font-normal mb-2">
+            <label className="block text-primary-dark text-sm font-normal mb-2">
                 {label}
             </label>
             <div className="relative">
                 <button
-                    className={`appearance-none w-full border border-gray-400 px-4 h-9 md:h-10 rounded leading-tight focus:outline-none 
+                    className={`appearance-none w-full border border-gray-400 px-4 h-10 rounded leading-tight focus:outline-none 
                     focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center my-1 text-sm italic ${disabled ? 'bg-gray-50 border-none text-gray-400' : 'bg-white text-gray-500'} ${className}`}
                     onClick={handleToggle}
                     type="button"

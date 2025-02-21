@@ -78,7 +78,7 @@ export default function UserPage() {
                             setUserToEdit(null);
                             setShowModal(true);
                         }}
-                        className="flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-9 rounded-lg hover:bg-green-700 gap-2"
+                        className="flex items-center bg-primary-light text-sm text-white px-3.5 md:px-4 h-10 rounded-lg hover:bg-green-700 gap-2"
                     >
 
                         <FaPlus className="h-3 w-3"/> 
