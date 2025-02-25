@@ -1,10 +1,16 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { MdOutlineDashboard } from "react-icons/md";
-import { FaFilePen } from "react-icons/fa6";
-import { FaRegListAlt, FaBars, FaUsers, FaTools, FaSolarPanel   } from "react-icons/fa";
+import { FaRegListAlt, FaBars , FaSolarPanel, FaRegFileAlt   } from "react-icons/fa";
 import { ImOffice } from "react-icons/im";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { BsCart4 } from "react-icons/bs";
+import { RiTeamFill, RiFileUserLine  } from "react-icons/ri";
+import { FaUsersRectangle, FaUsersLine, FaWpforms, FaListUl   } from "react-icons/fa6";
+import { LiaClipboardListSolid } from "react-icons/lia";
+
+
+
+
 
 import { useState } from "react";
 import ConfirmationModal from "../modal/confirmation";
@@ -53,9 +59,9 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center border-b border-green-600 px-4 py-4 hover:bg-green-200 hover:text-gray-700 ${isActive ? 'bg-white text-primary-dark hover:text-primary-dark' : 'text-white'}`
               }>
-              <MdOutlineDashboard className='h-4 w-4' /> 
+              <MdOutlineDashboard className='h-4 w-5' /> 
               <span
-                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
+                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-2'
                   }`}
               >
                 Dashboard
@@ -69,9 +75,9 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-green-600 px-4 py-4 hover:bg-green-200 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <FaFilePen className='h-4 w-4' /> 
+              <LiaClipboardListSolid className='h-5 w-5' /> 
               <span
-                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
+                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-2'
                   }`}
               >
                 Cadastrar
@@ -83,9 +89,9 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-green-600 px-4 py-4 hover:bg-green-200 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <FaRegListAlt className='h-4 w-4' /> 
+              <FaListUl className='h-5 w-4' /> 
               <span
-                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
+                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-2.5'
                   }`}
               >
                 Filas
@@ -99,9 +105,9 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-green-600 px-4 py-4 hover:bg-green-200 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <FaTools className='h-4 w-3.5' />
+              <FaUsersLine className='h-5 w-5' />
               <span
-                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
+                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-2.5'
                   }`}
               >
                 Equipe
@@ -113,9 +119,9 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               className={({ isActive }) =>
                 `flex items-center text-primary-dark border-b border-green-600 px-4 py-4 hover:bg-green-200 hover:text-gray-700 ${isActive ? 'bg-white text-gray-700 hover:text-primary-dark' : 'text-white'}`
               }>
-              <FaUsers className='h-4 w-4' /> 
+              <FaUsersRectangle className='h-5 w-5'/> 
               <span
-                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
+                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-2.5'
                   }`}
               >
                 Usuários
@@ -133,7 +139,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               }>
               <ImOffice className='h-4 w-4' /> 
               <span
-                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-4'
+                className={`transition-all duration-300 ease-in-out text-sm transform ${isCollapsed ? 'opacity-0 translate-x-[-10px] w-0 overflow-hidden' : 'opacity-100 translate-x-0 w-auto pl-2.5'
                   }`}
               >
                 Unidades/institutos 

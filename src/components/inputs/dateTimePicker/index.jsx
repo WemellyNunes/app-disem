@@ -96,7 +96,7 @@ const DateTimePicker = ({ label, placeholder, onDateChange, className, disabled,
   return (
     <div className="relative mb-4" ref={datePickerRef}>
       <label className="block text-sm font-normal text-primary-dark mb-2">{label}</label>
-      <div className={`flex items-center border border-gray-400 rounded h-10 pl-4 pr-1 ${disabled ? 'bg-gray-50 border-none' : ''} ${className}`}>
+      <div className={`flex items-center border border-gray-400 rounded h-11 pl-4 pr-1 ${disabled ? 'bg-gray-50 border-none' : ''} ${className}`}>
         <input
           type="text"
           placeholder={placeholder || "exemplo: 00/00/0000"}

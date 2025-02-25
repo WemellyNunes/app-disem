@@ -17,7 +17,7 @@ const InputSelect = ({ label, options, onChange, value, disabled, className, err
             <div className="relative">
                 <select
                     className={`block appearance-none w-full border border-gray-400
-                    h-10 px-4 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500
+                    h-11 px-4 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500
                     focus:border-blue-500 text-xs md:text-sm italic cursor-pointer my-1 ${disabled ? 'text-gray-800 bg-gray-50 border-none' : 'bg-white text-gray-500'} ${className} `}
                     onChange={(e) => onChange(e.target.value)}
                     onClick={handleToggle}

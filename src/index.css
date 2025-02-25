@@ -18,5 +18,5 @@ body.bg-form-page {
 }
 
 body.bg-login-page {
-    @apply bg-gray-50;
+    @apply bg-white;
 }

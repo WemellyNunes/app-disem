@@ -87,7 +87,7 @@ const DocumentList = ({ documents, onRemove, isReadOnly = false }) => {
     
     return (
         <div className="mt-10 mb-8 border border-gray-300 p-6 rounded-lg">
-            <h3 className="md:text-base text-sm font-semibold mb-2 text-gray-800">Arquivos anexados</h3>
+            <h3 className="md:text-base text-sm font-medium mb-2 text-gray-800">Anexos</h3>
             <ul className="list-disc p-2">
                 {documents.map((doc, index) => (
                     <div key={doc.id} className="flex justify-between items-center">

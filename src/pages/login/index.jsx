@@ -25,16 +25,13 @@ export default function Login() {
                         message="Sem autenticação no momento, só clique no botão entrar."
                         storageKey="showLoginMessage"
                     />
-                <div className="flex flex-col justify-center items-center content-center w-full mt-2">
-                    <div className="flex flex-col mb-10 md:mb-16 h-3 w-44">
-                        <img src="./public/images/disemLogo.png" alt="" />
-                    </div>
+                <div className="flex flex-col justify-center items-center w-full mt-10">
                     <div className="flex flex-col items-center mb-10">
                         <h2 className="text-3xl font-semibold text-gray-700">Acesse sua conta</h2>
                         <p className="text-lg font-light text-primary-dark">Realize seu login e bom trabalho!</p>
                     </div>
-                    <div className="flex flex-col p-8 h-full w-96 max-w-xs md:max-w-md rounded-md bg-white border border-primary-light">
-                        <p className="text-2xl font-semibold text-primary-light mb-8">Login</p>
+                    <div className="flex flex-col h-full w-full md:w-1/3 rounded-md ">
+                    
                         <div className="mb-6">
                             <InputSecondary
                                 label="Usuário"
