@@ -38,17 +38,9 @@ const InputSecondary = forwardRef(
                         onChange={handleInputChange}
                         ref={ref}
                         disabled={disabled}
-                        maxLength={type === "password" ? 50 : undefined} // Limite de 50 caracteres
+                        maxLength={type === "password" ? 64 : undefined} // Limite de 50 caracteres
                     />
-                    {!isEditing && type === "password" && (
-                        <button
-                            onClick={generateRandomPassword}
-                            className={`absolute inset-y-0 right-8 flex items-center pr-3 text-primary-light focus:outline-none ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            type="button"
-                        >
-                            <FaRandom /> {/* Botão para gerar senha aleatória */}
-                        </button>
-                    )}
+                
                     <button
                         onClick={type === "password" ? togglePasswordVisibility : onButtonClick}
                         className={`absolute inset-y-0 right-0 flex items-center pr-3 text-primary-light focus:outline-none ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -57,7 +49,6 @@ const InputSecondary = forwardRef(
                         {type === "password" ? (showPassword ? <FaEyeSlash /> : <FaEye />) : buttonIcon}
                     </button>
                 </div>
-                {/* Exibir mensagem de erro se houver */}
                 {errorMessage && <span className="text-red-600 text-xs">{errorMessage}</span>}
             </div>
         );
