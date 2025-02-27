@@ -1,25 +1,12 @@
 import { forwardRef, useState } from "react";
-import { FaEye, FaEyeSlash, FaRandom } from "react-icons/fa"; // Ícone para o botão de gerar senha
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const InputSecondary = forwardRef(
-    ({ label, placeholder, buttonIcon, onButtonClick, type = 'text', onChange, className, disabled, value, errorMessage, isEditing = false }, ref) => {
+    ({ label, placeholder, buttonIcon, onButtonClick, type = 'text', onChange, className, disabled, value, errorMessage }, ref) => {
         const [showPassword, setShowPassword] = useState(false);
-
-        const handleInputChange = (e) => {
-            const inputValue = e.target.value;
-            if (type === "password" && inputValue.length > 50) {
-                return; 
-            }
-            onChange(inputValue);
-        };
 
         const togglePasswordVisibility = () => {
             setShowPassword(!showPassword);
-        };
-
-        const generateRandomPassword = () => {
-            const randomPassword = Math.random().toString(36).slice(-10); 
-            onChange(randomPassword);
         };
 
         return (
@@ -31,23 +18,34 @@ const InputSecondary = forwardRef(
                     <input
                         className={`appearance-none block w-full text-primary-dark border border-gray-400 rounded h-11 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500
                         focus:border-blue-500 my-1 text-xs md:text-sm italic ${disabled ? 'bg-gray-50 border-none text-gray-' : 'bg-white'} ${className}`}
-                        id="inputWithButton"
                         type={showPassword ? 'text' : type}
                         placeholder={placeholder}
                         value={value}
-                        onChange={handleInputChange}
+                        onChange={onChange ? (e) => onChange(e) : undefined}
                         ref={ref}
                         disabled={disabled}
-                        maxLength={type === "password" ? 64 : undefined} // Limite de 50 caracteres
+                        maxLength={type === "password" ? 64 : undefined}
                     />
                 
-                    <button
-                        onClick={type === "password" ? togglePasswordVisibility : onButtonClick}
-                        className={`absolute inset-y-0 right-0 flex items-center pr-3 text-primary-light focus:outline-none ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        type="button"
-                    >
-                        {type === "password" ? (showPassword ? <FaEyeSlash /> : <FaEye />) : buttonIcon}
-                    </button>
+                    {type === "password" && (
+                        <button
+                            onClick={togglePasswordVisibility}
+                            className={`absolute inset-y-0 right-0 flex items-center pr-3 text-primary-light focus:outline-none ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            type="button"
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                    )}
+
+                    {type !== "password" && buttonIcon && (
+                        <button
+                            onClick={onButtonClick}
+                            className={`absolute inset-y-0 right-0 flex items-center pr-3 text-primary-light focus:outline-none ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            type="button"
+                        >
+                            {buttonIcon}
+                        </button>
+                    )}
                 </div>
                 {errorMessage && <span className="text-red-600 text-xs">{errorMessage}</span>}
             </div>

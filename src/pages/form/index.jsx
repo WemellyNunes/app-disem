@@ -381,9 +381,9 @@ export default function Form() {
                     />
                 </div>
                 <div className="flex justify-center items-center">
-                    <div className="flex flex-col items-center bg-white shadow mt-2 mb-2 px-8 py-4 md:px-16  w-full md:w-[1000px] rounded-xl">
+                    <div className="flex flex-col items-center mt-2 mb-2 px-8 py-4 md:px-16  w-full md:w-[1200px] rounded-xl">
                         <div className="flex-1 mb-2 w-full">
-                            <p className="text-sm md:text-base font-medium text-gray-800 my-6 pb-2.5 border-b border-gray-300">Formulário de cadastro</p>
+                            <p className="text-sm md:text-lg font-medium text-gray-800 my-6 pb-2.5 border-b border-gray-300">Formulário de cadastro</p>
                             <p className="text-sm md:text-base font-medium text-gray-800 my-6">1. Dados da ordem de serviço</p>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6">
                                 <InputSelect

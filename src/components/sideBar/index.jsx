@@ -35,7 +35,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
 
   return (
     <>
-      <div className={`hidden md:flex flex-col h-1/2 md:h-full bg-primary-green  border-r border-gray-300 md:fixed transition-all duration-300 z-50 ${isCollapsed ? 'w-12 md:w-14' : 'w-60'} transform` }>
+      <div className={`hidden md:flex flex-col h-1/2 md:h-full bg-primary-green  border-r  md:fixed transition-all duration-300 z-50 ${isCollapsed ? 'w-12 md:w-14' : 'w-60'} transform` }>
         <div className="flex flex-col p-4">
           <div className="flex flex-col">
             <div className="flex items-center justify-start  text-primary-dark mt-2">

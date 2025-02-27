@@ -14,7 +14,7 @@ body.bg-dashboard-page {
 }
 
 body.bg-form-page {
-    @apply bg-gray-50; 
+    @apply bg-white; 
 }
 
 body.bg-login-page {

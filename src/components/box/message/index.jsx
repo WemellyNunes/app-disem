@@ -5,12 +5,12 @@ const MessageBox = ({ type, title, message, onClose }) => {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        setIsVisible(true); // Ativa a animação ao montar o componente
+        setIsVisible(true);
     }, []);
 
     const handleClose = () => {
-        setIsVisible(false); // Inicia a animação de saída
-        setTimeout(onClose); // Aguarda a animação antes de remover o componente
+        setIsVisible(false); 
+        setTimeout(onClose); 
     };
 
     const iconTypes = {
@@ -34,10 +34,10 @@ const MessageBox = ({ type, title, message, onClose }) => {
             }`}
         >
             <div className={`relative w-full md:w-8/12 py-6 px-2 md:px-6 shadow-lg ${backgroundTypes[type]} flex items-center justify-between rounded-xl`}>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center px-2 gap-x-2 md:gap-x-3">
                     {iconTypes[type]}
-                    <div className="flex items-center space-x-1">
-                        <span className="text-primary-dark text-sm md:text-base font-medium">{title}</span>
+                    <div className="flex items-center gap-x-1">
+                        <span className="hidden md:flex text-primary-dark text-sm md:text-base font-medium">{title}</span>
                         <span className="text-primary-dark text-sm md:text-base font-normal">{message}</span>
                     </div>
                 </div>
