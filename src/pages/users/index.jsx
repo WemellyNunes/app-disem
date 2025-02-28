@@ -41,7 +41,7 @@ export default function UserPage() {
         } else {
             setFilteredUsers(
                 users.filter(user =>
-                    user.name.toLowerCase().includes(query) || 
+                    user.nome.toLowerCase().includes(query) || 
                     user.email.toLowerCase().includes(query)
                 )
             );

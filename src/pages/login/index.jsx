@@ -15,28 +15,6 @@ export default function Login() {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        document.body.classList.add("bg-login-page");
-
-        const fetchToken = async () => {
-            try {
-                const token = await getToken();
-                console.log("Token:", token);
-                localStorage.setItem("authToken", token);
-                setIsLoading(false);
-            } catch (error) {
-                console.error("Erro ao gerar token:", error);
-                setIsLoading(false);
-            }
-        };
-
-        fetchToken();
-
-        return () => {
-            document.body.classList.remove("bg-login-page");
-        };
-    }, []);
-
     const handleInputChange = (field, value) => {
         if (field === "usuario") {
             setUsuario(value);
@@ -64,21 +42,35 @@ export default function Login() {
         }
 
         try {
+            const token = await getToken();
+            console.log("Token gerado:", token);
+            sessionStorage.setItem("authToken", token);
+
             const response = await loginAPI(usuario, senha);
             console.log("Login bem-sucedido:", response);
 
             const userInfo = await buscarUsuario(usuario);
+            console.log("dados da api: ", userInfo)
 
-            localStorage.setItem("userSession", JSON.stringify(userInfo));
+            if (!userInfo || !userInfo.id_usuario || !userInfo.nome) {
+                console.error("Erro: Dados do usuário incompletos", userInfo);
+                setShowErrorMessage(true);
+                return;
+            }
 
-            await salvarUsuario({
+            const userData = {
                 idUsuario: userInfo.id_usuario,
                 nome: userInfo.nome,
-                email: userInfo.email,
-                papel: "Usuário",
-            });
+                email: userInfo.email || "sem-email",
+                papel: "Usuário"
+            };
+
+            await salvarUsuario(userData);
+
+            sessionStorage.setItem("userSession", JSON.stringify(userData));
 
             navigate("/dashboard");
+
         } catch (error) {
             console.error("Erro ao acessar o sistema:", error);
 
@@ -88,9 +80,6 @@ export default function Login() {
         }
     };
 
-    if (isLoading) {
-        return <div className="flex justify-center items-center h-screen">🔄 Gerando token...</div>;
-    }
 
     return (
         <div className="flex flex-col items-center p-10 justify-center ">
